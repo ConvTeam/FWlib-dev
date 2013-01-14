@@ -1,0 +1,1 @@
+allbin.exe W5200EVB_App.bin wizweb.rom
