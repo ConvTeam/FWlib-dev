@@ -111,6 +111,7 @@ void find_http_uri_type(
 {
   /* Decide type according to extention*/
   if      (strstr(buf, ".pl"))				*type = PTYPE_PL;
+  else if (strstr(buf, ".cgi")  || strstr(buf,".CGI"))	*type = PTYPE_CGI;
   else if (strstr(buf, ".html") || strstr(buf,".htm"))	*type = PTYPE_HTML;
   else if (strstr(buf, ".gif"))				*type = PTYPE_GIF;
   else if (strstr(buf, ".text") || strstr(buf,".txt"))	*type = PTYPE_TEXT;
@@ -118,8 +119,7 @@ void find_http_uri_type(
   else if (strstr(buf, ".swf")) 			*type = PTYPE_FLASH;
   else if (strstr(buf, ".mpeg") || strstr(buf,".mpg"))	*type = PTYPE_MPEG;
   else if (strstr(buf, ".pdf")) 			*type = PTYPE_PDF;
-  else if (strstr(buf, ".cgi")  || strstr(buf,".CGI"))	*type = PTYPE_CGI;
-  else if (strstr(buf, ".js")   || strstr(buf,".JS"))	*type = PTYPE_TEXT;	
+  else if (strstr(buf, ".js")   || strstr(buf,".JS"))	*type = PTYPE_TEXT;
   else if (strstr(buf, ".xml")  || strstr(buf,".XML"))	*type = PTYPE_HTML;
   else 							*type = PTYPE_ERR;
 }
@@ -158,7 +158,7 @@ void parse_http_request(
   }
   else if (!strcmp(nexttok, "POST") || !strcmp(nexttok,"post"))
   {
-    nexttok = strtok(NULL,"\0");
+    nexttok = strtok(NULL," ");
     request->METHOD = METHOD_POST;
     #ifdef HTTPD_DEBUG
     PRINTLN("METHOD_POST");
@@ -180,7 +180,11 @@ void parse_http_request(
     #endif				
     return;
   }
+
   strcpy(request->URI,nexttok);
+  nexttok = strtok(NULL,"\0");
+  strcpy(request->param,nexttok);
+
   #ifdef HTTPD_DEBUG
   {
     uint16 i;

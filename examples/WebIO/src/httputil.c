@@ -1,46 +1,78 @@
 
 #include "httputil.h"
 #include "webpage.h"
+#include "romfile.h"
 
 #define DEFAULT_HTTP_PORT 80
 extern char rx_buf[MAX_URI_SIZE];
 extern char tx_buf[MAX_URI_SIZE];
 
 uint8 *homepage_default = "/config.html";
-uint8 bchannel_start;
-uint8 *user_data;
-
-//timer
-extern vu16 cgi_post_wait_time;
-extern vu8 http_time;
-//
-extern uint32 totalseconds;
-//
 
 
-extern uint16 ka_interval_val;
-extern uint16 ka_count_val;
+/**
+@brief	CONVERT STRING INTO INTEGER
+@return	a integer number
+*/
+extern C2D(uint8 c);
+uint16 ATOI(
+	char* str,	/**< is a pointer to convert */
+	uint16 base	/**< is a base value (must be in the range 2 - 16) */
+	)
+{
+        unsigned int num = 0;
+        while (*str !=0)
+                num = num * base + C2D(*str++);
+	return num;
+}
 
-extern uint16 nagle_val;
-extern uint16 inact_val;
-extern uint16 recon_val;
+void mid(char* src, char* s1, char* s2, char* sub)
+{
+	char* sub1;
+	char* sub2;
+	uint16 n;
 
-extern uint16 lport_val;
-extern uint16 rport_val;
-extern uint16 locport_val;
+	sub1=strstr((char*)src,(char*)s1);
+	sub1+=strlen((char*)s1);
+	sub2=strstr((char*)sub1,(char*)s2);
+
+	n=sub2-sub1;
+	strncpy((char*)sub,(char*)sub1,n);
+	sub[n]='\0';
+}
+
 //processing http protocol , and excuting the followed fuction.
 void WebServer(SOCKET s)
 {
 	int ret;
+	uint32 header_len=0, content_len=0, received_len=0;
+	char sub[10];
 
 	/* http service start */
 	ret = TCPRecv(s, (uint8*)rx_buf, MAX_URI_SIZE);
 
 	if(ret > 0){					// If Received..
-		*(((uint8*)rx_buf)+ret) = 0;
+		*(((uint8*)rx_buf)+ret) = '\0';
 
-		HTTPProcessor(s, (char*)rx_buf);		// request is processed
-		memset(rx_buf,0x00,ret);
+		if(strstr(rx_buf, "Content-Length: ")){
+			mid((char*)rx_buf, "Content-Length: ", "\r\n", sub);
+			content_len=ATOI(sub, 10);
+			header_len = (uint32)(strstr(rx_buf, "\r\n\r\n") - rx_buf + 4);
+
+//printf("header_len: %d, content_len: %d, Totla_len: %d\r\n\r\n", header_len, content_len, header_len+content_len);
+
+			received_len = ret;
+			while(received_len!=(content_len+header_len))
+			{
+				ret = TCPRecv(s, (uint8*)rx_buf+received_len, MAX_URI_SIZE);
+				received_len+=ret;
+			}
+
+			*(((uint8*)rx_buf)+received_len) = '\0';
+		}
+
+		HTTPProcessor(s, (char*)rx_buf);	// request is processed
+		memset(rx_buf,0x00,MAX_URI_SIZE);
 
 		IINCHIP_WRITE(Sn_CR(s),Sn_CR_DISCON);
 		while( IINCHIP_READ(Sn_CR(s)) );	// wait to process the command...
@@ -64,18 +96,19 @@ void HTTPProcessor(SOCKET s, char * buf)
 {
 	char* name;
 	uint8 type;
-	int32 file_len=0;
-	int32 send_len=0;
+	uint32 file_len=0;
+	uint32 send_len=0;
+	uint32 content = 0;
 
 	uint8* http_response;
 	st_http_request *http_request;
 
-	memset(tx_buf,0x00,MAX_URI_SIZE);
 	http_response = (uint8*)rx_buf;
-
 	http_request = (st_http_request*)tx_buf;
 
+	memset(tx_buf,0x00,MAX_URI_SIZE);
 	parse_http_request(http_request, buf);		// After analyze request, convert into http_request
+	memset(rx_buf,0x00,MAX_URI_SIZE);
 
 	//method Analyze
 	switch (http_request->METHOD)				
@@ -89,6 +122,8 @@ void HTTPProcessor(SOCKET s, char * buf)
 		case METHOD_POST:
 			//get file name from uri
 			name=(char*)http_request->URI;
+			if(strcmp(name,"/"))
+				name++;
 
 			if (!strcmp(name, "/")) strcpy(name, (char const*)homepage_default);	// If URI is "/", respond by index.htm 
 
@@ -103,7 +138,7 @@ void HTTPProcessor(SOCKET s, char * buf)
 				file_len = CGIProcessor(name, tx_buf);
 			}
 
-			if(file_len >= 0)
+			if(file_len > 0)
 			{
 				make_http_response_head((unsigned char*)http_response, type, file_len);
 				TCPSend(s, http_response, strlen((char const*)http_response));
@@ -130,9 +165,14 @@ void HTTPProcessor(SOCKET s, char * buf)
 			}
 			else
 			{
-				if(strcmp(name,"/config.html")==0)
+				/* Search the specified file in stored binaray html image */
+				if(!search_file_rom((unsigned char *)name, &content, &file_len))
 				{
-					file_len=strlen(CONFIG_HTML);
+					memcpy(http_response, ERROR_HTML_PAGE, sizeof(ERROR_HTML_PAGE));
+					TCPSend(s, http_response, strlen((char const*)http_response));
+				}
+				else
+				{
 					make_http_response_head((unsigned char*)http_response, type, file_len);
 					TCPSend(s, http_response, strlen((char const*)http_response));
 					send_len=0;
@@ -140,7 +180,11 @@ void HTTPProcessor(SOCKET s, char * buf)
 					{
 						if(file_len>1024)
 						{
-							if(TCPSend(s, (uint8*)CONFIG_HTML+send_len, 1024)<0)
+							read_from_flashbuf(content+send_len, (uint8*)tx_buf, 1024);
+							// Replace html's system environment value to real value
+							//file_len = replace_sys_env_value(http_response,file_len);
+
+							if(TCPSend(s, (uint8*)tx_buf, 1024)<0)
 							{
 								return;
 							}
@@ -149,16 +193,13 @@ void HTTPProcessor(SOCKET s, char * buf)
 						}
 						else
 						{
-							TCPSend(s, (uint8*)CONFIG_HTML+send_len, file_len);
+							read_from_flashbuf(content+send_len, (uint8*)tx_buf, file_len);
+
+							TCPSend(s, (uint8*)tx_buf, file_len);
 							send_len+=file_len;
 							file_len-=file_len;
 						}
 					}
-				}
-				else
-				{
-					memcpy(http_response, ERROR_HTML_PAGE, sizeof(ERROR_HTML_PAGE));
-					TCPSend(s, http_response, strlen((char const*)http_response));
 				}
 			}
 			break;
@@ -173,10 +214,10 @@ void RESTProcessor(st_http_request *http_request)
 	return;
 }
 
-int32 CGIProcessor(char* name, char* buf)
+uint32 CGIProcessor(char* name, char* buf)
 {
-	int32 file_len=0;
-#if 1
+	uint32 file_len=0;
+#if 0
 	if(strstr(name,"/widget.pl"))//widget response
 	{
 		memset(buf,0,MAX_URI_SIZE);
@@ -190,7 +231,7 @@ int32 CGIProcessor(char* name, char* buf)
 	}
 	else
 	{
-		file_len = -1;
+		file_len = 0;
 	}
 #else
 	uint32 content = 0;
@@ -198,15 +239,15 @@ int32 CGIProcessor(char* name, char* buf)
 	/* Search the specified file in stored binaray html image */
 	if(!search_file_rom((unsigned char *)name, &content, &file_len))
 	{
-		file_len = -1;
+		file_len = 0;
 	} 
 	else	// if search file sucess 
 	{
-		read_from_flashbuf(content, buf, file_len);
+		read_from_flashbuf(content, (uint8*)buf, file_len);
 		*(buf+file_len+1) = '\0';
 
-		// Replace htmls' system environment value to real value
-		file_len = replace_sys_env_value(http_response,file_len);
+		// Replace html's system environment value to real value
+		//file_len = replace_sys_env_value(http_response,file_len);
 	}
 #endif
 	return file_len;

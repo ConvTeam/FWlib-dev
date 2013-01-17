@@ -7,6 +7,7 @@
 #define	__HTTPD_H__
 
 #include "common/common.h"
+#include "romfile.h"
 
 
 #define HTTP_SERVER_PORT		80		/**< Http server well-known port number */
@@ -75,7 +76,8 @@ typedef struct _st_http_request
 {
   uint8	METHOD;						/**< request method(METHOD_GET...). */
   uint8	TYPE;						/**< request type(PTYPE_HTML...).   */
-  char	URI[MAX_URI_SIZE];				/**< request file name.             */
+  char	URI[ROM_FNAMELEN];				/**< request file name.             */
+  char  param[MAX_URI_SIZE];				/**< request param.                 */
 }st_http_request;
 
 void unescape_http_url(char * url);					/* convert escape character to ascii */
