@@ -6,6 +6,8 @@
 #ifndef	__HTTPD_H__
 #define	__HTTPD_H__
 
+#include "common/common.h"
+
 
 #define HTTP_SERVER_PORT		80		/**< Http server well-known port number */
 
@@ -71,18 +73,18 @@
  */
 typedef struct _st_http_request
 {
-  u_char	METHOD;						/**< request method(METHOD_GET...). */
-  u_char	TYPE;						/**< request type(PTYPE_HTML...).   */
+  uint8	METHOD;						/**< request method(METHOD_GET...). */
+  uint8	TYPE;						/**< request type(PTYPE_HTML...).   */
   char	URI[MAX_URI_SIZE];				/**< request file name.             */
 }st_http_request;
 
 void unescape_http_url(char * url);					/* convert escape character to ascii */
 
-void parse_http_request(st_http_request *, u_char *);		/* parse request from peer */
+void parse_http_request(st_http_request *, char *);		/* parse request from peer */
 
-void find_http_uri_type(u_char *, char *);				/* find MIME type of a file */
+void find_http_uri_type(uint8 *, char *);				/* find MIME type of a file */
 
-void make_http_response_head(unsigned char *, char, u_long);				/* make response header */
+void make_http_response_head(uint8 *, int8, uint32);				/* make response header */
 
 unsigned char* get_http_param_value(char* uri, char* param_name);	/* get the user-specific parameter value */
 

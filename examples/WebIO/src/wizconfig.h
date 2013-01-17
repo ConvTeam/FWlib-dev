@@ -19,7 +19,7 @@
 //#define SYSTEM_BIG_ENDIAN
 
 //------------------------------ Network Setting ------------------------------
-#define USE_DHCP	VAL_ENABLE
+#define USE_DHCP	VAL_DISABLE
 
 #define MAC_ADDR_0	0x00
 #define MAC_ADDR_1	0x08
@@ -30,8 +30,8 @@
 
 #define IP_ADDR_0	192
 #define IP_ADDR_1	168
-#define IP_ADDR_2	0
-#define IP_ADDR_3	100
+#define IP_ADDR_2	10
+#define IP_ADDR_3	137
 
 #define SN_ADDR_0	255
 #define SN_ADDR_1	255
@@ -40,7 +40,7 @@
 
 #define GW_ADDR_0	192
 #define GW_ADDR_1	168
-#define GW_ADDR_2	0
+#define GW_ADDR_2	10
 #define GW_ADDR_3	1
 
 #define DNS_ADDR_0	168

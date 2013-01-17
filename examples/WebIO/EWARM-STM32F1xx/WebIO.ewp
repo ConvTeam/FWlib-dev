@@ -1668,9 +1668,6 @@
       <file>
         <name>$PROJ_DIR$\..\..\..\library\protocol\DNS\dns.c</name>
       </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\library\protocol\SMTP\smtp.c</name>
-      </file>
     </group>
   </group>
   <group>
@@ -1681,6 +1678,12 @@
         <name>$PROJ_DIR$\port\stm32f10x_it.c</name>
       </file>
     </group>
+    <file>
+      <name>$PROJ_DIR$\..\src\httpd.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\src\httputil.c</name>
+    </file>
     <file>
       <name>$PROJ_DIR$\..\src\main.c</name>
     </file>

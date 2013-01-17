@@ -3,13 +3,13 @@
 
 #include "protocol/DNS/dns.h"
 #include "protocol/DHCP/dhcp.h"
-#include "protocol/SMTP/smtp.h"
 #include "appmod/loopback/loopback.h"
 #include "appmod/usermenu/usermenu.h"
+#include "httputil.h"
 
 #define SOCK_DHCP		0	// UDP
 #define SOCK_DNS		1	// UDP
-#define SOCK_SMTP		2	// TCP
+#define SOCK_HTTP		2	// TCP
 
 
 bool lb_tcp = FALSE, lb_udp = FALSE;
@@ -221,70 +221,6 @@ static int8 mn_base64(menu_ctrl mctrl, char *mbuf)
 	return RET_NOK;
 }
 
-static int8 mn_email(menu_ctrl mctrl, char *mbuf)
-{
-#define SET_STAGE(next_name_v, cur_var_v) \
-{ \
-	if(strlen(mbuf) > 31) printf("buf overflow - try again\r\n"); \
-	else { \
-		strcpy(cur_var_v, mbuf); \
-		printf("Type a "next_name_v"\r\n"); \
-		stage++; \
-	} \
-}
-	uint8 ret;
-	static uint8 stage = 0, ip[4];
-	static char sender[32], passwd[32], recipient[32], subject[32];
-
-	if(mctrl == MC_START) {
-		printf("Enter Mail Server Address [Domain Name/IP Address]\r\n");
-	} else if(mctrl == MC_END) {
-		stage = 0;
-	} else if(mctrl == MC_DATA) {
-		switch(stage) {
-		case 0:	// Server IP
-			if(ip_check(mbuf, ip) == RET_NOK) {
-				if(dns_query(SOCK_DNS, (void *)mbuf, ip) == RET_OK) {
-					printf("DNS success - IP Address is (%d.%d.%d.%d)\r\n\r\n",	
-						ip[0], ip[1], ip[2], ip[3]);
-					printf("Type a Sender\r\n");
-					stage = 1;
-				} else {
-					printf("DNS failed\r\n\r\n");
-					printf("Enter Mail Server Address [Domain Name/IP Address]\r\n");
-				}
-			} else {
-				printf("Type a Sender\r\n");
-				stage = 1;
-			}
-			break;
-		case 1:	// Sender
-			SET_STAGE("Password", sender);
-			break;
-		case 2:	// Password
-			SET_STAGE("Recipient", passwd);
-			break;
-		case 3:	// Recipient
-			SET_STAGE("Subject", recipient);
-			break;
-		case 4:	// Subject
-			SET_STAGE("message" , subject); 
-			break;
-		case 5:	// Message
-			ret = send_mail(SOCK_SMTP, (uint8*)sender, (uint8*)passwd, 
-				(uint8*)recipient, (uint8*)subject, (uint8*)mbuf, ip);
-			if(ret != 0) printf("mail send success\r\n");
-			else printf("mail send fail\r\n");
-			return RET_OK;
-		default: printf("wrong stage(%d)\r\n", stage);
-		}
-	}
-
-	return RET_NOK;
-
-#undef SET_STAGE
-}
-
 int main(void)
 {
 #define TCP_LISTEN_PORT	5000
@@ -317,7 +253,6 @@ int main(void)
 	root = menu_add("App Test", 0, NULL);
 	menu_add("DNS", root, mn_dns);
 	menu_add("BASE64", root, mn_base64);
-	menu_add("eMail", root, mn_email);
 
 	menu_print_tree();
 
@@ -332,6 +267,7 @@ int main(void)
 			wizpf_led_act(WIZ_LED3, VAL_TOG);
 			tick = wizpf_get_systick();
 		}
+		WebServer(SOCK_HTTP);
 	}
 
 FAIL_TRAP:

@@ -641,16 +641,6 @@
         </option>
       </data>
     </settings>
-    <settings>
-      <name>PEMICRO_ID</name>
-      <archiveVersion>2</archiveVersion>
-      <data/>
-    </settings>
-    <settings>
-      <name>XDS100_ID</name>
-      <archiveVersion>2</archiveVersion>
-      <data/>
-    </settings>
     <debuggerPlugins>
       <plugin>
         <file>$TOOLKIT_DIR$\plugins\rtos\CMX\CmxArmPlugin.ENU.ewplugin</file>
@@ -1344,16 +1334,6 @@
           <state>1</state>
         </option>
       </data>
-    </settings>
-    <settings>
-      <name>PEMICRO_ID</name>
-      <archiveVersion>2</archiveVersion>
-      <data/>
-    </settings>
-    <settings>
-      <name>XDS100_ID</name>
-      <archiveVersion>2</archiveVersion>
-      <data/>
     </settings>
     <debuggerPlugins>
       <plugin>
