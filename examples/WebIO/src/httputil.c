@@ -1,4 +1,6 @@
 
+#include <stdlib.h>
+
 #include "httputil.h"
 #include "webpage.h"
 #include "romfile.h"
@@ -7,24 +9,8 @@
 extern char rx_buf[MAX_URI_SIZE];
 extern char tx_buf[MAX_URI_SIZE];
 
-uint8 *homepage_default = "/config.html";
+uint8 *homepage_default = "/ipconfig.htm";
 
-
-/**
-@brief	CONVERT STRING INTO INTEGER
-@return	a integer number
-*/
-extern C2D(uint8 c);
-uint16 ATOI(
-	char* str,	/**< is a pointer to convert */
-	uint16 base	/**< is a base value (must be in the range 2 - 16) */
-	)
-{
-        unsigned int num = 0;
-        while (*str !=0)
-                num = num * base + C2D(*str++);
-	return num;
-}
 
 void mid(char* src, char* s1, char* s2, char* sub)
 {
@@ -56,10 +42,8 @@ void WebServer(SOCKET s)
 
 		if(strstr(rx_buf, "Content-Length: ")){
 			mid((char*)rx_buf, "Content-Length: ", "\r\n", sub);
-			content_len=ATOI(sub, 10);
+			content_len=atoi(sub);
 			header_len = (uint32)(strstr(rx_buf, "\r\n\r\n") - rx_buf + 4);
-
-//printf("header_len: %d, content_len: %d, Totla_len: %d\r\n\r\n", header_len, content_len, header_len+content_len);
 
 			received_len = ret;
 			while(received_len!=(content_len+header_len))
@@ -74,8 +58,7 @@ void WebServer(SOCKET s)
 		HTTPProcessor(s, (char*)rx_buf);	// request is processed
 		memset(rx_buf,0x00,MAX_URI_SIZE);
 
-		IINCHIP_WRITE(Sn_CR(s),Sn_CR_DISCON);
-		while( IINCHIP_READ(Sn_CR(s)) );	// wait to process the command...
+		TCPClose(s);
 
 	} else if(ret == ERROR_NOT_TCP_SOCKET){		// Not TCP Socket, It's UDP Socket
 		DBG("UDP Socket Close");
@@ -91,15 +74,182 @@ void WebServer(SOCKET s)
 	}
 }
 
+/**
+@brief	This function used to send the data in TCP mode
+@return	1 for success else 0.
+*/ 
+struct CGI_CALLBACK cgi_callback[MAX_CGI_CALLBACK];
+void cgi_callback_add(char *tokken, cgi_func get_func, cgi_func set_func)
+{
+	static uint16 total=0;
+	int len;
+
+	if(tokken == NULL) {
+		ERR("description string is NULL");
+		return;
+
+	} else if(total >= MAX_CGI_CALLBACK) {
+		ERR("not enough space");
+		return;
+	}
+
+	len = strlen(tokken);
+	cgi_callback[total].tokken = malloc(len+1);
+	strcpy(cgi_callback[total].tokken, tokken);
+	cgi_callback[total].get_func = get_func;
+	cgi_callback[total].set_func = set_func;
+	total++;
+}
+
+int32 HTTPSend(SOCKET s, char *src, char *dest, uint16 len, uint8 mode)
+{
+	int32 ret=0;
+	char *oldtmp=0, *newtmp=0;
+	char sub[32];
+	uint16 i, mlen=0;
+
+	oldtmp=src;
+	newtmp=oldtmp;
+	while((newtmp = strstr(oldtmp, "<="))){
+		if(mode == 0)
+			ret += TCPSend(s, (uint8*)oldtmp, (uint16)(newtmp-oldtmp));
+		else if(mode == 1)
+		{
+			strncat(dest, oldtmp, (uint16)(newtmp-oldtmp));
+			ret += (uint16)(newtmp-oldtmp);
+		}
+		else if(mode == 2)
+			ret += (uint16)(newtmp-oldtmp);
+
+		mid(newtmp, "<=", ">", sub);// mid 함수의 리턴값에 따라 "<=" 까지만 읽었고, ">" 까지 읽지 않았는지 판단한 후 다음 파일을 읽고나서 처리 하도록 구현해야 함.
+		for(i=0; i<MAX_CGI_CALLBACK; i++){
+			if(!strcmp(sub, cgi_callback[i].tokken)){
+				char tmp[32];
+				if(cgi_callback[i].get_func == NULL){
+					i = MAX_CGI_CALLBACK;
+					break;
+				}
+				cgi_callback[i].get_func(tmp, &mlen);
+				if(mode == 0)
+					ret += TCPSend(s, (uint8*)tmp, mlen);
+				else if(mode == 1)
+				{
+					strncat(dest, tmp, mlen);
+					ret += mlen;
+				}
+				else if(mode == 2)
+					ret += mlen;
+				break;
+			}
+		}
+		if(i==MAX_CGI_CALLBACK){
+			char tmp[32];
+			mlen = sprintf(tmp, "<=%s>", sub);
+			if(mode == 0)
+				ret += TCPSend(s, (uint8*)tmp, mlen);
+			else if(mode == 1)
+			{
+				strncat(dest, tmp, mlen);
+				ret += mlen;
+			}
+			else if(mode == 2)
+				ret += mlen;
+		}
+		oldtmp = newtmp + strlen(sub)+3;
+	}
+
+	if(mode == 0)
+		ret += TCPSend(s, (uint8*)oldtmp, (len-(uint16)(oldtmp-src)));
+	else if(mode == 1)
+	{
+		strncat(dest, oldtmp, (len-(uint16)(oldtmp-src)));
+		ret += (len-(uint16)(oldtmp-src));
+	}
+	else if(mode == 2)
+		ret += (len-(uint16)(oldtmp-src));
+
+	return ret;
+}
+
+void FILESend(SOCKET s, st_http_request *http_request, char* buf)
+{
+	uint32 file_len=0, file_len_tmp=0;
+	uint32 send_len=0, content_len=0;
+	uint32 content = 0;
+	char* name=(char*)http_request->URI;
+	if(strcmp(name,"/"))
+		name++;
+
+	/* Search the specified file in stored binaray html image */
+	if(!search_file_rom((unsigned char *)name, &content, &file_len))
+	{
+		memcpy(buf, ERROR_HTML_PAGE, sizeof(ERROR_HTML_PAGE));
+		TCPSend(s, (uint8*)buf, strlen((char const*)buf));
+	}
+	else
+	{
+		file_len_tmp = file_len;
+		send_len=0;
+		while(file_len_tmp)
+		{
+			if(file_len_tmp>1024)
+			{
+				read_from_flashbuf(content+send_len, (uint8*)buf, 1024);
+
+				// Replace html's system environment value to real value and check size
+				content_len += HTTPSend(NULL, buf, NULL, 1024, 2);
+
+				send_len+=1024;
+				file_len_tmp-=1024;
+			}
+			else
+			{
+				read_from_flashbuf(content+send_len, (uint8*)buf, file_len_tmp);
+				buf[file_len_tmp] = '\0';
+
+				// Replace html's system environment value to real value and check size
+				content_len += HTTPSend(NULL, buf, NULL, file_len_tmp, 2);
+
+				send_len+=file_len_tmp;
+				file_len_tmp-=file_len_tmp;
+			}
+		}
+		make_http_response_head((unsigned char*)buf, http_request->TYPE, content_len);
+		TCPSend(s, (uint8*)buf, strlen((char const*)buf));
+
+		send_len=0;
+		while(file_len)
+		{
+			if(file_len>1024)
+			{
+				read_from_flashbuf(content+send_len, (uint8*)buf, 1024);
+
+				// Replace html's system environment value to real value and send
+				if(HTTPSend(s, buf, NULL, 1024, 0)<0)
+				{
+					return;
+				}
+
+				send_len+=1024;
+				file_len-=1024;
+			}
+			else
+			{
+				read_from_flashbuf(content+send_len, (uint8*)buf, file_len);
+				buf[file_len] = '\0';
+
+				// Replace html's system environment value to real value and send
+				HTTPSend(s, buf, NULL, (uint16)file_len, 0);
+
+				send_len+=file_len;
+				file_len-=file_len;
+			}
+		}
+	}
+}
 
 void HTTPProcessor(SOCKET s, char * buf)
 {
-	char* name;
-	uint8 type;
-	uint32 file_len=0;
-	uint32 send_len=0;
-	uint32 content = 0;
-
 	uint8* http_response;
 	st_http_request *http_request;
 
@@ -120,88 +270,20 @@ void HTTPProcessor(SOCKET s, char * buf)
 		case METHOD_HEAD:
 		case METHOD_GET:
 		case METHOD_POST:
-			//get file name from uri
-			name=(char*)http_request->URI;
-			if(strcmp(name,"/"))
-				name++;
-
-			if (!strcmp(name, "/")) strcpy(name, (char const*)homepage_default);	// If URI is "/", respond by index.htm 
+			if (!strcmp((char*)http_request->URI, "/")) strcpy(http_request->URI, (char const*)homepage_default);	// If URI is "/", respond by index.htm 
 
 			RESTProcessor(http_request);
 
 			//get http type from type
-			find_http_uri_type(&http_request->TYPE, name);	//Check file type (HTML, TEXT, GIF, JPEG are included)
-			type=http_request->TYPE;
+			find_http_uri_type(&http_request->TYPE, http_request->URI);	//Check file type (HTML, TEXT, GIF, JPEG are included)
 
 			if(http_request->TYPE == PTYPE_PL || http_request->TYPE == PTYPE_CGI)
 			{
-				file_len = CGIProcessor(name, tx_buf);
+				CGIProcessor(http_request, (char*)http_response);
 			}
 
-			if(file_len > 0)
-			{
-				make_http_response_head((unsigned char*)http_response, type, file_len);
-				TCPSend(s, http_response, strlen((char const*)http_response));
-				send_len=0;
-				while(file_len)
-				{
-					if(file_len>1024)
-					{
-						if(TCPSend(s, (uint8*)tx_buf+send_len, 1024)<0)
-						{
-							return;
-						}
-						TCPSend(s, (uint8*)tx_buf+send_len, 1024);
-						send_len+=1024;
-						file_len-=1024;
-					}
-					else
-					{
-						TCPSend(s, (uint8*)tx_buf+send_len, file_len);
-						send_len+=file_len;
-						file_len-=file_len;
-					}
-				}
-			}
-			else
-			{
-				/* Search the specified file in stored binaray html image */
-				if(!search_file_rom((unsigned char *)name, &content, &file_len))
-				{
-					memcpy(http_response, ERROR_HTML_PAGE, sizeof(ERROR_HTML_PAGE));
-					TCPSend(s, http_response, strlen((char const*)http_response));
-				}
-				else
-				{
-					make_http_response_head((unsigned char*)http_response, type, file_len);
-					TCPSend(s, http_response, strlen((char const*)http_response));
-					send_len=0;
-					while(file_len)
-					{
-						if(file_len>1024)
-						{
-							read_from_flashbuf(content+send_len, (uint8*)tx_buf, 1024);
-							// Replace html's system environment value to real value
-							//file_len = replace_sys_env_value(http_response,file_len);
+			FILESend(s, http_request, (char*)http_response);
 
-							if(TCPSend(s, (uint8*)tx_buf, 1024)<0)
-							{
-								return;
-							}
-							send_len+=1024;
-							file_len-=1024;
-						}
-						else
-						{
-							read_from_flashbuf(content+send_len, (uint8*)tx_buf, file_len);
-
-							TCPSend(s, (uint8*)tx_buf, file_len);
-							send_len+=file_len;
-							file_len-=file_len;
-						}
-					}
-				}
-			}
 			break;
 
 			default :
@@ -214,41 +296,55 @@ void RESTProcessor(st_http_request *http_request)
 	return;
 }
 
-uint32 CGIProcessor(char* name, char* buf)
+char dest[2048];
+void CGIProcessor(st_http_request *http_request, char* buf)
 {
 	uint32 file_len=0;
-#if 0
-	if(strstr(name,"/widget.pl"))//widget response
-	{
-		memset(buf,0,MAX_URI_SIZE);
-		//                                        devicname      serialnumber                  mac address                  local ip address       local port     gateway ip address         subnet mask          dns server ipaddress    remote host ip         remote port     locating server        loc port       ka interval    ka count        ntp server ip addr         manual input datetime                 nagle         inactivity    reconnection    dhcp         rs232       mode                 baudrate    databit    parity    stopbit     flow      timezon
-		sprintf(buf,"WidgetCallback({\"txt\":[{\"v\":\"%s\"},{\"v\":\"%s\"},{\"v\":\"%02X:%02X:%02X:%02X:%02X:%02X\"},{\"v\":\"%d.%d.%d.%d\"},{\"v\":\"%d\"},{\"v\":\"%d.%d.%d.%d\"},{\"v\":\"%d.%d.%d.%d\"},{\"v\":\"%d.%d.%d.%d\"},{\"v\":\"%d.%d.%d.%d\"},{\"v\":\"%d\"},{\"v\":\"%d.%d.%d.%d\"},{\"v\":\"%d\"},{\"v\":\"%d\"},{\"v\":\"%d\"},{\"v\":\"%d.%d.%d.%d\"},{\"v\":\"%d-%02d-%02d %02d:%02d:%02d\"},{\"v\":\"%d\"},{\"v\":\"%d\"},{\"v\":\"%d\"}],\"dhcp\":%d,\"rs232\":%d,\"mode\":%d,\"sel\":[{\"v\":%d},{\"v\":%d},{\"v\":%d},{\"v\":%d},{\"v\":%d},{\"v\":%d}],\"loc\":%d,\"ka\":%d,\"ntp\":%d,\"pwd\":\"%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X\"});",
-                                           "W7200_EVB", "iMCU7200EVB", 0x00, 0x08, 0xDC, 0x11, 0x22, 0x33, 192, 168, 10, 137, 80, 191, 168, 10, 1, 255, 255, 255, 0, 168, 126, 63, 1, 192, 168, 10, 237, 8080, 
-                                           0,0,0,0,0,0,0,
-                                           0,0,0,0,2013,1,17,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0); 
-
-		file_len=strlen(buf);
-	}
-	else
-	{
-		file_len = 0;
-	}
-#else
 	uint32 content = 0;
+	char *oldtmp=0, *newtmp=0;
+	char sub[32], *subtmp=0;
+	uint16 i;
+	char* name=(char*)http_request->URI;
+	if(strcmp(name,"/"))
+		name++;
 
 	/* Search the specified file in stored binaray html image */
-	if(!search_file_rom((unsigned char *)name, &content, &file_len))
+	if(search_file_rom((unsigned char *)name, &content, &file_len))
 	{
-		file_len = 0;
-	} 
-	else	// if search file sucess 
-	{
+		if(file_len > 1024)// cgi파일은 최대 1024 Bytes 까지 제한
+			return;
 		read_from_flashbuf(content, (uint8*)buf, file_len);
-		*(buf+file_len+1) = '\0';
+		buf[file_len] = '\0';
+                HTTPSend(NULL, buf, dest, file_len, 1);
 
-		// Replace html's system environment value to real value
-		//file_len = replace_sys_env_value(http_response,file_len);
+		oldtmp=dest;
+		newtmp=oldtmp;
+		while((newtmp = strstr(oldtmp, "<?"))){
+			mid(newtmp, "<?", "?>", sub);
+			oldtmp = newtmp + strlen(sub) + 4;
+
+			subtmp = strstr(sub, "SetValue");
+			mid(subtmp, "(", ")", sub);
+
+			for(i=0; i<MAX_CGI_CALLBACK; i++){
+				if(!strcmp(sub, cgi_callback[i].tokken)){
+					char *tmp;
+					uint16 len;
+
+					if(cgi_callback[i].set_func == NULL){
+						i = MAX_CGI_CALLBACK;
+						break;
+					}
+
+					tmp = (char*)get_http_param_value(http_request->param,cgi_callback[i].tokken);
+					len = strlen(tmp);
+
+					cgi_callback[i].set_func(tmp, &len);
+					break;
+				}
+			}
+			if(i==MAX_CGI_CALLBACK){
+			}
+		}
 	}
-#endif
-	return file_len;
 }

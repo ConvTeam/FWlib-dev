@@ -18,7 +18,7 @@ int8 network_init(SOCKET dhcp_sock, pFunc ip_update, pFunc ip_conflict)
 	dhcp_init(dhcp_sock, ip_update, ip_conflict, netinfo.Mac);
 	while(1) {
 		dhcp_run();
-		if(dhcp_get_state() == DHCP_STATE_BOUND) break;		
+		if(dhcp_get_state() == DHCP_STATE_BOUND) break;
 	}
 #else
 	STATIC_IP_SET(netinfo.IP);

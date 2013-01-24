@@ -13,7 +13,7 @@
 extern char  homepage_default[];
 char tx_buf[MAX_URI_SIZE];
 char rx_buf[MAX_URI_SIZE];
-extern uint8 BUFPUB[1024];
+uint8 BUFPUB[1024];
 
 /**
 @brief	replace the specified character in a string with new character
@@ -24,9 +24,9 @@ void replacetochar(
 	char newchar	/**< new character */
 	)
 {
-  int x;
-  for (x = 0; str[x]; x++) 
-    if (str[x] == oldchar) str[x] = newchar;	
+	int x;
+	for (x = 0; str[x]; x++) 
+		if (str[x] == oldchar) str[x] = newchar;	
 }
 /**
 @brief	CONVERT CHAR INTO HEX

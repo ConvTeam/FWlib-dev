@@ -221,6 +221,91 @@ static int8 mn_base64(menu_ctrl mctrl, char *mbuf)
 	return RET_NOK;
 }
 
+
+void inet_addr_(unsigned char* addr,unsigned char *ip)
+{
+	int i;
+	char taddr[30];
+	char * nexttok;
+	char num;
+	strcpy(taddr,(char *)addr);
+
+	nexttok = taddr;
+	for(i = 0; i < 4 ; i++)
+	{
+		nexttok = strtok(nexttok,".");
+		if(nexttok[0] == '0' && nexttok[1] == 'x') num = atoi(nexttok+2);
+		else num = atoi(nexttok);
+
+		ip[i] = num;
+		nexttok = NULL;
+	}
+}
+
+void IP_get_func(char *buf, uint16 *len)
+{
+	wiz_NetInfo netinfo;
+	GetNetInfo(&netinfo);
+	*len = sprintf(buf, "%d.%d.%d.%d", netinfo.IP[0], netinfo.IP[1], netinfo.IP[2], netinfo.IP[3]);
+}
+void IP_set_func(char *buf, uint16 *len)
+{
+	wiz_NetInfo netinfo;
+	GetNetInfo(&netinfo);
+	inet_addr_((uint8*)buf, netinfo.IP);
+	SetNetInfo(&netinfo);
+}
+
+void GW_get_func(char *buf, uint16 *len)
+{
+	wiz_NetInfo netinfo;
+	GetNetInfo(&netinfo);
+	*len = sprintf(buf, "%d.%d.%d.%d", netinfo.Gateway[0], netinfo.Gateway[1], netinfo.Gateway[2], netinfo.Gateway[3]);
+}
+void GW_set_func(char *buf, uint16 *len)
+{
+	wiz_NetInfo netinfo;
+	GetNetInfo(&netinfo);
+	inet_addr_((uint8*)buf, netinfo.Gateway);
+	SetNetInfo(&netinfo);
+}
+
+void SUB_get_func(char *buf, uint16 *len)
+{
+	wiz_NetInfo netinfo;
+	GetNetInfo(&netinfo);
+	*len = sprintf(buf, "%d.%d.%d.%d", netinfo.Subnet[0], netinfo.Subnet[1], netinfo.Subnet[2], netinfo.Subnet[3]);
+}
+void SUB_set_func(char *buf, uint16 *len)
+{
+	wiz_NetInfo netinfo;
+	GetNetInfo(&netinfo);
+	inet_addr_((uint8*)buf, netinfo.Subnet);
+	SetNetInfo(&netinfo);
+}
+
+void DNS_get_func(char *buf, uint16 *len)
+{
+	wiz_NetInfo netinfo;
+	GetNetInfo(&netinfo);
+	*len = sprintf(buf, "%d.%d.%d.%d", netinfo.DNSServerIP[0], netinfo.DNSServerIP[1], netinfo.DNSServerIP[2], netinfo.DNSServerIP[3]);
+}
+void DNS_set_func(char *buf, uint16 *len)
+{
+	wiz_NetInfo netinfo;
+	GetNetInfo(&netinfo);
+	inet_addr_((uint8*)buf, netinfo.DNSServerIP);
+	SetNetInfo(&netinfo);
+}
+
+void MAC_get_func(char *buf, uint16 *len)
+{
+	wiz_NetInfo netinfo;
+	GetNetInfo(&netinfo);
+	*len = sprintf(buf, "%.2X:%.2X:%.2X:%.2X:%.2X:%.2X", netinfo.Mac[0], netinfo.Mac[1], netinfo.Mac[2], netinfo.Mac[3], netinfo.Mac[4], netinfo.Mac[5]);
+}
+
+
 int main(void)
 {
 #define TCP_LISTEN_PORT	5000
@@ -241,7 +326,7 @@ int main(void)
 	}
 
 	printf("\r\n-----------------------------------\r\n");
-	printf("SMTP Client using W5200\r\n");
+	printf("Web Server using W5200\r\n");
 	printf("-----------------------------------\r\n\r\n");
 
 	menu_init();
@@ -255,6 +340,12 @@ int main(void)
 	menu_add("BASE64", root, mn_base64);
 
 	menu_print_tree();
+
+	cgi_callback_add("IP", IP_get_func, IP_set_func);
+	cgi_callback_add("GW", GW_get_func, GW_set_func);
+	cgi_callback_add("SUB", SUB_get_func, SUB_set_func);
+	cgi_callback_add("DNS", DNS_get_func, DNS_set_func);
+	cgi_callback_add("SRC_MAC_ADDRESS", MAC_get_func, NULL);
 
 	while(1) {
 #if (USE_DHCP == VAL_ENABLE)

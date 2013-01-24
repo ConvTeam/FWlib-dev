@@ -18,7 +18,9 @@ Please wait for a while, the configuration page will be loaded automatically in<
 </body>
 </html>
 
-<? SetValue(IPAddr=IP) ?>
-<? SetValue(GWAddr=GW) ?>
-<? SetValue(Subnet=SUB) ?>
-<? SetValue(DNSAddr=DNS) ?>
+<!--
+<? SetValue(IP) ?>
+<? SetValue(GW) ?>
+<? SetValue(SUB) ?>
+<? SetValue(DNS) ?>
+-->
