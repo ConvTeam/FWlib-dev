@@ -2,13 +2,13 @@
 <head>
 <title></title>
 <script language=javascript>
-j=5;
+j=0;
 function func(){
 	document.getElementById('delay').innerText=' '+j+' ';
 	j--;
 	setTimeout('func()',1000);
 	if(j<0)
-		location.href='ipconfig.htm';
+		location.href='led.htm';
 }
 </script>
 </head>
@@ -19,8 +19,6 @@ Please wait for a while, the configuration page will be loaded automatically in<
 </html>
 
 <!--
-<? SetValue(IP) ?>
-<? SetValue(GW) ?>
-<? SetValue(SUB) ?>
-<? SetValue(DNS) ?>
+<? SetValue(LED1) ?>
+<? SetValue(LED2) ?>
 -->

@@ -234,3 +234,24 @@ unsigned char* get_http_param_value(char* uri, char* param_name)
     return 0;
   return ret;		
 }
+
+unsigned char* get_http_uri_name(char* uri)
+{
+	char* uri_name;
+	char* tempURI=(char*)BUFPUB;
+
+	if(!uri) return 0;
+
+	memset (tempURI, 0, MAX_URI_SIZE);	
+	strcpy(tempURI,uri);
+	
+	uri_name = strtok(tempURI," ?");
+	
+	if(strcmp(uri_name,"/")) uri_name++;
+
+#ifdef HTTPD_DEBUG
+	PRINTLN1("uri_name=%s",uri_name);
+#endif	
+
+	return (uint8*)uri_name;
+}

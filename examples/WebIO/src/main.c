@@ -305,6 +305,40 @@ void MAC_get_func(char *buf, uint16 *len)
 	*len = sprintf(buf, "%.2X:%.2X:%.2X:%.2X:%.2X:%.2X", netinfo.Mac[0], netinfo.Mac[1], netinfo.Mac[2], netinfo.Mac[3], netinfo.Mac[4], netinfo.Mac[5]);
 }
 
+void LED1_get_func(char *buf, uint16 *len)
+{
+	if(!GPIO_ReadOutputDataBit(GPIOB, LED3)){	// led on
+		*len = sprintf(buf, "<input name=\"LED1\" type=\"radio\" value=\"ON\" checked>ON<input name=\"LED1\" type=\"radio\" value=\"OFF\">OFF");
+	}else{						// led off
+		*len = sprintf(buf, "<input name=\"LED1\" type=\"radio\" value=\"ON\">ON<input name=\"LED1\" type=\"radio\" value=\"OFF\" checked>OFF");
+	}
+}
+void LED1_set_func(char *buf, uint16 *len)
+{
+	if(!strcmp(buf, "ON")){
+		GPIO_ResetBits(GPIOB, LED3);	// led on
+	}else{
+		GPIO_SetBits(GPIOB, LED3);	// led off
+	}
+}
+
+void LED2_get_func(char *buf, uint16 *len)
+{
+	if(!GPIO_ReadOutputDataBit(GPIOB, LED4)){	// led on
+		*len = sprintf(buf, "<input name=\"LED2\" type=\"radio\" value=\"ON\" checked>ON<input name=\"LED2\" type=\"radio\" value=\"OFF\">OFF");
+	}else{						// led off
+		*len = sprintf(buf, "<input name=\"LED2\" type=\"radio\" value=\"ON\">ON<input name=\"LED2\" type=\"radio\" value=\"OFF\" checked>OFF");
+	}
+}
+void LED2_set_func(char *buf, uint16 *len)
+{
+	if(!strcmp(buf, "ON")){
+		GPIO_ResetBits(GPIOB, LED4);	// led off
+	}else{
+		GPIO_SetBits(GPIOB, LED4);	// led off
+	}
+}
+
 
 int main(void)
 {
@@ -312,7 +346,7 @@ int main(void)
 #define UDP_LISTEN_PORT	5000
 
 	int8 ret, root;
-	uint32 tick = 0;
+//	uint32 tick = 0;
 
 	ret = platform_init();
 	if(ret != RET_OK) {
@@ -347,6 +381,9 @@ int main(void)
 	cgi_callback_add("DNS", DNS_get_func, DNS_set_func);
 	cgi_callback_add("SRC_MAC_ADDRESS", MAC_get_func, NULL);
 
+	cgi_callback_add("LED1", LED1_get_func, LED1_set_func);
+	cgi_callback_add("LED2", LED2_get_func, LED2_set_func);
+
 	while(1) {
 #if (USE_DHCP == VAL_ENABLE)
 		dhcp_run();
@@ -354,10 +391,12 @@ int main(void)
 		menu_run();
 		if(lb_tcp) loopback_tcps(7, (uint16)TCP_LISTEN_PORT);
 		if(lb_udp) loopback_udp(7, (uint16)UDP_LISTEN_PORT);
+/*
 		if(wizpf_tick_elapse(tick) > 1000) {
 			wizpf_led_act(WIZ_LED3, VAL_TOG);
 			tick = wizpf_get_systick();
 		}
+*/
 		WebServer(SOCK_HTTP);
 	}
 

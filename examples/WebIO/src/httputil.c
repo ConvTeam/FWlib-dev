@@ -8,6 +8,7 @@
 #define DEFAULT_HTTP_PORT 80
 extern char rx_buf[MAX_URI_SIZE];
 extern char tx_buf[MAX_URI_SIZE];
+extern uint8 BUFPUB[1024];
 
 uint8 *homepage_default = "/ipconfig.htm";
 
@@ -58,7 +59,10 @@ void WebServer(SOCKET s)
 		HTTPProcessor(s, (char*)rx_buf);	// request is processed
 		memset(rx_buf,0x00,MAX_URI_SIZE);
 
-		TCPClose(s);
+		IINCHIP_WRITE(Sn_CR(s),Sn_CR_DISCON);
+		while( IINCHIP_READ(Sn_CR(s)) ) ;
+
+		//TCPClose(s);
 
 	} else if(ret == ERROR_NOT_TCP_SOCKET){		// Not TCP Socket, It's UDP Socket
 		DBG("UDP Socket Close");
@@ -107,6 +111,7 @@ int32 HTTPSend(SOCKET s, char *src, char *dest, uint16 len, uint8 mode)
 	char *oldtmp=0, *newtmp=0;
 	char sub[32];
 	uint16 i, mlen=0;
+	char *tmp = (char*)BUFPUB;
 
 	oldtmp=src;
 	newtmp=oldtmp;
@@ -124,12 +129,13 @@ int32 HTTPSend(SOCKET s, char *src, char *dest, uint16 len, uint8 mode)
 		mid(newtmp, "<=", ">", sub);// mid 함수의 리턴값에 따라 "<=" 까지만 읽었고, ">" 까지 읽지 않았는지 판단한 후 다음 파일을 읽고나서 처리 하도록 구현해야 함.
 		for(i=0; i<MAX_CGI_CALLBACK; i++){
 			if(!strcmp(sub, cgi_callback[i].tokken)){
-				char tmp[32];
 				if(cgi_callback[i].get_func == NULL){
 					i = MAX_CGI_CALLBACK;
 					break;
 				}
+
 				cgi_callback[i].get_func(tmp, &mlen);
+
 				if(mode == 0)
 					ret += TCPSend(s, (uint8*)tmp, mlen);
 				else if(mode == 1)
@@ -143,8 +149,8 @@ int32 HTTPSend(SOCKET s, char *src, char *dest, uint16 len, uint8 mode)
 			}
 		}
 		if(i==MAX_CGI_CALLBACK){
-			char tmp[32];
 			mlen = sprintf(tmp, "<=%s>", sub);
+
 			if(mode == 0)
 				ret += TCPSend(s, (uint8*)tmp, mlen);
 			else if(mode == 1)
@@ -286,7 +292,7 @@ void HTTPProcessor(SOCKET s, char * buf)
 
 			break;
 
-			default :
+		default:
 			break;
 	}
 }
@@ -296,7 +302,6 @@ void RESTProcessor(st_http_request *http_request)
 	return;
 }
 
-char dest[2048];
 void CGIProcessor(st_http_request *http_request, char* buf)
 {
 	uint32 file_len=0;
@@ -313,11 +318,12 @@ void CGIProcessor(st_http_request *http_request, char* buf)
 	{
 		if(file_len > 1024)// cgi파일은 최대 1024 Bytes 까지 제한
 			return;
+
 		read_from_flashbuf(content, (uint8*)buf, file_len);
 		buf[file_len] = '\0';
-                HTTPSend(NULL, buf, dest, file_len, 1);
+                HTTPSend(NULL, buf, (char*)BUFPUB, file_len, 1);
 
-		oldtmp=dest;
+		oldtmp=(char*)BUFPUB;
 		newtmp=oldtmp;
 		while((newtmp = strstr(oldtmp, "<?"))){
 			mid(newtmp, "<?", "?>", sub);

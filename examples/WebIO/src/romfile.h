@@ -24,7 +24,7 @@ typedef union               		// ROM file directory entry format
 } ROM_DIR;
 
 /*Very important settings*/
-#define FLASH_ROMFILE_START_ADDRESS		0x08008009 //This value is determined by the size of f/w
+#define FLASH_ROMFILE_START_ADDRESS		0x08008281 //This value is determined by the size of f/w
 #define MAX_WRITABLE_FLASH_ADDRESS		0x0801FFFF //STM32F103C8 has 64K flash (0x08000000~0x0801FFFF)
 
 
