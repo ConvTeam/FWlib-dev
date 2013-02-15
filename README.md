@@ -24,7 +24,7 @@ And most of all, thanks to WIZnet's [growing list of contributors](https://githu
 
 ## Contact
 
-please contact [support](email:support@wiznet.co.kr)
+please contact <support@wiznet.co.kr>
 
 ## Creators
 
