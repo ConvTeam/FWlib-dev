@@ -32,7 +32,7 @@ Follow WIZnet on Twitter ([@WIZnet](https://twitter.com/WIZnet))
 <br> [@MikeJeoung](https://twitter.com/MikeJeoung)
 <br> email : 
 
-[RaphaelKwon](http://github.com/RaphaelKwon)  
+[RaphaelKwon](http://github.com/RaphaelKwon)
 <br> [@RaphaelKwon](https://twitter.com/RaphaelKwon)
 <br> email : 
 
