@@ -1,0 +1,1 @@
+allbin.exe WebIO.bin wizweb.rom

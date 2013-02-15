@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <fileChecksum>3035641710</fileChecksum>
+  <configuration>
+    <name>Debug</name>
+    <outputs>
+      <file>$PROJ_DIR$\..\..\..\library\appmod\loopback\loopback.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\appmod\usermenu\usermenu.c</file>
+      <file>$PROJ_DIR$\..\src\httpd.c</file>
+      <file>$PROJ_DIR$\..\src\httputil.c</file>
+      <file>$PROJ_DIR$\..\src\main.c</file>
+      <file>$PROJ_DIR$\..\src\romfile.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\device\w5200\w5200.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\common\util.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\device\sockutil.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\device\w5200\socket.c</file>
+    </outputs>
+  </configuration>
+  <configuration>
+    <name>Release</name>
+    <outputs/>
+    <forcedrebuild>
+      <name>[MULTI_TOOL]</name>
+      <tool>ILINK</tool>
+    </forcedrebuild>
+  </configuration>
+</project>
+
+

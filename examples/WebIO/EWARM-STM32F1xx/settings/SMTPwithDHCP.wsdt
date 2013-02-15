@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Workspace>
+  <ConfigDictionary>
+    
+  <CurrentConfigs><Project>SMTPwithDHCP/Debug</Project></CurrentConfigs></ConfigDictionary>
+  <Desktop>
+    <Static>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>223</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+      </Workspace>
+      <Build>
+        
+        
+        
+        
+      <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>650</ColumnWidth1><ColumnWidth2>182</ColumnWidth2><ColumnWidth3>45</ColumnWidth3></Build>
+    </Static>
+    <Windows>
+      
+      
+    <Wnd0>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-3786-3409</Identity>
+            <TabName>Workspace</TabName>
+            <Factory>Workspace</Factory>
+            <Session>
+              
+            <NodeDict><ExpandedNode>SMTPwithDHCP</ExpandedNode><ExpandedNode>SMTPwithDHCP/Library</ExpandedNode><ExpandedNode>SMTPwithDHCP/Library/appmod</ExpandedNode><ExpandedNode>SMTPwithDHCP/Library/common</ExpandedNode><ExpandedNode>SMTPwithDHCP/Library/device</ExpandedNode><ExpandedNode>SMTPwithDHCP/Library/host</ExpandedNode><ExpandedNode>SMTPwithDHCP/Library/host/stmlib</ExpandedNode><ExpandedNode>SMTPwithDHCP/Library/protocol</ExpandedNode><ExpandedNode>SMTPwithDHCP/User</ExpandedNode><ExpandedNode>SMTPwithDHCP/User/port</ExpandedNode></NodeDict></Session>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd0><Wnd1>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-30490-6593</Identity>
+            <TabName>Build</TabName>
+            <Factory>Build</Factory>
+            <Session/>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd1></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\protocol\DHCP\dhcp.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>308</SelStart><SelEnd>308</SelEnd></Tab><ActiveTab>0</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\device\sockutil.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>196</SelStart><SelEnd>196</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\protocol\DNS\dns.c</Filename><XPos>0</XPos><YPos>346</YPos><SelStart>7486</SelStart><SelEnd>7486</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\appmod\usermenu\usermenu.c</Filename><XPos>0</XPos><YPos>69</YPos><SelStart>1769</SelStart><SelEnd>1769</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\src\wizconfig.h</Filename><XPos>0</XPos><YPos>38</YPos><SelStart>1175</SelStart><SelEnd>1175</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-01292d00><key>iaridepm.enu1</key></Toolbar-01292d00></Sizes></Row0></Top><Left><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>467</Bottom><Right>314</Right><x>-2</x><y>-2</y><xscreen>200</xscreen><yscreen>200</yscreen><sizeHorzCX>211416</sizeHorzCX><sizeHorzCY>281690</sizeHorzCY><sizeVertCX>334038</sizeVertCX><sizeVertCY>660563</sizeVertCY></Rect></Wnd0></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>198</Bottom><Right>948</Right><x>-2</x><y>-2</y><xscreen>950</xscreen><yscreen>200</yscreen><sizeHorzCX>1004228</sizeHorzCX><sizeHorzCY>281690</sizeHorzCY><sizeVertCX>211416</sizeVertCX><sizeVertCY>281690</sizeVertCY></Rect></Wnd1></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Workspace>
+
+
