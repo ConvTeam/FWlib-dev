@@ -28,13 +28,13 @@ Follow WIZnet on Twitter ([@WIZnet](https://twitter.com/WIZnet))
 
 ## Creators
 
-[Mike Jeoung](http://github.com/MikeJeoung) 
-twitter : [@MikeJeoung](https://twitter.com/MikeJeoung)
-email : 
+[Mike Jeoung](http://github.com/MikeJeoung)
+<br> [@MikeJeoung](https://twitter.com/MikeJeoung)
+<br> email : 
 
 [RaphaelKwon](http://github.com/RaphaelKwon)  
-twitter : [@RaphaelKwon](https://twitter.com/RaphaelKwon)
-email : 
+<br> [@RaphaelKwon](https://twitter.com/RaphaelKwon)
+<br> email : 
 
 ## License
 
