@@ -41,50 +41,6 @@ typedef volatile signed long vint32;
 typedef volatile unsigned long vuint32;
 #endif
 
-typedef uint8 			SOCKET;
-
-
-/*	// « ø‰«‘ ??
-#ifndef NULL
-#define NULL		((void *) 0)
-#endif
-
-#ifndef _SIZE_T
-#define _SIZE_T
-typedef unsigned int size_t;
-#endif
-
-typedef enum { false, true } bool;
-
-// bsd
-typedef uint8			u_char;		//< 8-bit value
-typedef uint16			u_short;		//< 16-bit value
-typedef uint16			u_int;		//< 16-bit value
-typedef uint32			u_long;		//< 32-bit value
-*/
-
-typedef struct _wiz_NetInfo
-{
-	uint8 Mac[6];
-	uint8 IP[4];
-	uint8 Subnet[4];
-	uint8 Gateway[4];
-	uint8 DNSServerIP[4];
-	uint8 DHCPEnable;
-} wiz_NetInfo;
-
-typedef void (*pFunc)(void);
-
-typedef union _var_l2c {
-	uint32	l;
-	uint8	c[4];
-}var_l2c;
-
-typedef union _var_i2c {
-	uint16	i;
-	uint8	c[2];
-}var_i2c;
-
 #define RET_FAIL	1
 #define RET_OK		0
 #define RET_NOK		-1
@@ -104,6 +60,9 @@ typedef union _var_i2c {
 
 #define VAL_ENABLE	1
 #define VAL_DISABLE	0
+
+#define VAL_NONE	-1
+#define VAL_INVALID	-2
 
 #define CRLF	"\r\n"
 

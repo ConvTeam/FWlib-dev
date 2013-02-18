@@ -14,7 +14,7 @@
 
 bool lb_tcp = FALSE, lb_udp = FALSE;
 
-static int8 mn_show_network(menu_ctrl mctrl, char *mbuf)
+static int8 mn_show_network(menu_ctrl mctrl, int8 *mbuf)
 {
 	wiz_NetInfo netinfo;
 
@@ -29,7 +29,7 @@ static int8 mn_show_network(menu_ctrl mctrl, char *mbuf)
 	return RET_OK;
 }
 
-static int8 mn_set_network(menu_ctrl mctrl, char *mbuf)
+static int8 mn_set_network(menu_ctrl mctrl, int8 *mbuf)
 {
 #define INPUT_GUIDE(name_v) \
 	printf("Enter new "name_v" [xxx.xxx.xxx.xxx] or 'Enter key' to skip\r\n")
@@ -75,16 +75,16 @@ do {uint8 _tmp[4], _next[4]; \
 	} else if(mctrl == MC_DATA) {
 		switch(stage) {
 		case 0:
-			SET_STAGE("IP Address", "Subnet mask", netinfo.IP, netinfo.Subnet);
+			SET_STAGE("IP Address", "SN mask", netinfo.IP, netinfo.SN);
 			break;
 		case 1:
-			SET_STAGE("Subnet mask", "Gateway Address", netinfo.Subnet, netinfo.Gateway);
+			SET_STAGE("SN mask", "GW Address", netinfo.SN, netinfo.GW);
 			break;
 		case 2:
-			SET_STAGE("Gateway Address", "DNS Address", netinfo.Gateway, netinfo.DNSServerIP);
+			SET_STAGE("GW Address", "DNS Address", netinfo.GW, netinfo.DNS);
 			break;
 		case 3:
-			SET_STAGE("DNS Address", "", netinfo.DNSServerIP, NULL);
+			SET_STAGE("DNS Address", "", netinfo.DNS, NULL);
 			if(stage > 3) return RET_OK;
 			break;
 		}
@@ -98,7 +98,7 @@ do {uint8 _tmp[4], _next[4]; \
 #undef SET_STAGE
 }
 
-static int8 mn_loopback(menu_ctrl mctrl, char *mbuf)
+static int8 mn_loopback(menu_ctrl mctrl, int8 *mbuf)
 {
 	if(mctrl == MC_START) {
 		if(lb_tcp || lb_udp) {
@@ -110,7 +110,7 @@ static int8 mn_loopback(menu_ctrl mctrl, char *mbuf)
 
 	} else if(mctrl == MC_DATA) {
 		if(str_check(isdigit, mbuf) == RET_OK) {
-			uint8 input = atoi(mbuf);
+			uint8 input = atoi((char*)mbuf);
 			if(input == 1) lb_tcp = TRUE;
 			else if(input == 2) lb_udp = TRUE;
 			else printf("Enter the number [1: TCP, 2: UDP]\r\n");
@@ -127,7 +127,7 @@ static int8 mn_loopback(menu_ctrl mctrl, char *mbuf)
 	return RET_NOK;
 }
 
-static int8 mn_set_led(menu_ctrl mctrl, char *mbuf)
+static int8 mn_set_led(menu_ctrl mctrl, int8 *mbuf)
 {
 	if(mctrl == MC_START) {
 		printf("Enter the number [1: ON, 2: OFF]\r\n");
@@ -135,14 +135,14 @@ static int8 mn_set_led(menu_ctrl mctrl, char *mbuf)
 
 	} else if(mctrl == MC_DATA) {
 		if(str_check(isdigit, mbuf) == RET_OK) {
-			uint8 input = atoi(mbuf);
+			uint8 input = atoi((char*)mbuf);
 			if(input == 1) {
-				wizpf_led_act(WIZ_LED3, VAL_ON);
-				wizpf_led_act(WIZ_LED4, VAL_ON);
+				wizpf_led_set(WIZ_LED3, VAL_ON);
+				wizpf_led_set(WIZ_LED4, VAL_ON);
 				printf("LED On\r\n");
 			} else if(input == 2) {
-				wizpf_led_act(WIZ_LED3, VAL_OFF);
-				wizpf_led_act(WIZ_LED4, VAL_OFF);
+				wizpf_led_set(WIZ_LED3, VAL_OFF);
+				wizpf_led_set(WIZ_LED4, VAL_OFF);
 				printf("LED Off\r\n");
 			} else {
 				printf("wrong number(%d) - try again\r\n", input);
@@ -158,7 +158,7 @@ static int8 mn_set_led(menu_ctrl mctrl, char *mbuf)
 	return RET_NOK;
 }
 
-static int8 mn_dns(menu_ctrl mctrl, char *mbuf)
+static int8 mn_dns(menu_ctrl mctrl, int8 *mbuf)
 {
 	uint8 domain_ip[4];
 
@@ -167,7 +167,7 @@ static int8 mn_dns(menu_ctrl mctrl, char *mbuf)
 	} else if(mctrl == MC_END) {
 
 	} else if(mctrl == MC_DATA) {	//printf("start dns\r\n");
-		if(mbuf[0] == 0 || strchr(mbuf, '.') == NULL) {
+		if(mbuf[0] == 0 || strchr((char*)mbuf, '.') == NULL) {
 			printf("wrong input(%s)\r\n", mbuf);
 			return RET_NOK;
 		}
@@ -184,10 +184,10 @@ static int8 mn_dns(menu_ctrl mctrl, char *mbuf)
 	return RET_NOK;
 }
 
-static int8 mn_base64(menu_ctrl mctrl, char *mbuf)
+static int8 mn_base64(menu_ctrl mctrl, int8 *mbuf)
 {
 	static uint8 stage = 0;
-	static char encodedText[256];
+	static int8 encodedText[256];
 
 	if(mctrl == MC_START) {
 		printf("Enter the number [1: Encode, 2: Decode]\r\n");
@@ -206,12 +206,12 @@ static int8 mn_base64(menu_ctrl mctrl, char *mbuf)
 			break;
 		case 1:
 			memset(encodedText, 0, sizeof(encodedText));
-			base64_encode(mbuf, strlen(mbuf)+1, encodedText);
+			base64_encode(mbuf, strlen((char*)mbuf)+1, encodedText);
 			printf("Encoded Text:\r\n%s\r\n", encodedText);
 			return RET_OK;
 		case 2:
 			memset(encodedText, 0, sizeof(encodedText));
-			base64_decode(mbuf, (void *)encodedText, strlen(mbuf));
+			base64_decode(mbuf, (void *)encodedText, strlen((char*)mbuf));
 			printf("Decoded Text:\r\n%s\r\n", encodedText);
 			return RET_OK;
 		default: printf("wrong stage(%d)\r\n", stage);
@@ -221,20 +221,20 @@ static int8 mn_base64(menu_ctrl mctrl, char *mbuf)
 	return RET_NOK;
 }
 
-static int8 mn_email(menu_ctrl mctrl, char *mbuf)
+static int8 mn_email(menu_ctrl mctrl, int8 *mbuf)
 {
 #define SET_STAGE(next_name_v, cur_var_v) \
 { \
-	if(strlen(mbuf) > 31) printf("buf overflow - try again\r\n"); \
+	if(strlen((char*)mbuf) > 31) printf("buf overflow - try again\r\n"); \
 	else { \
-		strcpy(cur_var_v, mbuf); \
+		strcpy((char*)cur_var_v, (char*)mbuf); \
 		printf("Type a "next_name_v"\r\n"); \
 		stage++; \
 	} \
 }
 	uint8 ret;
 	static uint8 stage = 0, ip[4];
-	static char sender[32], passwd[32], recipient[32], subject[32];
+	static int8 sender[32], passwd[32], recipient[32], subject[32];
 
 	if(mctrl == MC_START) {
 		printf("Enter Mail Server Address [Domain Name/IP Address]\r\n");
@@ -285,13 +285,14 @@ static int8 mn_email(menu_ctrl mctrl, char *mbuf)
 #undef SET_STAGE
 }
 
-int main(void)
+int32 main(void)
 {
 #define TCP_LISTEN_PORT	5000
 #define UDP_LISTEN_PORT	5000
 
 	int8 ret, root;
-	uint32 tick = 0;
+	uint32 dhcp_renew, dhcp_rebind, dhcp_time;
+	uint32 dhcp_tick, led_tick;
 
 	ret = platform_init();
 	if(ret != RET_OK) {
@@ -308,6 +309,14 @@ int main(void)
 	printf("SMTP Client using W5200\r\n");
 	printf("-----------------------------------\r\n\r\n");
 
+	Delay_tick(2000);
+	do {
+		ret = dhcp_manual(DHCP_ACT_START, NULL, &dhcp_renew, &dhcp_rebind);
+	} while(ret != RET_OK);
+	dhcp_renew = wizpf_tick_conv(FALSE, dhcp_renew);
+	dhcp_rebind = wizpf_tick_conv(FALSE, dhcp_rebind);
+	dhcp_time = dhcp_renew;
+
 	menu_init();
 	root = menu_add("Network setting", 0, NULL);
 	menu_add("Show", root, mn_show_network);
@@ -321,22 +330,35 @@ int main(void)
 
 	menu_print_tree();
 
+	dhcp_tick = led_tick = wizpf_get_systick();
+
 	while(1) {
-#if (USE_DHCP == VAL_ENABLE)
-		dhcp_run();
-#endif
+		if(wizpf_tick_elapse(dhcp_tick) > dhcp_time) {
+			if(dhcp_time==dhcp_renew) DBG("start renew"); else DBG("start rebind");
+			ret = dhcp_manual(dhcp_time==dhcp_renew? DHCP_ACT_RENEW: DHCP_ACT_REBIND, 
+				NULL, &dhcp_renew, &dhcp_rebind);
+			dhcp_tick = wizpf_get_systick();
+			if(ret == RET_OK) {	// renew success
+				dhcp_renew = wizpf_tick_conv(FALSE, dhcp_renew);
+				dhcp_rebind = wizpf_tick_conv(FALSE, dhcp_rebind);
+				dhcp_time = dhcp_renew;
+			} else {
+				if(dhcp_time == dhcp_renew) dhcp_time = dhcp_rebind; // renew fail, so try rebind
+				else dhcp_time = 60000; // retry after 1 min
+			}
+		}
 		menu_run();
 		if(lb_tcp) loopback_tcps(7, (uint16)TCP_LISTEN_PORT);
 		if(lb_udp) loopback_udp(7, (uint16)UDP_LISTEN_PORT);
-		if(wizpf_tick_elapse(tick) > 1000) {
-			wizpf_led_act(WIZ_LED3, VAL_TOG);
-			tick = wizpf_get_systick();
+		if(wizpf_tick_elapse(led_tick) > 1000) {
+			wizpf_led_set(WIZ_LED3, VAL_TOG);
+			led_tick = wizpf_get_systick();
 		}
 	}
 
 FAIL_TRAP:
-	wizpf_led_trap(10);
-
+	wizpf_led_trap(1);
+	return 0;
 }
 
 

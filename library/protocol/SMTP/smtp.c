@@ -3,7 +3,7 @@
 #include "protocol/SMTP/smtp.h"
 
 
-static char buf[255];
+static int8 buf[255];
 static uint16 client_port = 2000;
 
 /*
@@ -48,7 +48,7 @@ void send_receive(uint8 s, uint8 * data, uint8 * pSip)
 
 	DBGA("Send------>%s", data);
 
-	n = sprintf(buf, "%s\r\n", data);
+	n = sprintf((char*)buf, "%s\r\n", data);
 	while(TCPSend(s, (void *)buf, n) <= 0);
 
 	//recv
@@ -74,7 +74,8 @@ void send_receive(uint8 s, uint8 * data, uint8 * pSip)
 * Note        :
 ********************************************************************************
 */
-uint8 send_mail(uint8 s, uint8 * sender, uint8 * passwd, uint8 * recipient, uint8 * subject, uint8 * content, uint8 * pSip)
+uint8 send_mail(uint8 s, uint8 *sender, uint8 *passwd, 
+	uint8 *recipient, uint8 *subject, uint8 *content, uint8 *pSip)
 {
 	uint8 MIME[256]={'\0'}, encode[16]={'\0'}, ret=1;
 	int16 n;
@@ -87,15 +88,15 @@ uint8 send_mail(uint8 s, uint8 * sender, uint8 * passwd, uint8 * recipient, uint
 			while((n = TCPRecv(s, (void *)buf, 255)) <= 0);
 			buf[n]='\0';
 			DBGA("Receive(%d)------>%s", n, buf);
-			if(strncmp(buf, "220", 3)) {
+			if(strncmp((char*)buf, "220", 3)) {
 				ERR("This is not SMTP Server");
 				ret = 0;
 				break;
 			}
 
 			// Send HELO
-			send_receive(s, "EHLO", pSip);
-			if(strncmp(buf, "250", 3)) {
+			send_receive(s, "HELO", pSip);
+			if(strncmp((char*)buf, "250", 3)) {
 				ERR("Fail HELO");
 				ret = 0;
 				break;
@@ -103,7 +104,7 @@ uint8 send_mail(uint8 s, uint8 * sender, uint8 * passwd, uint8 * recipient, uint
 
 			// Send AUTH LOGIN
 			send_receive(s, "AUTH LOGIN", pSip);
-			if(strncmp(buf, "334", 3)) {
+			if(strncmp((char*)buf, "334", 3)) {
 				ERR("Fail AUTH LOGIN");
 				ret = 0;
 				break;
@@ -112,7 +113,7 @@ uint8 send_mail(uint8 s, uint8 * sender, uint8 * passwd, uint8 * recipient, uint
 			// Send ID
 			base64_encode((void *)sender, strlen((void *)sender)+1, (void *)encode);
 			send_receive(s, encode, pSip);
-			if(strncmp(buf, "334", 3)) {
+			if(strncmp((char*)buf, "334", 3)) {
 				ERR("Fail ID");
 				ret = 0;
 				break;
@@ -121,25 +122,25 @@ uint8 send_mail(uint8 s, uint8 * sender, uint8 * passwd, uint8 * recipient, uint
 			// Send PW
 			base64_encode((void *)passwd, strlen((void *)passwd)+1, (void *)encode);
 			send_receive(s, encode, pSip);
-			if(strncmp(buf, "235", 3)) {
+			if(strncmp((char*)buf, "235", 3)) {
 				ERR("Fail PW");
 				ret = 0;
 				break;
 			}
 
 			// Send MAIL FROM
-			sprintf(buf, "MAIL FROM:%s", sender);
+			sprintf((char*)buf, "MAIL FROM:%s", sender);
 			send_receive(s, (void *)buf, pSip);
-			if(strncmp(buf, "250", 3)) {
+			if(strncmp((char*)buf, "250", 3)) {
 				ERR("Fail MAIL FROM");
 				ret = 0;
 				break;
 			}
 
 			// Send RCPT
-			sprintf(buf, "RCPT TO:%s", recipient);
+			sprintf((char*)buf, "RCPT TO:%s", recipient);
 			send_receive(s, (void *)buf, pSip);
-			if(strncmp(buf, "250", 3)) {
+			if(strncmp((char*)buf, "250", 3)) {
 				ERR("Fail RCPT TO");
 				ret = 0;
 				break;
@@ -147,7 +148,7 @@ uint8 send_mail(uint8 s, uint8 * sender, uint8 * passwd, uint8 * recipient, uint
 
 			// Send DATA
 			send_receive(s, "DATA", pSip);
-			if(strncmp(buf, "354", 3)) {
+			if(strncmp((char*)buf, "354", 3)) {
 				ERR("Fail DATA");
 				ret = 0;
 				break;
@@ -156,7 +157,7 @@ uint8 send_mail(uint8 s, uint8 * sender, uint8 * passwd, uint8 * recipient, uint
 			// Send content
 			MakeMIME(MIME, sender, recipient, subject, content);
 			send_receive(s, MIME, pSip);
-			if(strncmp(buf, "250", 3)) {
+			if(strncmp((char*)buf, "250", 3)) {
 				ERR("Fail Send Content");
 				ret = 0;
 				break;

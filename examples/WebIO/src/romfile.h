@@ -2,6 +2,8 @@
 #ifndef	__ROMEFILE_H__
 #define	__ROMEFILE_H__
 
+#include "common/common.h"
+
 #define ROM_FNAMELEN    20  /* Maximum filename size */
 #define FILE_HEAD_SIZE			(ROM_FNAMELEN +11)
 
@@ -24,7 +26,7 @@ typedef union               		// ROM file directory entry format
 } ROM_DIR;
 
 /*Very important settings*/
-#define FLASH_ROMFILE_START_ADDRESS		0x08008285 //This value is determined by the size of f/w
+#define FLASH_ROMFILE_START_ADDRESS		0x0800B897 //This value is determined by the size of f/w
 #define MAX_WRITABLE_FLASH_ADDRESS		0x0801FFFF //STM32F103C8 has 64K flash (0x08000000~0x0801FFFF)
 
 
