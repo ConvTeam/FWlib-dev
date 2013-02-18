@@ -633,7 +633,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>E:\_user\Desktop\FW&#xB77C;&#xC774;&#xBe0C;&#xB7eC;&#xB9AC;\WIZLib-0.11\examples\SMTPwithDHCP\EWARM-STM32F1xx\stm32f10x_flash_128k.icf</state>
+          <state>E:\_user\Desktop\FW&#xB77C;&#xC774;&#xBe0C;&#xB7eC;&#xB9AC;\WIZLib-work\examples\SMTPwithDHCP\EWARM-STM32F1xx\stm32f10x_flash_128k.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>

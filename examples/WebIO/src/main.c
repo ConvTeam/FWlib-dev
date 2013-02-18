@@ -3,9 +3,9 @@
 
 #include "protocol/DNS/dns.h"
 #include "protocol/DHCP/dhcp.h"
+#include "protocol/HTTP/httputil.h"
 #include "appmod/loopback/loopback.h"
 #include "appmod/usermenu/usermenu.h"
-#include "httputil.h"
 
 #define SOCK_DHCP		0	// UDP
 #define SOCK_DNS		1	// UDP
@@ -14,7 +14,7 @@
 
 bool lb_tcp = FALSE, lb_udp = FALSE;
 
-static int8 mn_show_network(menu_ctrl mctrl, char *mbuf)
+static int8 mn_show_network(menu_ctrl mctrl, int8 *mbuf)
 {
 	wiz_NetInfo netinfo;
 
@@ -29,7 +29,7 @@ static int8 mn_show_network(menu_ctrl mctrl, char *mbuf)
 	return RET_OK;
 }
 
-static int8 mn_set_network(menu_ctrl mctrl, char *mbuf)
+static int8 mn_set_network(menu_ctrl mctrl, int8 *mbuf)
 {
 #define INPUT_GUIDE(name_v) \
 	printf("Enter new "name_v" [xxx.xxx.xxx.xxx] or 'Enter key' to skip\r\n")
@@ -48,7 +48,7 @@ do {uint8 _tmp[4], _next[4]; \
 		stage++; \
 		if(next_addr_v) NEXT_GUIDE(next_name_v, _next); \
 	} else { \
-		ret = ip_check(mbuf, _tmp); \
+		ret = ip_check((int8*)mbuf, _tmp); \
 		if(ret == RET_OK) { \
 			memcpy(cur_addr_v, _tmp, 4); \
 			stage++; \
@@ -75,16 +75,16 @@ do {uint8 _tmp[4], _next[4]; \
 	} else if(mctrl == MC_DATA) {
 		switch(stage) {
 		case 0:
-			SET_STAGE("IP Address", "Subnet mask", netinfo.IP, netinfo.Subnet);
+			SET_STAGE("IP Address", "Subnet mask", netinfo.IP, netinfo.SN);
 			break;
 		case 1:
-			SET_STAGE("Subnet mask", "Gateway Address", netinfo.Subnet, netinfo.Gateway);
+			SET_STAGE("Subnet mask", "Gateway Address", netinfo.SN, netinfo.GW);
 			break;
 		case 2:
-			SET_STAGE("Gateway Address", "DNS Address", netinfo.Gateway, netinfo.DNSServerIP);
+			SET_STAGE("Gateway Address", "DNS Address", netinfo.GW, netinfo.DNS);
 			break;
 		case 3:
-			SET_STAGE("DNS Address", "", netinfo.DNSServerIP, NULL);
+			SET_STAGE("DNS Address", "", netinfo.DNS, NULL);
 			if(stage > 3) return RET_OK;
 			break;
 		}
@@ -98,7 +98,7 @@ do {uint8 _tmp[4], _next[4]; \
 #undef SET_STAGE
 }
 
-static int8 mn_loopback(menu_ctrl mctrl, char *mbuf)
+static int8 mn_loopback(menu_ctrl mctrl, int8 *mbuf)
 {
 	if(mctrl == MC_START) {
 		if(lb_tcp || lb_udp) {
@@ -109,8 +109,8 @@ static int8 mn_loopback(menu_ctrl mctrl, char *mbuf)
 	} else if(mctrl == MC_END) {
 
 	} else if(mctrl == MC_DATA) {
-		if(str_check(isdigit, mbuf) == RET_OK) {
-			uint8 input = atoi(mbuf);
+		if(str_check(isdigit, (int8*)mbuf) == RET_OK) {
+			uint8 input = atoi((char*)mbuf);
 			if(input == 1) lb_tcp = TRUE;
 			else if(input == 2) lb_udp = TRUE;
 			else printf("Enter the number [1: TCP, 2: UDP]\r\n");
@@ -127,22 +127,22 @@ static int8 mn_loopback(menu_ctrl mctrl, char *mbuf)
 	return RET_NOK;
 }
 
-static int8 mn_set_led(menu_ctrl mctrl, char *mbuf)
+static int8 mn_set_led(menu_ctrl mctrl, int8 *mbuf)
 {
 	if(mctrl == MC_START) {
 		printf("Enter the number [1: ON, 2: OFF]\r\n");
 	} else if(mctrl == MC_END) {
 
 	} else if(mctrl == MC_DATA) {
-		if(str_check(isdigit, mbuf) == RET_OK) {
-			uint8 input = atoi(mbuf);
+		if(str_check(isdigit, (int8*)mbuf) == RET_OK) {
+			uint8 input = atoi((char*)mbuf);
 			if(input == 1) {
-				wizpf_led_act(WIZ_LED3, VAL_ON);
-				wizpf_led_act(WIZ_LED4, VAL_ON);
+				wizpf_led_set(WIZ_LED3, VAL_ON);
+				wizpf_led_set(WIZ_LED4, VAL_ON);
 				printf("LED On\r\n");
 			} else if(input == 2) {
-				wizpf_led_act(WIZ_LED3, VAL_OFF);
-				wizpf_led_act(WIZ_LED4, VAL_OFF);
+				wizpf_led_set(WIZ_LED3, VAL_OFF);
+				wizpf_led_set(WIZ_LED4, VAL_OFF);
 				printf("LED Off\r\n");
 			} else {
 				printf("wrong number(%d) - try again\r\n", input);
@@ -158,7 +158,7 @@ static int8 mn_set_led(menu_ctrl mctrl, char *mbuf)
 	return RET_NOK;
 }
 
-static int8 mn_dns(menu_ctrl mctrl, char *mbuf)
+static int8 mn_dns(menu_ctrl mctrl, int8 *mbuf)
 {
 	uint8 domain_ip[4];
 
@@ -167,7 +167,7 @@ static int8 mn_dns(menu_ctrl mctrl, char *mbuf)
 	} else if(mctrl == MC_END) {
 
 	} else if(mctrl == MC_DATA) {	//printf("start dns\r\n");
-		if(mbuf[0] == 0 || strchr(mbuf, '.') == NULL) {
+		if(mbuf[0] == 0 || strchr((char*)mbuf, '.') == NULL) {
 			printf("wrong input(%s)\r\n", mbuf);
 			return RET_NOK;
 		}
@@ -184,7 +184,7 @@ static int8 mn_dns(menu_ctrl mctrl, char *mbuf)
 	return RET_NOK;
 }
 
-static int8 mn_base64(menu_ctrl mctrl, char *mbuf)
+static int8 mn_base64(menu_ctrl mctrl, int8 *mbuf)
 {
 	static uint8 stage = 0;
 	static char encodedText[256];
@@ -206,12 +206,12 @@ static int8 mn_base64(menu_ctrl mctrl, char *mbuf)
 			break;
 		case 1:
 			memset(encodedText, 0, sizeof(encodedText));
-			base64_encode(mbuf, strlen(mbuf)+1, encodedText);
+			base64_encode((int8*)mbuf, strlen((char*)mbuf)+1, (int8*)encodedText);
 			printf("Encoded Text:\r\n%s\r\n", encodedText);
 			return RET_OK;
 		case 2:
 			memset(encodedText, 0, sizeof(encodedText));
-			base64_decode(mbuf, (void *)encodedText, strlen(mbuf));
+			base64_decode((int8*)mbuf, (void *)encodedText, strlen((char*)mbuf));
 			printf("Decoded Text:\r\n%s\r\n", encodedText);
 			return RET_OK;
 		default: printf("wrong stage(%d)\r\n", stage);
@@ -260,13 +260,13 @@ void GW_get_func(char *buf, uint16 *len)
 {
 	wiz_NetInfo netinfo;
 	GetNetInfo(&netinfo);
-	*len = sprintf(buf, "%d.%d.%d.%d", netinfo.Gateway[0], netinfo.Gateway[1], netinfo.Gateway[2], netinfo.Gateway[3]);
+	*len = sprintf(buf, "%d.%d.%d.%d", netinfo.GW[0], netinfo.GW[1], netinfo.GW[2], netinfo.GW[3]);
 }
 void GW_set_func(char *buf, uint16 *len)
 {
 	wiz_NetInfo netinfo;
 	GetNetInfo(&netinfo);
-	inet_addr_((uint8*)buf, netinfo.Gateway);
+	inet_addr_((uint8*)buf, netinfo.GW);
 	SetNetInfo(&netinfo);
 }
 
@@ -274,13 +274,13 @@ void SUB_get_func(char *buf, uint16 *len)
 {
 	wiz_NetInfo netinfo;
 	GetNetInfo(&netinfo);
-	*len = sprintf(buf, "%d.%d.%d.%d", netinfo.Subnet[0], netinfo.Subnet[1], netinfo.Subnet[2], netinfo.Subnet[3]);
+	*len = sprintf(buf, "%d.%d.%d.%d", netinfo.SN[0], netinfo.SN[1], netinfo.SN[2], netinfo.SN[3]);
 }
 void SUB_set_func(char *buf, uint16 *len)
 {
 	wiz_NetInfo netinfo;
 	GetNetInfo(&netinfo);
-	inet_addr_((uint8*)buf, netinfo.Subnet);
+	inet_addr_((uint8*)buf, netinfo.SN);
 	SetNetInfo(&netinfo);
 }
 
@@ -288,13 +288,13 @@ void DNS_get_func(char *buf, uint16 *len)
 {
 	wiz_NetInfo netinfo;
 	GetNetInfo(&netinfo);
-	*len = sprintf(buf, "%d.%d.%d.%d", netinfo.DNSServerIP[0], netinfo.DNSServerIP[1], netinfo.DNSServerIP[2], netinfo.DNSServerIP[3]);
+	*len = sprintf(buf, "%d.%d.%d.%d", netinfo.DNS[0], netinfo.DNS[1], netinfo.DNS[2], netinfo.DNS[3]);
 }
 void DNS_set_func(char *buf, uint16 *len)
 {
 	wiz_NetInfo netinfo;
 	GetNetInfo(&netinfo);
-	inet_addr_((uint8*)buf, netinfo.DNSServerIP);
+	inet_addr_((uint8*)buf, netinfo.DNS);
 	SetNetInfo(&netinfo);
 }
 
@@ -307,7 +307,7 @@ void MAC_get_func(char *buf, uint16 *len)
 
 void LED1_get_func(char *buf, uint16 *len)
 {
-	if(!GPIO_ReadOutputDataBit(GPIOB, LED3)){	// led on
+	if(wizpf_led_get(WIZ_LED3) == VAL_ON){	// led on
 		*len = sprintf(buf, "<input name=\"LED1\" type=\"radio\" value=\"ON\" checked>ON<input name=\"LED1\" type=\"radio\" value=\"OFF\">OFF");
 	}else{						// led off
 		*len = sprintf(buf, "<input name=\"LED1\" type=\"radio\" value=\"ON\">ON<input name=\"LED1\" type=\"radio\" value=\"OFF\" checked>OFF");
@@ -316,15 +316,15 @@ void LED1_get_func(char *buf, uint16 *len)
 void LED1_set_func(char *buf, uint16 *len)
 {
 	if(!strcmp(buf, "ON")){
-		GPIO_ResetBits(GPIOB, LED3);	// led on
+		wizpf_led_set(WIZ_LED3, VAL_ON);
 	}else{
-		GPIO_SetBits(GPIOB, LED3);	// led off
+		wizpf_led_set(WIZ_LED3, VAL_OFF);
 	}
 }
 
 void LED2_get_func(char *buf, uint16 *len)
 {
-	if(!GPIO_ReadOutputDataBit(GPIOB, LED4)){	// led on
+	if(wizpf_led_get(WIZ_LED4) == VAL_ON){	// led on
 		*len = sprintf(buf, "<input name=\"LED2\" type=\"radio\" value=\"ON\" checked>ON<input name=\"LED2\" type=\"radio\" value=\"OFF\">OFF");
 	}else{						// led off
 		*len = sprintf(buf, "<input name=\"LED2\" type=\"radio\" value=\"ON\">ON<input name=\"LED2\" type=\"radio\" value=\"OFF\" checked>OFF");
@@ -333,9 +333,9 @@ void LED2_get_func(char *buf, uint16 *len)
 void LED2_set_func(char *buf, uint16 *len)
 {
 	if(!strcmp(buf, "ON")){
-		GPIO_ResetBits(GPIOB, LED4);	// led off
+		wizpf_led_set(WIZ_LED4, VAL_ON);
 	}else{
-		GPIO_SetBits(GPIOB, LED4);	// led off
+		wizpf_led_set(WIZ_LED4, VAL_OFF);
 	}
 }
 
@@ -384,16 +384,19 @@ int main(void)
 	cgi_callback_add("LED1", LED1_get_func, LED1_set_func);
 	cgi_callback_add("LED2", LED2_get_func, LED2_set_func);
 
-	while(1) {
+	Delay_tick(2000);	// prevent first send fail
 #if (USE_DHCP == VAL_ENABLE)
-		dhcp_run();
+	dhcp_alarm_start(NULL);
 #endif
+
+	while(1) {
+		alarm_run();
 		menu_run();
 		if(lb_tcp) loopback_tcps(7, (uint16)TCP_LISTEN_PORT);
 		if(lb_udp) loopback_udp(7, (uint16)UDP_LISTEN_PORT);
 /*
 		if(wizpf_tick_elapse(tick) > 1000) {
-			wizpf_led_act(WIZ_LED3, VAL_TOG);
+			wizpf_led_set(WIZ_LED3, VAL_TOG);
 			tick = wizpf_get_systick();
 		}
 */
@@ -401,8 +404,7 @@ int main(void)
 	}
 
 FAIL_TRAP:
-	wizpf_led_trap(10);
-
+	wizpf_led_trap(1);
 }
 
 

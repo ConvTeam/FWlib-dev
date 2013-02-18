@@ -6,7 +6,7 @@
 struct menu_item {
 	//uint8 index;
 	int8 parent;
-	char *desc;
+	int8 *desc;
 	menu_func mfunc;
 };
 
@@ -25,10 +25,10 @@ void menu_init(void)
 	mi.cur = 0;
 }
 
-int8 menu_add(char *desc, int8 parent, menu_func mfunc)
+int8 menu_add(int8 *desc, int8 parent, menu_func mfunc)
 {
 	// null 함수인 parent에 추가 하면 하위메뉴가 생김, parent가 0이면 최상위임, 그러므로 index는 1부터 시작임
-	int len;
+	int32 len;
 
 	if(desc == NULL) {
 		ERR("description string is NULL");
@@ -45,9 +45,13 @@ int8 menu_add(char *desc, int8 parent, menu_func mfunc)
 	}
 
 	//mtree[mi.total].index = mi.total+1;
-	len = strlen(desc);
+	len = strlen((char*)desc);
 	mtree[mi.total].desc = malloc(len+1);
-	strcpy(mtree[mi.total].desc, desc);
+	if(mtree[mi.total].desc == NULL) {
+		ERRA("malloc fail - size(%d)", len+1);
+		return RET_NOK;
+	}
+	strcpy((char*)mtree[mi.total].desc, (char*)desc);
 	//mtree[mi.total].desc = strdup(desc);
 	mtree[mi.total].parent = parent;
 	mtree[mi.total].mfunc = mfunc;
@@ -73,13 +77,13 @@ void menu_print_tree(void)
 void menu_run(void)
 {
 	int8 recv_char;
-	static char buf[CMD_BUF_SIZE];
+	static int8 buf[CMD_BUF_SIZE];
 	bool disp = FALSE;
 	int8 ret;
 	uint8 i, cnt, tmp8;
 	static uint8 depth = 1, buf_len = 0;
 
-	recv_char = (char)getchar_nonblk();
+	recv_char = (int8)getchar_nonblk();
 	if(recv_char == RET_NOK) return; // 입력 값 없는 경우	printf("RECV: 0x%x\r\n", recv_char);
 
 	//PUTCHAR('\n');PUTCHAR('-');PUTCHAR('-');PUTCHAR('-');PUTCHAR('-');PUTCHAR('-');PUTCHAR('-');PUTCHAR('\n');
@@ -88,6 +92,7 @@ void menu_run(void)
 //printf("ctrl\r\n");
 		switch(recv_char) {
 		case 0x0a:
+			break;
 		case 0x0d:			//printf("<ENT>\r\n");
 			printf("\r\n");
 			break;
@@ -128,14 +133,14 @@ void menu_run(void)
 		printf("input buffer stuffed\r\n");
 	}
 
-	if(recv_char != 0x0a && recv_char != 0x0d && recv_char != 0x7f) return;		//LOGA("Command: %s", buf);
+	if(recv_char != 0x0d && recv_char != 0x7f) return;		//LOGA("Command: %s", buf);
 
 //printf("\r\n~~~~~\r\n");
 	if(mi.cur == 0 || mtree[mi.cur-1].mfunc == NULL) {	// 루트거나 NULL Func(폴더)인 경우
 		if(buf_len != 0) {
 			if(str_check(isdigit, buf) == RET_OK) {
 //printf("----------digit(%d)\r\n", atoi(buf));
-				tmp8 = atoi(buf);
+				tmp8 = atoi((char*)buf);
 				for(i=0; i<mi.total; i++) {
 					if(mi.cur == mtree[i].parent) {
 //printf("----------i(%d)\r\n", i);	
@@ -168,7 +173,15 @@ void menu_run(void)
 			for(i=0, cnt=0; i<mi.total; i++) {
 				if(mi.cur == mtree[i].parent) {
 					cnt++;
-					printf("%c%2d: %s\r\n", mtree[i].mfunc==NULL?'+':' ', cnt, mtree[i].desc);
+					if(mtree[i].mfunc == NULL) {
+						if(cnt < 10) 
+							 printf(" +%d: %s\r\n", cnt, mtree[i].desc);
+						else printf("+%2d: %s\r\n", cnt, mtree[i].desc);
+					} else {
+						if(cnt < 10) 
+							 printf("  %d: %s\r\n", cnt, mtree[i].desc);
+						else printf(" %2d: %s\r\n", cnt, mtree[i].desc);
+					}
 				}
 			}
 			printf("=========================================\r\n");

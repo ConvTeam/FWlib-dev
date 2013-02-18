@@ -61,7 +61,7 @@ struct dhdr
 	uint16 arcount;	/* Additional record count */
 };
 
-uint8 * put16(uint8 * s, uint16 i)
+uint8 * put16(uint8 *s, uint16 i)
 {
 	*s++ = i >> 8;
 	*s++ = i;
@@ -69,7 +69,7 @@ uint8 * put16(uint8 * s, uint16 i)
 	return s;
 }
 
-uint16 get16(uint8 * s)
+uint16 get16(uint8 *s)
 {
 	uint16 i;
 
@@ -79,12 +79,12 @@ uint16 get16(uint8 * s)
 	return i;
 }
 
-int16 dns_makequery(uint16 op, char * name, uint8 * buf, uint16 len)
+int16 dns_makequery(uint16 op, int8 *name, uint8 *buf, uint16 len)
 {
 	uint8 *cp;
-	char *cp1;
-	char sname[MAX_DNS_BUF_SIZE];
-	char *dname;
+	int8 *cp1;
+	int8 sname[MAX_DNS_BUF_SIZE];
+	int8 *dname;
 	uint16 p;
 	uint16 dlen;
 	static uint16 MSG_ID = 0x1122;
@@ -100,13 +100,13 @@ int16 dns_makequery(uint16 op, char * name, uint8 * buf, uint16 len)
 	cp = put16(cp, 0);
 	cp = put16(cp, 0);
 
-	strcpy(sname, name);
+	strcpy((char*)sname, (char*)name);
 	dname = sname;
-	dlen = strlen(dname);
+	dlen = strlen((char*)dname);
 	for (;;)
 	{
 		/* Look for next dot */
-		cp1 = strchr(dname, '.');
+		cp1 = (int8*)strchr((char*)dname, '.');
 
 		if (cp1 != NULL) len = cp1 - dname;	/* More to come */
 		else len = dlen;			/* Last component */
@@ -115,7 +115,7 @@ int16 dns_makequery(uint16 op, char * name, uint8 * buf, uint16 len)
 		if (len == 0) break;
 
 		/* Copy component up to (but not including) dot */
-		strncpy((char *)cp, dname, len);
+		strncpy((char*)cp, (char*)dname, len);
 		cp += len;
 		if (cp1 == NULL)
 		{
@@ -132,13 +132,13 @@ int16 dns_makequery(uint16 op, char * name, uint8 * buf, uint16 len)
 	return ((int16)(cp - buf));
 }
 
-int parse_name(uint8 * msg, uint8 * compressed, char * buf, int16 len)
+int32 parse_name(uint8 *msg, uint8 *compressed, int8 *buf, int16 len)
 {
 	uint16 slen;		/* Length of current segment */
 	uint8 * cp;
-	int clen = 0;		/* Total length of compressed name */
-	int indirect = 0;	/* Set if indirection encountered */
-	int nseg = 0;		/* Total number of segments in name */
+	int32 clen = 0;		/* Total length of compressed name */
+	int32 indirect = 0;	/* Set if indirection encountered */
+	int32 nseg = 0;		/* Total number of segments in name */
 
 	cp = compressed;
 
@@ -167,7 +167,7 @@ int parse_name(uint8 * msg, uint8 * compressed, char * buf, int16 len)
 
 		if (!indirect) clen += slen;
 
-		while (slen-- != 0) *buf++ = (char)*cp++;
+		while (slen-- != 0) *buf++ = (int8)*cp++;
 		*buf++ = '.';
 		nseg++;
 	}
@@ -185,10 +185,10 @@ int parse_name(uint8 * msg, uint8 * compressed, char * buf, int16 len)
 	return clen;	/* Length of compressed message */
 }
 
-uint8 * dns_question(uint8 * msg, uint8 * cp)
+uint8 * dns_question(uint8 *msg, uint8 *cp)
 {
-	int len;
-	char name[MAX_DNS_BUF_SIZE];
+	int32 len;
+	int8 name[MAX_DNS_BUF_SIZE];
 
 	len = parse_name(msg, cp, name, MAX_DNS_BUF_SIZE);
 
@@ -203,10 +203,10 @@ uint8 * dns_question(uint8 * msg, uint8 * cp)
 	return cp;
 }
 
-uint8 * dns_answer(uint8 * msg, uint8 * cp, uint8 * pSip)
+uint8 * dns_answer(uint8 *msg, uint8 *cp, uint8 *pSip)
 {
-	int len, type;
-	char name[MAX_DNS_BUF_SIZE];
+	int32 len, type;
+	int8 name[MAX_DNS_BUF_SIZE];
 
 	len = parse_name(msg, cp, name, MAX_DNS_BUF_SIZE);
 
@@ -297,7 +297,7 @@ uint8 * dns_answer(uint8 * msg, uint8 * cp, uint8 * pSip)
 	return cp;
 }
 
-int8 parseMSG(struct dhdr * pdhdr, uint8 * pbuf, uint8 * pSip)
+int8 parseMSG(struct dhdr *pdhdr, uint8 *pbuf, uint8 *pSip)
 {
 	uint16 tmp;
 	uint16 i;
@@ -365,8 +365,8 @@ int8 dns_query(uint8 sock, uint8 *domain, uint8 *ip)
 	struct dhdr dhp;
 	wiz_NetInfo netinfo;
 	uint8 ip_tmp[4], i = 0;
-	uint16 len, port;
-	int16 cnt;
+	uint16 port;
+	int32 len, cnt;
 	uint32 tick;
 	static uint8 dns_buf[MAX_DNS_BUF_SIZE];
 
@@ -374,17 +374,17 @@ int8 dns_query(uint8 sock, uint8 *domain, uint8 *ip)
 	srand(tick);
 	while(UDPOpen(sock, rand() % 5535 + 60000) != 1) {
 		if(i++ > 3) {
-			printf("UDPOpen fail (%d)times", i);
+			DBGA("UDPOpen fail (%d)times", i);
 			return RET_NOK;
 		}
 	}
 
 	i = 0;
 	GetNetInfo(&netinfo);
-	len = dns_makequery(0, (char *)domain, dns_buf, MAX_DNS_BUF_SIZE);
-	while((cnt = UDPSend(sock, dns_buf, len, netinfo.DNSServerIP, IPPORT_DOMAIN)) < 0) {
+	len = dns_makequery(0, (int8 *)domain, dns_buf, MAX_DNS_BUF_SIZE);
+	while((cnt = UDPSend(sock, (int8*)dns_buf, len, netinfo.DNS, IPPORT_DOMAIN)) < 0) {
 		if(i++ > 3) {
-			printf("UDPSend fail (%d)times", i);
+			DBGA("UDPSend fail (%d)times", i);
 			return RET_NOK;
 		}
 	}
@@ -392,7 +392,7 @@ int8 dns_query(uint8 sock, uint8 *domain, uint8 *ip)
 
 	cnt = 0;
 	while(1) {
-		if((len = UDPRecv(sock, dns_buf, MAX_DNS_BUF_SIZE, ip_tmp, &port)) > 0) {
+		if((len = UDPRecv(sock, (int8*)dns_buf, MAX_DNS_BUF_SIZE, ip_tmp, &port)) > 0) {
 			UDPClose(sock);
 			break;
 		}

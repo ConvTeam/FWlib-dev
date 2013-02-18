@@ -56,7 +56,7 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
 	/* Go to infinite loop when Hard Fault exception occurs */
-	wizpf_led_trap(1);
+	wizpf_led_trap(2);
 }
 
 /**
@@ -67,7 +67,7 @@ void HardFault_Handler(void)
 void MemManage_Handler(void)
 {
 	/* Go to infinite loop when Memory Manage exception occurs */
-	wizpf_led_trap(2);
+	wizpf_led_trap(3);
 }
 
 /**
@@ -78,7 +78,7 @@ void MemManage_Handler(void)
 void BusFault_Handler(void)
 {
 	/* Go to infinite loop when Bus Fault exception occurs */
-	wizpf_led_trap(3);
+	wizpf_led_trap(4);
 }
 
 /**
@@ -89,7 +89,7 @@ void BusFault_Handler(void)
 void UsageFault_Handler(void)
 {
 	/* Go to infinite loop when Usage Fault exception occurs */
-	wizpf_led_trap(4);
+	wizpf_led_trap(5);
 }
 
 /**
@@ -174,10 +174,9 @@ void TIM3_IRQHandler(void)
 * Output         : None
 * Return         : None
 *******************************************************************************/
-void USART1_IRQHandler(void)
-{
-
-}
+//void USART1_IRQHandler(void)	// moved to wizplatform.c
+//{
+//}
 
 /*******************************************************************************
 * Function Name  : USART2_IRQHandler
@@ -190,28 +189,5 @@ void USART2_IRQHandler(void)
 {
 
 }
-
-#ifdef __DEF_IINCHIP_INT__	// ??
-/*******************************************************************************
-* Function Name  : WIZ_IRQHandler
-* Description    : This function handles USART2 global interrupt request.
-* Input          : None
-* Output         : None
-* Return         : None
-*******************************************************************************/
-//extern uint8 I_STATUS[MAX_SOCK_NUM];
-void EXTI0_IRQHandler(void)		// ??
-{
-
-      if(EXTI_GetITStatus(EXTI_Line0) != RESET)
-      {
-          ISR();
-
-          /* Clear the Key Button EXTI line pending bit */
-          EXTI_ClearITPendingBit(EXTI_Line0);
-       }              
-        
-}
-#endif
 
 /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/

@@ -3,16 +3,44 @@
 #include "common/common.h"
 //#include "host/wizplatform.h"
 
-
 extern void EXTI_IMR_EMR_enable(void);
 
 __IO uint32 msTicks = 0;	// 최대값은 대략 50일 정도
 
+#define USART1_RX_INTERRUPT VAL_ENABLE
+#define SYSTICK_HZ			1000
 
-void SysTick_Handler(void)
+void SysTick_Handler(void)	// SysTick ISR
 {
 	msTicks++;
 }
+
+#if (USART1_RX_INTERRUPT == VAL_ENABLE)
+#define U1RX_BUF_SIZE	300
+int8 u1rx_buf[U1RX_BUF_SIZE];
+int16 u1rx_wr=0, u1rx_rd=0;
+void USART1_IRQHandler(void)	// USART1 ISR
+{
+	if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET) {		//
+		USART_ClearITPendingBit(USART1, USART_IT_RXNE);
+		if( (u1rx_wr > u1rx_rd && u1rx_wr-u1rx_rd >= U1RX_BUF_SIZE-1) ||
+			(u1rx_wr < u1rx_rd && u1rx_rd == u1rx_wr+1) )	// Buffer Overflow
+		{
+			//USART_ClearITPendingBit(USART1, USART_IT_RXNE);
+			wizpf_led_set(WIZ_LED3, VAL_TOG);
+			wizpf_led_set(WIZ_LED4, VAL_TOG);
+			USART_SendData(USART1, (uint8)'@');
+			return;
+		}
+		//uint16_t kkk = USART_ReceiveData(USART1);
+		//for(int ii=0; ii<15; ii++) 
+		//printf("%x ", kkk);
+		u1rx_buf[u1rx_wr] = (int8)USART_ReceiveData(USART1);
+		if(u1rx_wr < U1RX_BUF_SIZE-1) u1rx_wr++;
+		else u1rx_wr = 0;
+	}
+}
+#endif
 
 int8 platform_init(void)
 {
@@ -24,7 +52,7 @@ int8 platform_init(void)
 	RCC_Configuration();	// Configure the system clocks
 	GPIO_Configuration();	// Configure GPIO Pin setting
 	NVIC_Configuration();	// Configure the vector table
-	retu32 = SysTick_Config(SystemCoreClock/1000);	// SysTick Configuration - 1ms
+	retu32 = SysTick_Config(SystemCoreClock/SYSTICK_HZ);	// SysTick Configuration - 1ms
 	if(retu32 != 0) return RET_NOK;
 
 	ret8 = wizpf_uart_init(WIZ_USART1);
@@ -39,8 +67,8 @@ int8 platform_init(void)
 	device_HW_reset();
 	DEVICE_INIT_WITH_MEMCHK(tx_size, rx_size);
 
-	wizpf_led_act(WIZ_LED3, VAL_ON);	// LED3 and LED4 On by default
-	wizpf_led_act(WIZ_LED4, VAL_ON);
+	wizpf_led_set(WIZ_LED3, VAL_ON);	// LED3 and LED4 On by default
+	wizpf_led_set(WIZ_LED4, VAL_ON);
 
 	return RET_OK;
 }
@@ -72,6 +100,9 @@ int8 wizpf_uart_init(wizpf_usart usart)
 	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 
 	USART_Init(usartx, &USART_InitStructure);
+
+	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE); //enable receive interrupt
+
 	USART_Cmd(usartx, ENABLE);
 
 	return RET_OK;
@@ -82,22 +113,20 @@ uint32 wizpf_get_systick(void)
 	return msTicks;
 }
 
-int32 wizpf_tick_elapse(uint32 tick)
+uint32 wizpf_tick_conv(bool istick2sec, uint32 tickorsec)
+{
+	if(istick2sec) return tickorsec / SYSTICK_HZ;	// tick to seconds
+	else return tickorsec * SYSTICK_HZ;	// seconds to tick
+}
+
+int32 wizpf_tick_elapse(uint32 tick)	// + 지난 시간, - 다가올 시간
 {
 	uint32 cur = wizpf_get_systick();
 
-	if(cur >= tick) {	// normal case
-		if(cur - tick > 0x7fffffff)	// 리턴 가능한 양수인지 체크
-			return 0x7fffffff;		// +max
-		else return cur - tick;
-	} else {			// overflow case
-		if(tick - cur < 0x80000000)	// 리턴 가능한 음수인지 체크
-			return 0x80000000;		// -max
-		else return 0xffffffff - (tick - cur);
-	}
+	return cur - tick;
 }
 
-void wizpf_led_act(wizpf_led led, uint8 action)
+void wizpf_led_set(wizpf_led led, uint8 action)
 {
 	GPIO_TypeDef* GPIOx = GPIOA;
 	uint16 GPIO_Pin;
@@ -128,18 +157,43 @@ void wizpf_led_act(wizpf_led led, uint8 action)
 	}
 }
 
+int8 wizpf_led_get(wizpf_led led)
+{
+	GPIO_TypeDef* GPIOx = GPIOA;
+	uint16 GPIO_Pin;
+
+	switch(led) {
+	//case LED1:
+	//	GPIO_Pin = LED1;
+	//	break;
+	//case LED2:
+	//	GPIO_Pin = LED2;
+	//	break;
+	case WIZ_LED3:
+		GPIO_Pin = LED3;
+		break;
+	case WIZ_LED4:
+		GPIO_Pin = LED4;
+		break;
+	default:
+		LOGA("LED(%d) is not implemented yet", led);
+	}
+
+	return (GPIOx->ODR & GPIO_Pin)? VAL_ON: VAL_OFF;
+}
+
 void wizpf_led_trap(uint8 repeat)
 {
-	wizpf_led_act(WIZ_LED3, VAL_OFF);
-	wizpf_led_act(WIZ_LED4, VAL_OFF);
+	wizpf_led_set(WIZ_LED3, VAL_OFF);
+	wizpf_led_set(WIZ_LED4, VAL_OFF);
 	while(1) {
 		Delay_ms(1500);
 		for(uint32 i=0; i<repeat; i++) {
-			wizpf_led_act(WIZ_LED3, VAL_TOG);
-			wizpf_led_act(WIZ_LED4, VAL_TOG);
+			wizpf_led_set(WIZ_LED3, VAL_TOG);
+			wizpf_led_set(WIZ_LED4, VAL_TOG);
 			Delay_ms(200);
-			wizpf_led_act(WIZ_LED3, VAL_TOG);
-			wizpf_led_act(WIZ_LED4, VAL_TOG);
+			wizpf_led_set(WIZ_LED3, VAL_TOG);
+			wizpf_led_set(WIZ_LED4, VAL_TOG);
 			Delay_ms(200);
 		}
 	}
@@ -156,7 +210,7 @@ void device_HW_reset(void)
 void GPIO_Configuration(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
-	EXTI_InitTypeDef EXTI_InitStructure;
+	//EXTI_InitTypeDef EXTI_InitStructure;
 
 	// Port A output
 	GPIO_InitStructure.GPIO_Pin = WIZ_SCS;
@@ -196,21 +250,21 @@ void GPIO_Configuration(void)
 	GPIO_ResetBits(GPIOB, WIZ_PWDN);
 
 	// WIZ Interrupt
-	GPIO_InitStructure.GPIO_Pin = WIZ_INT;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
-	EXTI_DeInit();
+	//GPIO_InitStructure.GPIO_Pin = WIZ_INT;
+	//GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	//GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+	//GPIO_Init(GPIOC, &GPIO_InitStructure);
+	//EXTI_DeInit();
 
-	GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource0);
-	EXTI_InitStructure.EXTI_Line = EXTI_Line0;
-	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
-	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
-	EXTI_Init(&EXTI_InitStructure);
+	//GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource0);
+	//EXTI_InitStructure.EXTI_Line = EXTI_Line0;
+	//EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+	//EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
+	//EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+	//EXTI_Init(&EXTI_InitStructure);
 	//EXTI_GenerateSWInterrupt(EXTI_Line0);
 
-	EXTI_IMR_EMR_enable();
+	//EXTI_IMR_EMR_enable();
 }
 
 void RCC_Configuration(void)
@@ -292,29 +346,17 @@ void NVIC_Configuration(void)
 	NVIC_Init(&NVIC_InitStructure);
 
 	/* Enable the USART2 Interrupt */
-	NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStructure);
-
-#ifdef __DEF_IINCHIP_INT__
-	/* Enable the W5200 Interrupt */
-	NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStructure);
-#endif
+	//NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
+	//NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+	//NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	//NVIC_Init(&NVIC_InitStructure);
 
 	/* Enable the TIM2 global Interrupt */
-	NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStructure);
-
-	/* Set the Vector Table base location at 0x08000000 */
-	//NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x0);
+	//NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
+	//NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+	//NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+	//NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	//NVIC_Init(&NVIC_InitStructure);
 #endif
 }
 
@@ -349,32 +391,53 @@ void Delay_tick(uint32 tick)
 {
 	uint32_t curTicks = msTicks;
 
-	while ((msTicks - curTicks) > tick);
+	while(msTicks - curTicks < tick);
 }
 
-int getchar_nonblk(void)
+int32 getchar_nonblk(void)
 {
-	if(USART_GetFlagStatus(USART1, USART_FLAG_RXNE) == RESET)
-		return RET_NOK;
-
+#if (USART1_RX_INTERRUPT == VAL_ENABLE)
+	if(u1rx_rd == u1rx_wr) return RET_NOK;
+	if(u1rx_rd < U1RX_BUF_SIZE-1) {
+		u1rx_rd++;
+		return u1rx_buf[u1rx_rd-1];
+	} else {
+		u1rx_rd = 0;
+		return u1rx_buf[U1RX_BUF_SIZE-1];
+	}
+#else
+	if(USART_GetFlagStatus(USART1, USART_FLAG_RXNE) == RESET) return RET_NOK;
 	return USART_ReceiveData(USART1);
+#endif
 }
 
 #ifdef COMPILER_IAR_EWARM
 int putchar(int ch)
 {
-	USART_SendData(USART1, (uint8) ch);
+	USART_SendData(USART1, (uint8)ch);
 	while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
-
 	return ch;
 }
 
 int getchar(void)
 {
+#if (USART1_RX_INTERRUPT == VAL_ENABLE)
+	while(u1rx_rd == u1rx_wr);
+	if(u1rx_rd < U1RX_BUF_SIZE-1) {
+		u1rx_rd++;
+		return u1rx_buf[u1rx_rd-1];
+	} else {
+		u1rx_rd = 0;
+		return u1rx_buf[U1RX_BUF_SIZE-1];
+	}
+#else
 	while(USART_GetFlagStatus(USART1, USART_FLAG_RXNE) == RESET);
 	return USART_ReceiveData(USART1);
+#endif
 }
 #elif COMPILER_GCC_ARM
+
+	// Todo
 
 #endif
 

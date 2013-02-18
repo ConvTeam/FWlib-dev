@@ -20,36 +20,17 @@
 
 //------------------------------ Network Setting ------------------------------
 #define USE_DHCP	VAL_DISABLE
+#define DHCP_ALARM	// if not set, you should handle dhcp manually, if set, need to run 'alarm_run()' funtion in main loop
+//#define DHCP_ASYNC	// if not set, it works using sync function, if set, need to run 'sockwatch_run()' funtion in main loop
 
-#define MAC_ADDR_0	0x00
-#define MAC_ADDR_1	0x08
-#define MAC_ADDR_2	0xDC
-#define MAC_ADDR_3	0x11
-#define MAC_ADDR_4	0x22
-#define MAC_ADDR_5	0x33
-
-#define IP_ADDR_0	192
-#define IP_ADDR_1	168
-#define IP_ADDR_2	10
-#define IP_ADDR_3	137
-
-#define SN_ADDR_0	255
-#define SN_ADDR_1	255
-#define SN_ADDR_2	255
-#define SN_ADDR_3	0
-
-#define GW_ADDR_0	192
-#define GW_ADDR_1	168
-#define GW_ADDR_2	10
-#define GW_ADDR_3	1
-
-#define DNS_ADDR_0	168
-#define DNS_ADDR_1	126
-#define DNS_ADDR_2	63
-#define DNS_ADDR_3	1
+#define DEFAULT_MAC_ADDR	"00:08:DC:11:22:33"
+#define DEFAULT_IP_ADDR		"192.168.10.137"
+#define DEFAULT_SN_MASK		"255.255.255.0"
+#define DEFAULT_GW_ADDR		"192.168.10.1"
+#define DEFAULT_DNS_ADDR	"168.126.63.1"
 
 //------------------------------ Etc ------------------------------
-#define WIZ_LOG_LEVEL 2		// 0: No print,  1: Error,  2: Error+Log,  3: Error+Log+Debug
+#define WIZ_LOG_LEVEL 3		// 0: No print,  1: Error,  2: Error+Log,  3: Error+Log+Debug
 //#define PRINT_TIME_LOG
 
 #endif

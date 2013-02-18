@@ -15,7 +15,7 @@ uint8 windowfull_retry_cnt[TOTAL_SOCK_NUM];
 
 uint8 incr_windowfull_retry_cnt(uint8 s)
 {
-	return windowfull_retry_cnt[s]++;
+	return ++windowfull_retry_cnt[s];
 }
 
 void init_windowfull_retry_cnt(uint8 s)
@@ -23,7 +23,7 @@ void init_windowfull_retry_cnt(uint8 s)
 	windowfull_retry_cnt[s] = 0;
 }
 
-uint16 pre_sent_ptr, sent_ptr;
+//uint16 pre_sent_ptr, sent_ptr;
 
 uint8 getISR(uint8 s)
 {
@@ -180,7 +180,7 @@ uint16 IINCHIP_READ_BLOCK(uint16 addr, uint8* buf,uint16 len)
 @brief  This function sets up gateway IP address.
 */ 
 void setGAR(
-  uint8 * addr  /**< a pointer to a 4 -byte array responsible to set the Gateway IP address. */
+  uint8 * addr  /**< a pointer to a 4 -byte array responsible to set the GW address. */
   )
 {
   IINCHIP_WRITE((WIZC_GAR0),addr[0]);
@@ -244,21 +244,21 @@ void setSIPR(
 /**
 @brief  This function sets up Source IP address.
 */
-void getGAR(uint8 * addr)
+void getGAR(uint8 *addr)
 {
   addr[0] = IINCHIP_READ(WIZC_GAR0);
   addr[1] = IINCHIP_READ(WIZC_GAR1);
   addr[2] = IINCHIP_READ(WIZC_GAR2);
   addr[3] = IINCHIP_READ(WIZC_GAR3);
 }
-void getSUBR(uint8 * addr)
+void getSUBR(uint8 *addr)
 {
   addr[0] = IINCHIP_READ(WIZC_SUBR0);
   addr[1] = IINCHIP_READ(WIZC_SUBR1);
   addr[2] = IINCHIP_READ(WIZC_SUBR2);
   addr[3] = IINCHIP_READ(WIZC_SUBR3);
 }
-void getSHAR(uint8 * addr)
+void getSHAR(uint8 *addr)
 {
   addr[0] = IINCHIP_READ(WIZC_SHAR0);
   addr[1] = IINCHIP_READ(WIZC_SHAR1);
@@ -267,12 +267,24 @@ void getSHAR(uint8 * addr)
   addr[4] = IINCHIP_READ(WIZC_SHAR4);
   addr[5] = IINCHIP_READ(WIZC_SHAR5);
 }
-void getSIPR(uint8 * addr)
+void getSIPR(uint8 *addr)
 {
   addr[0] = IINCHIP_READ(WIZC_SIPR0);
   addr[1] = IINCHIP_READ(WIZC_SIPR1);
   addr[2] = IINCHIP_READ(WIZC_SIPR2);
   addr[3] = IINCHIP_READ(WIZC_SIPR3);
+}
+void getDIPR(uint8 s, uint8 *addr)
+{
+  addr[0] = IINCHIP_READ(WIZ_SOCK_REG(s, WIZS_DIPR0));
+  addr[1] = IINCHIP_READ(WIZ_SOCK_REG(s, WIZS_DIPR1));
+  addr[2] = IINCHIP_READ(WIZ_SOCK_REG(s, WIZS_DIPR2));
+  addr[3] = IINCHIP_READ(WIZ_SOCK_REG(s, WIZS_DIPR3));
+}
+void getDPORT(uint8 s, uint16 *port)
+{
+  *port = IINCHIP_READ(WIZ_SOCK_REG(s, WIZS_DPORT0)) << 8;
+  *port += IINCHIP_READ(WIZ_SOCK_REG(s, WIZS_DPORT1));
 }
 
 void setMR(uint8 val)
@@ -283,7 +295,7 @@ void setMR(uint8 val)
 /**
 @brief  This function gets Interrupt register in common register.
  */
-uint8 getIR( void )
+uint8 getIR(void)
 {
    return IINCHIP_READ(WIZC_IR);
 }
@@ -333,13 +345,13 @@ void setIMR(uint8 mask)
 /**
 @brief  This sets the maximum segment size of TCP in Active Mode), while in Passive Mode this is set by peer
 */
-void setSn_MSS(SOCKET s, uint16 Sn_MSSR0)
+void setSn_MSS(uint8 s, uint16 Sn_MSSR0)
 {
   IINCHIP_WRITE(Sn_MSSR0(s),(uint8)((Sn_MSSR0 & 0xff00) >> 8));
   IINCHIP_WRITE((Sn_MSSR0(s) + 1),(uint8)(Sn_MSSR0 & 0x00ff));
 }
 
-void setSn_TTL(SOCKET s, uint8 ttl)
+void setSn_TTL(uint8 s, uint8 ttl)
 {
    IINCHIP_WRITE(Sn_TTL(s), ttl);
 }
@@ -349,7 +361,7 @@ void setSn_TTL(SOCKET s, uint8 ttl)
 @brief  These below function is used to setup the Protocol Field of IP Header when
     executing the IP Layer RAW mode.
 */
-void setSn_PROTO(SOCKET s, uint8 proto)
+void setSn_PROTO(uint8 s, uint8 proto)
 {
   IINCHIP_WRITE(Sn_PROTO(s),proto);
 }
@@ -360,7 +372,7 @@ void setSn_PROTO(SOCKET s, uint8 proto)
 
 These below functions are used to read the Interrupt & Soket Status register
 */
-uint8 getSn_IR(SOCKET s)
+uint8 getSn_IR(uint8 s)
 {
    return IINCHIP_READ(Sn_IR(s));
 }
@@ -369,7 +381,7 @@ uint8 getSn_IR(SOCKET s)
 /**
 @brief   get socket status
 */
-uint8 getSn_SR(SOCKET s)
+uint8 getSn_SR(uint8 s)
 {
    return IINCHIP_READ(Sn_SR(s));
 }
@@ -381,7 +393,7 @@ uint8 getSn_SR(SOCKET s)
 This gives free buffer size of transmit buffer. This is the data size that user can transmit.
 User shuold check this value first and control the size of transmitting data
 */
-uint16 getSn_TX_FSR(SOCKET s)
+uint16 getSn_TX_FSR(uint8 s)
 {
   uint16 val=0,val1=0;
   do
@@ -403,7 +415,7 @@ uint16 getSn_TX_FSR(SOCKET s)
 
 This gives size of received data in receive buffer. 
 */
-uint16 getSn_RX_RSR(SOCKET s)
+uint16 getSn_RX_RSR(uint8 s)
 {
   uint16 val=0,val1=0;
   do
@@ -431,7 +443,7 @@ the data in transmite buffer. Here also take care of the condition while it exce
 the Tx memory uper-bound of socket.
 
 */
-void send_data_processing(SOCKET s, uint8 *data, uint16 len)
+void send_data_processing(uint8 s, uint8 *data, uint16 len)
 {
   
   uint16 ptr;
@@ -477,7 +489,7 @@ It calculate the actual physical address where one has to read
 the data from Receive buffer. Here also take care of the condition while it exceed
 the Rx memory uper-bound of socket.
 */
-void recv_data_processing(SOCKET s, uint8 *data, uint16 len)
+void recv_data_processing(uint8 s, uint8 *data, uint16 len)
 {
   uint16 ptr;
   uint16 size;
@@ -511,6 +523,16 @@ void recv_data_processing(SOCKET s, uint8 *data, uint16 len)
   IINCHIP_WRITE((Sn_RX_RD0(s) + 1),(uint8)(ptr & 0x00ff));
 }
 
+void recv_data_ignore(uint8 s, uint16 len)
+{
+  uint16 ptr;
+
+  ptr = IINCHIP_READ(Sn_RX_RD0(s));
+  ptr = ((ptr & 0x00ff) << 8) + IINCHIP_READ(Sn_RX_RD0(s) + 1);
+  ptr += len;
+  IINCHIP_WRITE(Sn_RX_RD0(s),(uint8)((ptr & 0xff00) >> 8));
+  IINCHIP_WRITE((Sn_RX_RD0(s) + 1),(uint8)(ptr & 0x00ff));
+}
 
 
 
@@ -527,12 +549,12 @@ void recv_data_processing(SOCKET s, uint8 *data, uint16 len)
 @brief	Output destination IP address of appropriate channel
 @return 	32bit destination address (Host Ordering)
 */ 
-unsigned long GetDestAddr(
-	SOCKET s	/**< Channel number which try to get destination IP Address */
+uint32 GetDestAddr(
+	uint8 s	/**< Channel number which try to get destination IP Address */
 	)
 {
 	uint32 addr=0;
-	int i = 0;
+	int32 i = 0;
 	for(i=0; i < 4; i++)
 	{
 		addr <<=8;
@@ -545,8 +567,8 @@ unsigned long GetDestAddr(
 @brief	Output destination port number of appropriate channel
 @return 	16bit destination port number
 */ 
-unsigned int GetDestPort(
-	SOCKET s	/**< Channel number which try to get destination port */
+uint32 GetDestPort(
+	uint8 s	/**< Channel number which try to get destination port */
 	)
 {
 	uint16 port;
@@ -558,7 +580,7 @@ unsigned int GetDestPort(
 
 uint8 CheckDestInLocal(uint32 destip)
 {
-	int i = 0;
+	int32 i = 0;
 	uint8 * pdestip = (uint8*)&destip;
 	for(i =0; i < 4; i++)
 	{
@@ -572,12 +594,12 @@ uint8 CheckDestInLocal(uint32 destip)
 @brief	Get handle of socket which status is same to 'status'
 @return 	socket number
 */ 
-SOCKET getSocket(
-	unsigned char status, 	/**< socket's status to be found */
-	SOCKET start			/**< base of socket to be found */
+uint8 getSocket(
+	uint8 status, 	/**< socket's status to be found */
+	uint8 start			/**< base of socket to be found */
 	)
 {
-	SOCKET i;
+	uint8 i;
 	if(start > 3) start = 0;
 
 	for(i = start; i < TOTAL_SOCK_NUM ; i++) if( getSn_SR(i)==status ) return i;
