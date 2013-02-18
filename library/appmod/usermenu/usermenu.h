@@ -10,11 +10,11 @@
 
 typedef enum {MC_START, MC_END, MC_DATA} menu_ctrl;
 
-typedef int8 (*menu_func)(menu_ctrl mctrl, char *mbuf);
+typedef int8 (*menu_func)(menu_ctrl mctrl, int8 *mbuf);
 
 void menu_init(void);
 void menu_print_tree(void);
-int8 menu_add(char *desc, int8 parent, menu_func mfunc);
+int8 menu_add(int8 *desc, int8 parent, menu_func mfunc);
 void menu_run(void);
 
 #endif	//_USERMENU_H

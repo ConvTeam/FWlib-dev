@@ -5,7 +5,6 @@
 //#include "common/common.h"
 
 //#define __DEF_IINCHIP_DBG__
-//#define __DEF_IINCHIP_INT__  // Interrupt disable
 
 /**
 @brief	 __DEF_IINCHIP_MAP_xxx__ : define memory map for iinchip 
@@ -21,11 +20,11 @@
 
 //----------------------------- W5200 Common Registers -----------------------------
 #define WIZC_MR				(WIZ_COMMON_BASE + 0x0000)	// Mode
-#define WIZC_GAR0			(WIZ_COMMON_BASE + 0x0001)	// Gateway Address
+#define WIZC_GAR0			(WIZ_COMMON_BASE + 0x0001)	// GW Address
 #define WIZC_GAR1			(WIZ_COMMON_BASE + 0x0002)
 #define WIZC_GAR2			(WIZ_COMMON_BASE + 0x0003)
 #define WIZC_GAR3			(WIZ_COMMON_BASE + 0x0004)
-#define WIZC_SUBR0			(WIZ_COMMON_BASE + 0x0005) // Subnet Mask Address
+#define WIZC_SUBR0			(WIZ_COMMON_BASE + 0x0005) // SN Mask Address
 #define WIZC_SUBR1			(WIZ_COMMON_BASE + 0x0006)
 #define WIZC_SUBR2			(WIZ_COMMON_BASE + 0x0007)
 #define WIZC_SUBR3			(WIZ_COMMON_BASE + 0x0008)
@@ -229,7 +228,7 @@
 #define IPPROTO_IP			0 //< Dummy for IP 
 #define IPPROTO_ICMP		1 //< Control message protocol 
 #define IPPROTO_IGMP		2 //< Internet group management protocol 
-#define IPPROTO_GGP			3 //< Gateway^2 (deprecated) 
+#define IPPROTO_GGP			3 //< GW^2 (deprecated) 
 #define IPPROTO_TCP			6 //< TCP 
 #define IPPROTO_PUP			12 //< PUP 
 #define IPPROTO_UDP			17 //< UDP 
@@ -262,16 +261,17 @@ void setRTR(uint16 timeout); // set retry duration for data transmission, connec
 void setRCR(uint8 retry); // set retry count (above the value, assert timeout interrupt)
 void setIMR(uint8 mask); // set interrupt mask. 
 uint8 getIR( void );
-void setSn_MSS(SOCKET s, uint16 Sn_MSSR0); // set maximum segment size
-void setSn_PROTO(SOCKET s, uint8 proto); // set IP Protocol value using IP-Raw mode
-uint8 getSn_IR(SOCKET s); // get socket interrupt status
-uint8 getSn_SR(SOCKET s); // get socket status
-uint16 getSn_TX_FSR(SOCKET s); // get socket TX free buf size
-uint16 getSn_RX_RSR(SOCKET s); // get socket RX recv buf size
-void setSn_TTL(SOCKET s, uint8 ttl);
+void setSn_MSS(uint8 s, uint16 Sn_MSSR0); // set maximum segment size
+void setSn_PROTO(uint8 s, uint8 proto); // set IP Protocol value using IP-Raw mode
+uint8 getSn_IR(uint8 s); // get socket interrupt status
+uint8 getSn_SR(uint8 s); // get socket status
+uint16 getSn_TX_FSR(uint8 s); // get socket TX free buf size
+uint16 getSn_RX_RSR(uint8 s); // get socket RX recv buf size
+void setSn_TTL(uint8 s, uint8 ttl);
 
-void send_data_processing(SOCKET s, uint8 *data, uint16 len);
-void recv_data_processing(SOCKET s, uint8 *data, uint16 len);
+void send_data_processing(uint8 s, uint8 *data, uint16 len);
+void recv_data_processing(uint8 s, uint8 *data, uint16 len);
+void recv_data_ignore(uint8 s, uint16 len);
 
 void setGAR(uint8 * addr); // set gateway address
 void setSUBR(uint8 * addr); // set subnet mask address
@@ -281,14 +281,16 @@ void getGAR(uint8 * addr);
 void getSUBR(uint8 * addr);
 void getSHAR(uint8 * addr);
 void getSIPR(uint8 * addr);
+void getDIPR(uint8 s, uint8 *addr);
+void getDPORT(uint8 s, uint16 *port);
 
 uint8 incr_windowfull_retry_cnt(uint8 s);
 void init_windowfull_retry_cnt(uint8 s);
 
-unsigned long GetDestAddr(SOCKET s);			/* Output destination IP address of appropriate channel */
-unsigned int GetDestPort(SOCKET s);			/* Output destination port number of appropriate channel */
+uint32 GetDestAddr(uint8 s);			/* Output destination IP address of appropriate channel */
+uint32 GetDestPort(uint8 s);			/* Output destination port number of appropriate channel */
 uint8 CheckDestInLocal(uint32 destip);			/* Check Destination in local or remote */
-SOCKET getSocket(unsigned char status, SOCKET start); 	/* Get handle of socket which status is same to 'status' */
+uint8 getSocket(uint8 status, uint8 start); 	/* Get handle of socket which status is same to 'status' */
 
 #endif //_W5200_H
 

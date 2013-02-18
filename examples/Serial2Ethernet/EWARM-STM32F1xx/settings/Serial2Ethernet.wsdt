@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Workspace>
+  <ConfigDictionary>
+    
+  <CurrentConfigs><Project>Serial2Ethernet/Debug</Project></CurrentConfigs></ConfigDictionary>
+  <Desktop>
+    <Static>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>239</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+      </Workspace>
+      <Build>
+        
+        
+        
+        
+      <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>665</ColumnWidth1><ColumnWidth2>177</ColumnWidth2><ColumnWidth3>44</ColumnWidth3></Build>
+    </Static>
+    <Windows>
+      
+      
+    <Wnd0>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-12191-6165</Identity>
+            <TabName>Workspace</TabName>
+            <Factory>Workspace</Factory>
+            <Session>
+              
+            <NodeDict><ExpandedNode>Serial2Ethernet</ExpandedNode><ExpandedNode>Serial2Ethernet/Library</ExpandedNode><ExpandedNode>Serial2Ethernet/Library/appmod</ExpandedNode><ExpandedNode>Serial2Ethernet/Library/common</ExpandedNode><ExpandedNode>Serial2Ethernet/Library/device</ExpandedNode><ExpandedNode>Serial2Ethernet/Library/host</ExpandedNode><ExpandedNode>Serial2Ethernet/Library/host/stmlib</ExpandedNode><ExpandedNode>Serial2Ethernet/Library/protocol</ExpandedNode><ExpandedNode>Serial2Ethernet/User</ExpandedNode><ExpandedNode>Serial2Ethernet/User/port</ExpandedNode></NodeDict></Session>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd0><Wnd1>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-11020-10486</Identity>
+            <TabName>Build</TabName>
+            <Factory>Build</Factory>
+            <Session/>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd1></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\device\sockutil.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>90</SelStart><SelEnd>90</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\protocol\DNS\dns.c</Filename><XPos>0</XPos><YPos>365</YPos><SelStart>7714</SelStart><SelEnd>7721</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\common\types.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>47</SelStart><SelEnd>47</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\device\w5200\w5200.c</Filename><XPos>0</XPos><YPos>508</YPos><SelStart>13508</SelStart><SelEnd>13508</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\device\w5200\socket.c</Filename><XPos>0</XPos><YPos>826</YPos><SelStart>21913</SelStart><SelEnd>21913</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\src\main.c</Filename><XPos>0</XPos><YPos>23</YPos><SelStart>621</SelStart><SelEnd>621</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\host\STM32F10x\WIZ_W7200\wizplatform.c</Filename><XPos>0</XPos><YPos>390</YPos><SelStart>10127</SelStart><SelEnd>10127</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\port\stm32f10x_conf.h</Filename><XPos>0</XPos><YPos>30</YPos><SelStart>1788</SelStart><SelEnd>1788</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\appmod\atcmd\atcmd.c</Filename><XPos>0</XPos><YPos>788</YPos><SelStart>25643</SelStart><SelEnd>25643</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\device\sockutil.c</Filename><XPos>0</XPos><YPos>84</YPos><SelStart>3147</SelStart><SelEnd>3147</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\device\w5200\w5200.h</Filename><XPos>0</XPos><YPos>251</YPos><SelStart>12066</SelStart><SelEnd>12066</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\device\socket.h</Filename><XPos>0</XPos><YPos>24</YPos><SelStart>1065</SelStart><SelEnd>1065</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\protocol\DHCP\dhcp.c</Filename><XPos>0</XPos><YPos>252</YPos><SelStart>6993</SelStart><SelEnd>6993</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\common\util.c</Filename><XPos>0</XPos><YPos>40</YPos><SelStart>1894</SelStart><SelEnd>1894</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\appmod\atcmd\cmdrun.c</Filename><XPos>0</XPos><YPos>565</YPos><SelStart>17958</SelStart><SelEnd>17958</SelEnd></Tab><ActiveTab>14</ActiveTab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-0167cd00><key>iaridepm.enu1</key></Toolbar-0167cd00></Sizes></Row0></Top><Left><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>442</Bottom><Right>330</Right><x>-2</x><y>-2</y><xscreen>200</xscreen><yscreen>264</yscreen><sizeHorzCX>211416</sizeHorzCX><sizeHorzCY>341969</sizeHorzCY><sizeVertCX>350951</sizeVertCX><sizeVertCY>575130</sizeVertCY></Rect></Wnd0></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>285</Bottom><Right>948</Right><x>-2</x><y>-2</y><xscreen>950</xscreen><yscreen>287</yscreen><sizeHorzCX>1004228</sizeHorzCX><sizeHorzCY>371762</sizeHorzCY><sizeVertCX>211416</sizeVertCX><sizeVertCY>341969</sizeVertCY></Rect></Wnd1></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Workspace>
+
+

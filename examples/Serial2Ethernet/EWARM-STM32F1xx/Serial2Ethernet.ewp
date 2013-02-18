@@ -515,7 +515,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>WebIO.bin</state>
+          <state>Serial2Ethernet.bin</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -569,7 +569,7 @@
         </option>
         <option>
           <name>IlinkOutputFile</name>
-          <state>WebIO.out</state>
+          <state>Serial2Ethernet.out</state>
         </option>
         <option>
           <name>IlinkDebugInfoEnable</name>
@@ -605,27 +605,27 @@
         </option>
         <option>
           <name>IlinkMapFile</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkLogFile</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkLogInitialization</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkLogModule</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkLogSection</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkLogVeneer</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkIcfOverride</name>
@@ -633,7 +633,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$\stm32f10x_flash_128k.icf</state>
+          <state>E:\_user\Desktop\FW&#xB77C;&#xC774;&#xBe0C;&#xB7eC;&#xB9AC;\WIZLib-work\examples\Serial2Ethernet\EWARM-STM32F1xx\stm32f10x_flash_128k_S2E.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -836,7 +836,7 @@
         </option>
         <option>
           <name>Input description</name>
-          <state>Full formatting.</state>
+          <state></state>
         </option>
         <option>
           <name>Output variant</name>
@@ -845,7 +845,7 @@
         </option>
         <option>
           <name>Output description</name>
-          <state>Full formatting.</state>
+          <state></state>
         </option>
         <option>
           <name>GOutputBinary</name>
@@ -872,11 +872,11 @@
         </option>
         <option>
           <name>RTDescription</name>
-          <state>Use the normal configuration of the C/C++ runtime library. No locale interface, C locale, no file descriptor support, no multibytes in printf and scanf, and no hex floats in strtod.</state>
+          <state></state>
         </option>
         <option>
           <name>RTConfigPath</name>
-          <state>$TOOLKIT_DIR$\INC\DLib_Config_Normal.h</state>
+          <state>dl-stnl0.a</state>
         </option>
         <option>
           <name>OGProductVersion</name>
@@ -884,7 +884,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>5.41.0.51757</state>
+          <state></state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -896,7 +896,7 @@
         </option>
         <option>
           <name>OGChipSelectEditMenu</name>
-          <state>Default	None</state>
+          <state></state>
         </option>
         <option>
           <name>GenLowLevelInterface</name>
@@ -1357,7 +1357,7 @@
         </option>
         <option>
           <name>IlinkOutputFile</name>
-          <state>SMTPwithDHCP.out</state>
+          <state>###Unitialized###</state>
         </option>
         <option>
           <name>IlinkDebugInfoEnable</name>
@@ -1421,7 +1421,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$TOOLKIT_DIR$\CONFIG\generic.icf</state>
+          <state>lnk0t.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -1481,7 +1481,7 @@
         </option>
         <option>
           <name>IlinkProgramEntryLabel</name>
-          <state>__iar_program_start</state>
+          <state></state>
         </option>
         <option>
           <name>DoFill</name>
@@ -1588,10 +1588,10 @@
     <group>
       <name>appmod</name>
       <file>
-        <name>$PROJ_DIR$\..\..\..\library\appmod\loopback\loopback.c</name>
+        <name>$PROJ_DIR$\..\..\..\library\appmod\atcmd\atcmd.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\..\library\appmod\usermenu\usermenu.c</name>
+        <name>$PROJ_DIR$\..\..\..\library\appmod\atcmd\cmdrun.c</name>
       </file>
     </group>
     <group>
@@ -1626,12 +1626,6 @@
           <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\startup\iar\startup_stm32f10x_md.s</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_bkp.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_exti.c</name>
-        </file>
-        <file>
           <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_flash.c</name>
         </file>
         <file>
@@ -1642,9 +1636,6 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_spi.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_tim.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_usart.c</name>
@@ -1668,12 +1659,6 @@
       <file>
         <name>$PROJ_DIR$\..\..\..\library\protocol\DNS\dns.c</name>
       </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\library\protocol\HTTP\httpd.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\library\protocol\HTTP\httputil.c</name>
-      </file>
     </group>
   </group>
   <group>
@@ -1686,9 +1671,6 @@
     </group>
     <file>
       <name>$PROJ_DIR$\..\src\main.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\src\romfile.c</name>
     </file>
   </group>
 </project>

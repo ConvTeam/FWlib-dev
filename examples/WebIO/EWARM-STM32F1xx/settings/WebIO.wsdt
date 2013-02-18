@@ -12,9 +12,9 @@
           
           
           
-        <Column0>157</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+        <Column0>222</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
       </Workspace>
-    <Build><ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1395</ColumnWidth1><ColumnWidth2>372</ColumnWidth2><ColumnWidth3>93</ColumnWidth3></Build><Find-in-Files><ColumnWidth0>664</ColumnWidth0><ColumnWidth1>94</ColumnWidth1><ColumnWidth2>1138</ColumnWidth2></Find-in-Files><TerminalIO/></Static>
+    <Build><ColumnWidth0>20</ColumnWidth0><ColumnWidth1>657</ColumnWidth1><ColumnWidth2>142</ColumnWidth2><ColumnWidth3>93</ColumnWidth3></Build><Find-in-Files><ColumnWidth0>664</ColumnWidth0><ColumnWidth1>94</ColumnWidth1><ColumnWidth2>1138</ColumnWidth2></Find-in-Files><TerminalIO/></Static>
     <Windows>
       
     <Wnd0>
@@ -25,7 +25,7 @@
             <Factory>Workspace</Factory>
             <Session>
               
-            <NodeDict><ExpandedNode>WebIO</ExpandedNode><ExpandedNode>WebIO/Library</ExpandedNode><ExpandedNode>WebIO/Library/appmod</ExpandedNode><ExpandedNode>WebIO/Library/common</ExpandedNode><ExpandedNode>WebIO/Library/device</ExpandedNode><ExpandedNode>WebIO/Output</ExpandedNode><ExpandedNode>WebIO/User</ExpandedNode></NodeDict></Session>
+            <NodeDict><ExpandedNode>WebIO</ExpandedNode><ExpandedNode>WebIO/Library</ExpandedNode><ExpandedNode>WebIO/Library/appmod</ExpandedNode><ExpandedNode>WebIO/Library/common</ExpandedNode><ExpandedNode>WebIO/Library/device</ExpandedNode><ExpandedNode>WebIO/Library/host</ExpandedNode><ExpandedNode>WebIO/Library/protocol</ExpandedNode><ExpandedNode>WebIO/Output</ExpandedNode><ExpandedNode>WebIO/User</ExpandedNode></NodeDict></Session>
           </Tab>
         </Tabs>
         
@@ -35,14 +35,14 @@
       
       
       
-    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\src\httpd.c</Filename><XPos>0</XPos><YPos>144</YPos><SelStart>5696</SelStart><SelEnd>5696</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\src\main.c</Filename><XPos>0</XPos><YPos>363</YPos><SelStart>10208</SelStart><SelEnd>10208</SelEnd></Tab><ActiveTab>1</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\src\httpd.h</Filename><XPos>0</XPos><YPos>57</YPos><SelStart>3470</SelStart><SelEnd>3470</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\src\httputil.c</Filename><XPos>0</XPos><YPos>27</YPos><SelStart>5848</SelStart><SelEnd>5848</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\src\httputil.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>312</SelStart><SelEnd>312</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\device\sockutil.c</Filename><XPos>0</XPos><YPos>3</YPos><SelStart>450</SelStart><SelEnd>450</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\common\util.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>3999</SelStart><SelEnd>3999</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\src\romfile.c</Filename><XPos>0</XPos><YPos>27</YPos><SelStart>726</SelStart><SelEnd>726</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\src\romfile.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>1045</SelStart><SelEnd>1045</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\src\wizconfig.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>604</SelStart><SelEnd>604</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\common\types.h</Filename><XPos>0</XPos><YPos>83</YPos><SelStart>1640</SelStart><SelEnd>1651</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\src\main.c</Filename><XPos>4</XPos><YPos>375</YPos><SelStart>9976</SelStart><SelEnd>9976</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\device\sockutil.c</Filename><XPos>0</XPos><YPos>27</YPos><SelStart>1649</SelStart><SelEnd>1649</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\common\util.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>3999</SelStart><SelEnd>3999</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\src\wizconfig.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>604</SelStart><SelEnd>604</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\common\types.h</Filename><XPos>0</XPos><YPos>72</YPos><SelStart>1062</SelStart><SelEnd>1062</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\protocol\HTTP\httputil.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>282</SelStart><SelEnd>282</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\protocol\HTTP\httputil.c</Filename><XPos>0</XPos><YPos>51</YPos><SelStart>1183</SelStart><SelEnd>1183</SelEnd></Tab><ActiveTab>6</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\src\romfile.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>11</SelStart><SelEnd>11</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
     <Positions>
       
       
       
       
       
-    <Top><Row0><Sizes><Toolbar-00b1a008><key>iaridepm.enu1</key></Toolbar-00b1a008></Sizes></Row0></Top><Left><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>795</Bottom><Right>231</Right><x>-2</x><y>-2</y><xscreen>107</xscreen><yscreen>136</yscreen><sizeHorzCX>55729</sizeHorzCX><sizeHorzCY>139630</sizeHorzCY><sizeVertCX>121354</sizeVertCX><sizeVertCY>818275</sizeVertCY></Rect></Wnd0></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>134</Bottom><Right>1922</Right><x>-2</x><y>-2</y><xscreen>1924</xscreen><yscreen>136</yscreen><sizeHorzCX>1002083</sizeHorzCX><sizeHorzCY>139630</sizeHorzCY><sizeVertCX>55729</sizeVertCX><sizeVertCY>139630</sizeVertCY></Rect></Wnd1></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+    <Top><Row0><Sizes><Toolbar-0167cd00><key>iaridepm.enu1</key></Toolbar-0167cd00></Sizes></Row0></Top><Left><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>473</Bottom><Right>313</Right><x>-2</x><y>-2</y><xscreen>53</xscreen><yscreen>108</yscreen><sizeHorzCX>56025</sizeHorzCX><sizeHorzCY>139896</sizeHorzCY><sizeVertCX>332981</sizeVertCX><sizeVertCY>615285</sizeVertCY></Rect></Wnd0></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>254</Bottom><Right>948</Right><x>-2</x><y>-2</y><xscreen>950</xscreen><yscreen>256</yscreen><sizeHorzCX>1004228</sizeHorzCX><sizeHorzCY>331606</sizeHorzCY><sizeVertCX>56025</sizeVertCX><sizeVertCY>139896</sizeVertCY></Rect></Wnd1></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
   </Desktop>
 </Workspace>
 

@@ -3,32 +3,49 @@
 #include "common/common.h"
 //#include "device/socket.h"
 
-#define SUCCESS	1
-#define FAIL	0
 
-static uint8 Subnet[4]={0};
-static uint8 DNSServerIP[4]={0};
-static uint8 DHCPEnable=0;
-static uint16 local_port;
-extern uint16 sent_ptr;
+//static uint8 SN[4]={0};
+static uint8 DNS[4]={0};
+static uint8 DHCP = 0;
+static uint16 local_port = 0xC000;	// Dynamic Port: C000(49152) ~ FFFF(65535)
+//extern uint16 sent_ptr;
 
-extern uint16 SMASK[TOTAL_SOCK_NUM]; /**< Variable for Tx buffer MASK in each channel */
-extern uint16 RMASK[TOTAL_SOCK_NUM]; /**< Variable for Rx buffer MASK in each channel */
-extern uint16 SSIZE[TOTAL_SOCK_NUM]; /**< Max Tx buffer size by each channel */
-extern uint16 RSIZE[TOTAL_SOCK_NUM]; /**< Max Rx buffer size by each channel */
-extern uint16 SBUFBASEADDRESS[TOTAL_SOCK_NUM]; /**< Tx buffer base address by each channel */
-extern uint16 RBUFBASEADDRESS[TOTAL_SOCK_NUM]; /**< Rx buffer base address by each channel */
+extern uint16 SMASK[TOTAL_SOCK_NUM]; //  Variable for Tx buffer MASK in each channel
+extern uint16 RMASK[TOTAL_SOCK_NUM]; //  Variable for Rx buffer MASK in each channel
+extern uint16 SSIZE[TOTAL_SOCK_NUM]; //  Max Tx buffer size by each channel
+extern uint16 RSIZE[TOTAL_SOCK_NUM]; //  Max Rx buffer size by each channel
+extern uint16 SBUFBASEADDRESS[TOTAL_SOCK_NUM]; //  Tx buffer base address by each channel
+extern uint16 RBUFBASEADDRESS[TOTAL_SOCK_NUM]; //  Rx buffer base address by each channel
 
-void SetSubnet(uint8 *Subnet)
-{
-	setSUBR(Subnet); // set subnet mask address
-}
+static uint32 tcp_close_elapse[TOTAL_SOCK_NUM] = {0,};
+static uint32 tcp_resend_elapse[TOTAL_SOCK_NUM] = {0,};
+static uint16 txrd_checker[TOTAL_SOCK_NUM];
 
-void ClearSubnet()
-{
-	uint8 Subnet[4] = {0, 0, 0, 0};
-	setSUBR(Subnet); // set subnet mask address
-}
+//void SetSubnet(uint8 *SN)
+//{
+//	setSUBR(SN); // set subnet mask address
+//}
+//void ClearSubnet()
+//{
+//	uint8 SN[4] = {0, 0, 0, 0};
+//	setSUBR(SN); // set subnet mask address
+//}
+/**
+@brief	This function get the interrupt vector.
+@return 	interrupt vector.
+*/  
+//uint8 GetInterrupt(uint8 s)
+//{
+//	return IINCHIP_READ(Sn_IR(s));
+//}
+/**
+@brief	This function put the interrupt vector.
+@return 	None.
+*/  
+//void PutInterrupt(uint8 s, uint8 vector)
+//{
+//	IINCHIP_WRITE(Sn_IR(s), vector);
+//}
 
 /**
 @brief	This function initialize the W5200.
@@ -43,7 +60,7 @@ void device_init(uint8 *tx_size, uint8 *rx_size)
 /**
 @brief  This function is for resetting of the iinchip. Initializes the iinchip to work in whether DIRECT or INDIRECT mode
 */ 
-void device_SW_reset()
+void device_SW_reset(void)
 { 
 	setMR( MR_RST );
 	DBGA("MR value is %02x", IINCHIP_READ(WIZC_MR));
@@ -53,7 +70,7 @@ void device_SW_reset()
 /**
 @brief  This function set the transmit & receive buffer size as per the channels
 */ 
-void device_mem_init( uint8 * tx_size, uint8 * rx_size  )
+void device_mem_init(uint8 *tx_size, uint8 *rx_size)
 {
 	int16 i;
 	int16 ssum,rsum;
@@ -61,16 +78,16 @@ void device_mem_init( uint8 * tx_size, uint8 * rx_size  )
 	ssum = 0;
 	rsum = 0;
   
-	SBUFBASEADDRESS[0] = (uint16)(__DEF_IINCHIP_MAP_TXBUF__);   /* Set base address of Tx memory for channel #0 */
-	RBUFBASEADDRESS[0] = (uint16)(__DEF_IINCHIP_MAP_RXBUF__);   /* Set base address of Rx memory for channel #0 */
+	SBUFBASEADDRESS[0] = (uint16)(__DEF_IINCHIP_MAP_TXBUF__);   // Set base address of Tx memory for channel #0
+	RBUFBASEADDRESS[0] = (uint16)(__DEF_IINCHIP_MAP_RXBUF__);   // Set base address of Rx memory for channel #0
 
 	for (i = 0 ; i < TOTAL_SOCK_NUM; i++)	// Set the size, masking and base address of Tx & Rx memory by each channel
 	{
 		IINCHIP_WRITE((Sn_TXMEM_SIZE(i)),tx_size[i]);
 		IINCHIP_WRITE((Sn_RXMEM_SIZE(i)),rx_size[i]);
 
-		DBGA("Sn_TXMEM_SIZE = %d",IINCHIP_READ(Sn_TXMEM_SIZE(i)));
-		DBGA("Sn_RXMEM_SIZE = %d",IINCHIP_READ(Sn_RXMEM_SIZE(i)));
+		DBGA("Sn_TXMEM_SIZE = %d, Sn_RXMEM_SIZE = %d", 
+			IINCHIP_READ(Sn_TXMEM_SIZE(i)), IINCHIP_READ(Sn_RXMEM_SIZE(i)));
 
 		SSIZE[i] = (int16)(0);
 		RSIZE[i] = (int16)(0);
@@ -131,17 +148,13 @@ void device_mem_init( uint8 * tx_size, uint8 * rx_size  )
 		ssum += SSIZE[i];
 		rsum += RSIZE[i];
 
-		if (i != 0)			// Sets base address of Tx and Rx memory for channel #1,#2,#3
-		{
+		if (i != 0) {		// Sets base address of Tx and Rx memory for channel #1,#2,#3
 			SBUFBASEADDRESS[i] = SBUFBASEADDRESS[i-1] + SSIZE[i-1];
 			RBUFBASEADDRESS[i] = RBUFBASEADDRESS[i-1] + RSIZE[i-1];
 		}
-		DBGA("ch = %d",i);
-		DBGA("SBUFBASEADDRESS = %d",(uint16)SBUFBASEADDRESS[i]);
-		DBGA("RBUFBASEADDRESS = %d",(uint16)RBUFBASEADDRESS[i]);
-		DBGA("SSIZE = %d",SSIZE[i]);
-		DBGA("RSIZE = %d",RSIZE[i]);
-
+		DBGA("ch = %d, SSIZE = %d, RSIZE = %d",i,SSIZE[i],RSIZE[i]);
+		DBGA("SBUFBASEADDRESS = %d, RBUFBASEADDRESS = %d", 
+			(uint16)SBUFBASEADDRESS[i],(uint16)RBUFBASEADDRESS[i]);
 	}
 }
 
@@ -149,30 +162,32 @@ void device_mem_init( uint8 * tx_size, uint8 * rx_size  )
 @brief	This function set the network information.
 @return 	None.
 */  
-void SetNetInfo(wiz_NetInfo *netinfo)
+void SetNetInfo(wiz_NetInfo *ni)
 {
-	if(netinfo->Mac[0] != 0x00 || netinfo->Mac[1] != 0x00 || netinfo->Mac[2] != 0x00 || netinfo->Mac[3] != 0x00 || netinfo->Mac[4] != 0x00 || netinfo->Mac[5] != 0x00)
-		setSHAR(netinfo->Mac); // set local MAC address
-	if(netinfo->IP[0] != 0x00 || netinfo->IP[1] != 0x00 || netinfo->IP[2] != 0x00 || netinfo->IP[3] != 0x00)
-		setSIPR(netinfo->IP); // set local IP address
-	if(netinfo->Subnet[0] != 0x00 || netinfo->Subnet[1] != 0x00 || netinfo->Subnet[2] != 0x00 || netinfo->Subnet[3] != 0x00){
-		ClearSubnet(); // clear subnet mask address. for errata
-		Subnet[0] = netinfo->Subnet[0];
-		Subnet[1] = netinfo->Subnet[1];
-		Subnet[2] = netinfo->Subnet[2];
-		Subnet[3] = netinfo->Subnet[3];
+	if(ni->Mac[0] != 0x00 || ni->Mac[1] != 0x00 || ni->Mac[2] != 0x00 || 
+		ni->Mac[3] != 0x00 || ni->Mac[4] != 0x00 || ni->Mac[5] != 0x00)
+		setSHAR(ni->Mac); // set local MAC address
+	if(ni->IP[0] != 0x00 || ni->IP[1] != 0x00 || ni->IP[2] != 0x00 || ni->IP[3] != 0x00)
+		setSIPR(ni->IP); // set local IP address
+	if(ni->SN[0] != 0x00 || ni->SN[1] != 0x00 || ni->SN[2] != 0x00 || ni->SN[3] != 0x00){
+		//ClearSubnet(); // clear subnet mask address. for errata
+		//SN[0] = ni->SN[0];
+		//SN[1] = ni->SN[1];
+		//SN[2] = ni->SN[2];
+		//SN[3] = ni->SN[3];
+		setSUBR(ni->SN);
 	}
-	if(netinfo->Gateway[0] != 0x00 || netinfo->Gateway[1] != 0x00 || netinfo->Gateway[2] != 0x00 || netinfo->Gateway[3] != 0x00)
-		setGAR(netinfo->Gateway); // set gateway address
+	if(ni->GW[0] != 0x00 || ni->GW[1] != 0x00 || ni->GW[2] != 0x00 || ni->GW[3] != 0x00)
+		setGAR(ni->GW); // set gateway address
 
-	if(netinfo->DNSServerIP[0] != 0x00 || netinfo->DNSServerIP[1] != 0x00 || netinfo->DNSServerIP[2] != 0x00 || netinfo->DNSServerIP[3] != 0x00){
-		DNSServerIP[0] = netinfo->DNSServerIP[0];
-		DNSServerIP[1] = netinfo->DNSServerIP[1];
-		DNSServerIP[2] = netinfo->DNSServerIP[2];
-		DNSServerIP[3] = netinfo->DNSServerIP[3];
+	if(ni->DNS[0] != 0x00 || ni->DNS[1] != 0x00 || ni->DNS[2] != 0x00 || ni->DNS[3] != 0x00){
+		DNS[0] = ni->DNS[0];
+		DNS[1] = ni->DNS[1];
+		DNS[2] = ni->DNS[2];
+		DNS[3] = ni->DNS[3];
 	}
 
-	DHCPEnable = netinfo->DHCPEnable;
+	if(ni->DHCP != 0) DHCP = ni->DHCP;
 }
 
 
@@ -184,23 +199,24 @@ void GetNetInfo(wiz_NetInfo *netinfo)
 {
 	getSHAR(netinfo->Mac); // get local MAC address
 	getSIPR(netinfo->IP); // get local IP address
-
-	//getSUBR(netinfo->Subnet); // get subnet mask address
-	netinfo->Subnet[0] = Subnet[0];
-	netinfo->Subnet[1] = Subnet[1];
-	netinfo->Subnet[2] = Subnet[2];
-	netinfo->Subnet[3] = Subnet[3];
-
-	getGAR(netinfo->Gateway); // get gateway address
-
-	netinfo->DNSServerIP[0] = DNSServerIP[0];
-	netinfo->DNSServerIP[1] = DNSServerIP[1];
-	netinfo->DNSServerIP[2] = DNSServerIP[2];
-	netinfo->DNSServerIP[3] = DNSServerIP[3];
-
-	netinfo->DHCPEnable = DHCPEnable;
+	getSUBR(netinfo->SN); // get subnet mask address
+	//netinfo->SN[0] = SN[0];
+	//netinfo->SN[1] = SN[1];
+	//netinfo->SN[2] = SN[2];
+	//netinfo->SN[3] = SN[3];
+	getGAR(netinfo->GW); // get gateway address
+	netinfo->DNS[0] = DNS[0];
+	netinfo->DNS[1] = DNS[1];
+	netinfo->DNS[2] = DNS[2];
+	netinfo->DNS[3] = DNS[3];
+	netinfo->DHCP = DHCP;
 }
 
+void GetDstInfo(uint8 s, uint8 *dstip, uint16 *dstport)
+{
+	getDIPR(s, dstip);
+	getDPORT(s, dstport);
+}
 
 /**
 @brief	This function set the network option.
@@ -223,83 +239,34 @@ void SetSocketOption(uint8 option_type, uint16 option_value)
 	}
 }
 
-
-/**
-@brief	This function get the interrupt vector.
-@return 	interrupt vector.
-*/  
-uint8 GetInterrupt(SOCKET s)
-{
-#ifdef __DEF_IINCHIP_INT__
-	return getISR(s);
-#else
-	return IINCHIP_READ(Sn_IR(s));
-#endif
-}
-
-
-/**
-@brief	This function put the interrupt vector.
-@return 	None.
-*/  
-void PutInterrupt(SOCKET s, uint8 vector)
-{
-#ifdef __DEF_IINCHIP_INT__
-	putISR(s, vector);
-#else
-	IINCHIP_WRITE(Sn_IR(s), vector);
-#endif
-}
-
-
 /**
 @brief	This function get the TCP socket status.
 @return 	TCP socket status.
 */  
-int8 GetTCPSocketStatus(SOCKET s)
+int8 GetTCPSocketStatus(uint8 s)
 {
-	int8 ret=0;
-
-	switch(getSn_SR(s)){
-	case SOCK_CLOSED:		/**< closed */
-		ret = (int8)STATUS_CLOSED;
-		break;
-	case SOCK_INIT:			/**< init state */
-		ret = STATUS_INIT;
-		break;
-	case SOCK_LISTEN:		/**< listen state */
-		ret = STATUS_LISTEN;
-		break;
-	case SOCK_SYNSENT:		/**< connection state */
-		ret = STATUS_SYNSENT;
-		break;
-	case SOCK_SYNRECV:		/**< connection state */
-		ret = STATUS_SYNRECV;
-		break;
-	case SOCK_ESTABLISHED:		/**< success to connect */
-		ret = STATUS_ESTABLISHED;
-		break;
-	case SOCK_FIN_WAIT:		/**< closing state */
-		ret = STATUS_FIN_WAIT;
-		break;
-	case SOCK_CLOSING:		/**< closing state */
-		ret = STATUS_CLOSING;
-		break;
-	case SOCK_TIME_WAIT:		/**< closing state */
-		ret = STATUS_TIME_WAIT;
-		break;
-	case SOCK_CLOSE_WAIT:		/**< closing state */
-		ret = STATUS_CLOSE_WAIT;
-		break;
-	case SOCK_LAST_ACK:		/**< closing state */
-		ret = STATUS_LAST_ACK;
-		break;
-	default:
-		if((IINCHIP_READ(Sn_MR(s))&0x0F) != Sn_MR_TCP)	ret = (int8)ERROR_NOT_TCP_SOCKET;
-		break;
+	if(s > TOTAL_SOCK_NUM) {
+		ERRA("wrong socket number(%d)", s);
+		return SOCKERR_NOT_TCP;
 	}
 
-	return ret;
+	switch(getSn_SR(s)){
+	case SOCK_CLOSED: return SOCKSTAT_CLOSED; // closed
+	case SOCK_INIT: return SOCKSTAT_INIT; // init state
+	case SOCK_LISTEN: return SOCKSTAT_LISTEN; // listen state
+	case SOCK_SYNSENT: return SOCKSTAT_SYNSENT; // connection state
+	case SOCK_SYNRECV: return SOCKSTAT_SYNRECV; // connection state
+	case SOCK_ESTABLISHED: return SOCKSTAT_ESTABLISHED; // success to connect
+	case SOCK_FIN_WAIT: return SOCKSTAT_FIN_WAIT; // closing state
+	case SOCK_CLOSING: return SOCKSTAT_CLOSING; // closing state
+	case SOCK_TIME_WAIT: return SOCKSTAT_TIME_WAIT; // closing state
+	case SOCK_CLOSE_WAIT: return SOCKSTAT_CLOSE_WAIT; // closing state
+	case SOCK_LAST_ACK: return SOCKSTAT_LAST_ACK; // closing state
+	default:
+		if((IINCHIP_READ(Sn_MR(Sn_MR_TCP))&0x0F) != Sn_MR_TCP)
+			return SOCKERR_NOT_UDP;
+		else return SOCKERR_WRONG_STATUS;
+	}
 }
 
 
@@ -307,34 +274,26 @@ int8 GetTCPSocketStatus(SOCKET s)
 @brief	This function get the UDP socket status.
 @return 	UDP socket status.
 */  
-int8 GetUDPSocketStatus(SOCKET s)
+int8 GetUDPSocketStatus(uint8 s)
 {
-	int8 ret=0;
-
-	switch(getSn_SR(s)){
-	case SOCK_CLOSED:		/**< closed */
-		ret = (int8)STATUS_CLOSED;
-		break;
-	case SOCK_UDP:			/**< udp socket */
-		ret = STATUS_UDP;
-		break;
-#if 0
-	case SOCK_IPRAW:		/**< ip raw mode socket */
-		ret = 11;
-		break;
-	case SOCK_MACRAW:		/**< mac raw mode socket */
-		ret = 12;
-		break;
-	case SOCK_PPPOE:		/**< pppoe socket */
-		ret = 13;
-		break;
-#endif
-	default:
-		if((IINCHIP_READ(Sn_MR(s))&0x0F) != Sn_MR_UDP)	ret = (int8)ERROR_NOT_UDP_SOCKET;
-		break;
+	if(s > TOTAL_SOCK_NUM) {
+		ERRA("wrong socket number(%d)", s);
+		return SOCKERR_NOT_UDP;
 	}
 
-	return ret;
+	switch(getSn_SR(s)){
+	case SOCK_CLOSED: return SOCKSTAT_CLOSED; //  closed
+	case SOCK_UDP: return SOCKSTAT_UDP; //  udp socket
+#if 0
+	case SOCK_IPRAW: return 11;		//  ip raw mode socket
+	case SOCK_MACRAW: return 12;	//  mac raw mode socket
+	case SOCK_PPPOE: return 13;		//  pppoe socket
+#endif
+	default:
+		if((IINCHIP_READ(Sn_MR(Sn_MR_UDP))&0x0F) != Sn_MR_UDP)
+			return SOCKERR_NOT_UDP;
+		else return SOCKERR_WRONG_STATUS;
+	}
 }
 
 
@@ -342,7 +301,7 @@ int8 GetUDPSocketStatus(SOCKET s)
 @brief	This Socket function get the TX free buffer size.
 @return 	size of TX free buffer size.
 */  
-uint16 GetSocketTxFreeBufferSize(SOCKET s)
+uint16 GetSocketTxFreeBufferSize(uint8 s)
 {
 	return getSn_TX_FSR(s); // get socket TX free buf size
 }
@@ -352,7 +311,7 @@ uint16 GetSocketTxFreeBufferSize(SOCKET s)
 @brief	This Socket function get the RX recv buffer size.
 @return 	size of RX recv buffer size.
 */  
-uint16 GetSocketRxRecvBufferSize(SOCKET s)
+uint16 GetSocketRxRecvBufferSize(uint8 s)
 {
 	return getSn_RX_RSR(s); // get socket RX recv buf size
 }
@@ -362,50 +321,36 @@ uint16 GetSocketRxRecvBufferSize(SOCKET s)
 @brief	This Socket function open TCP server socket.
 @return 	1 - success, 0 - fail.
 */  
-int8 TCPServerOpen(SOCKET s, uint16 port)
+int8 TCPServerOpen(uint8 s, uint16 port)
 {
-	uint8 ret;
-	
-	DBG("start");
-	
 	if(s > TOTAL_SOCK_NUM) {
 		ERRA("wrong socket number(%d)", s);
-		return (int8)ERROR_NOT_TCP_SOCKET;
+		return SOCKERR_NOT_TCP;
+	} else DBG("start");
+
+	if (port == 0) {	// if don't set the source port, set local_port number.
+		if(local_port == 0xffff) local_port = 0xc000;
+		else local_port++;
+		port = local_port;
 	}
 
 	TCPClose(s);
 	IINCHIP_WRITE(Sn_MR(s),Sn_MR_TCP);
-	if (port != 0) {
-		IINCHIP_WRITE(Sn_PORT0(s),(uint8)((port & 0xff00) >> 8));
-		IINCHIP_WRITE((Sn_PORT0(s) + 1),(uint8)(port & 0x00ff));
-	} else {
-		local_port++; // if don't set the source port, set local_port number.
-		IINCHIP_WRITE(Sn_PORT0(s),(uint8)((local_port & 0xff00) >> 8));
-		IINCHIP_WRITE((Sn_PORT0(s) + 1),(uint8)(local_port & 0x00ff));
-	}
+	IINCHIP_WRITE(Sn_PORT0(s),(uint8)((port & 0xff00) >> 8));
+	IINCHIP_WRITE((Sn_PORT0(s) + 1),(uint8)(port & 0x00ff));
 	IINCHIP_WRITE(Sn_CR(s),Sn_CR_OPEN); // run sockinit Sn_CR
-
-	/* wait to process the command... */
-	while( IINCHIP_READ(Sn_CR(s)) ) ;
-
+	while(IINCHIP_READ(Sn_CR(s)));	// wait to process the command...
 	DBGA("Sn_SR = %.2x , Protocol = %.2x", IINCHIP_READ(Sn_SR(s)), IINCHIP_READ(Sn_MR(s)));
 
-	if (IINCHIP_READ(Sn_SR(s)) == SOCK_INIT)
-	{
+	if (IINCHIP_READ(Sn_SR(s)) != SOCK_INIT) {
+		DBGA("wrong status(%d)", IINCHIP_READ(Sn_SR(s)));
+		return SOCKERR_WRONG_STATUS;
+	} else {
 		IINCHIP_WRITE(Sn_CR(s),Sn_CR_LISTEN);
-
-		/* wait to process the command... */
-		while( IINCHIP_READ(Sn_CR(s)) ) ;
-
-		ret = SUCCESS;
-	}
-	else
-	{
-		ret = FAIL;
-		DBG("Fail[invalid ip,port]");
+		while(IINCHIP_READ(Sn_CR(s)));	// wait to process the command...
 	}
 
-	return ret;
+	return RET_OK;
 }
 
 
@@ -413,85 +358,102 @@ int8 TCPServerOpen(SOCKET s, uint16 port)
 @brief	This Socket function open TCP client socket.
 @return 	1 - success, 0 - fail.
 */  
-int8 TCPClientOpen(SOCKET s, uint16 port, uint8 * destip, uint16 destport)
+int8 TCPClientOpen(uint8 s, uint16 sport, uint8 *dip, uint16 dport)
 {
 	int8 ret;
 
 	DBG("start");
+	ret = TCPCltOpenNB(s, sport, dip, dport);
+	if(ret != RET_OK) return ret;
+
+	do {
+		ret = TCPConnChk(s);
+	} while(ret == SOCKERR_BUSY);
+
+	return ret;
+}
+
+int8 TCPCltOpenNB(uint8 s, uint16 sport, uint8 *dip, uint16 dport)
+{
+	uint8 srcip[4], snmask[4];
 
 	if(s > TOTAL_SOCK_NUM) {
 		ERRA("wrong socket number(%d)", s);
-		return (int8)ERROR_NOT_TCP_SOCKET;
+		return SOCKERR_NOT_TCP;
+	} else if(dip == NULL) {
+		ERR("NULL Dst IP");
+		return SOCKERR_WRONG_ARG;
+	} else DBG("start");
+
+	if (sport == 0) {	// if don't set the source port, set local_port number.
+		if(local_port == 0xffff) local_port = 0xc000;
+		else local_port++;
+		sport = local_port;
 	}
 
 	TCPClose(s);
 	IINCHIP_WRITE(Sn_MR(s),Sn_MR_TCP);
-	if (port != 0) {
-		IINCHIP_WRITE(Sn_PORT0(s),(uint8)((port & 0xff00) >> 8));
-		IINCHIP_WRITE((Sn_PORT0(s) + 1),(uint8)(port & 0x00ff));
-	} else {
-		local_port++; // if don't set the source port, set local_port number.
-		IINCHIP_WRITE(Sn_PORT0(s),(uint8)((local_port & 0xff00) >> 8));
-		IINCHIP_WRITE((Sn_PORT0(s) + 1),(uint8)(local_port & 0x00ff));
-	}
+	IINCHIP_WRITE(Sn_PORT0(s),(uint8)((sport & 0xff00) >> 8));
+	IINCHIP_WRITE((Sn_PORT0(s) + 1),(uint8)(sport & 0x00ff));
 	IINCHIP_WRITE(Sn_CR(s),Sn_CR_OPEN); // run sockinit Sn_CR
-
-	/* wait to process the command... */
-	while( IINCHIP_READ(Sn_CR(s)) ) ;
-
+	while(IINCHIP_READ(Sn_CR(s)) );	// wait to process the command...
 	DBGA("Sn_SR = %.2x , Protocol = %.2x", IINCHIP_READ(Sn_SR(s)), IINCHIP_READ(Sn_MR(s)));
 
-	if 
-	(
-		((destip[0] == 0xFF) && (destip[1] == 0xFF) && (destip[2] == 0xFF) && (destip[3] == 0xFF)) ||
-	 	((destip[0] == 0x00) && (destip[1] == 0x00) && (destip[2] == 0x00) && (destip[3] == 0x00)) ||
-	 	(port == 0x00) 
-	) 
+	getSIPR(srcip);
+	getSUBR(snmask);
+	if(	((dip[0] == 0xFF) && (dip[1] == 0xFF) && 
+		 (dip[2] == 0xFF) && (dip[3] == 0xFF)) ||
+	 	((dip[0] == 0x00) && (dip[1] == 0x00) && 
+	 	 (dip[2] == 0x00) && (dip[3] == 0x00)) || (sport == 0x00) ) 
 	{
-		ret = FAIL;
-		DBG("Fail[invalid ip,port]");
+		DBG("invalid ip or port");
+		DBGA("SOCK(%d)-[%02x.%02x.%02x.%02x, %d]",s, 
+			dip[0], dip[1], dip[2], dip[3] , sport);
+		return SOCKERR_WRONG_ARG;
+	}
+	else if( (srcip[0]==0 && srcip[1]==0 && srcip[2]==0 && srcip[3]==0) && 
+		(snmask[0]!=0 || snmask[1]!=0 || snmask[2]!=0 || snmask[3]!=0) ) //Mikej : Errata
+	{
+		DBG("Source IP is NULL while SN Mask is Not NULL");
+		return SOCKERR_NULL_SRC_IP;
 	}
 	else
 	{
-		ret = SUCCESS;
-
-		// set destination IP
-		IINCHIP_WRITE(Sn_DIPR0(s),destip[0]);
-		IINCHIP_WRITE((Sn_DIPR0(s) + 1),destip[1]);
-		IINCHIP_WRITE((Sn_DIPR0(s) + 2),destip[2]);
-		IINCHIP_WRITE((Sn_DIPR0(s) + 3),destip[3]);
-		IINCHIP_WRITE(Sn_DPORT0(s),(uint8)((destport & 0xff00) >> 8));
-		IINCHIP_WRITE((Sn_DPORT0(s) + 1),(uint8)(destport & 0x00ff));
-
-		SetSubnet(Subnet);	// for errata
+		IINCHIP_WRITE(Sn_DIPR0(s),dip[0]);	// set destination IP
+		IINCHIP_WRITE((Sn_DIPR0(s) + 1),dip[1]);
+		IINCHIP_WRITE((Sn_DIPR0(s) + 2),dip[2]);
+		IINCHIP_WRITE((Sn_DIPR0(s) + 3),dip[3]);
+		IINCHIP_WRITE(Sn_DPORT0(s),(uint8)((dport & 0xff00) >> 8));
+		IINCHIP_WRITE((Sn_DPORT0(s) + 1),(uint8)(dport & 0x00ff));
+		//SetSubnet(SN);	// for errata
 		IINCHIP_WRITE(Sn_CR(s),Sn_CR_CONNECT);
-		/* wait for completion */
-		while ( IINCHIP_READ(Sn_CR(s)) ) ;
-		while ( IINCHIP_READ(Sn_SR(s)) != SOCK_SYNSENT )
-		{
-			if(IINCHIP_READ(Sn_SR(s)) == SOCK_ESTABLISHED)
-			{
-				break;
-			}
-#ifdef __DEF_IINCHIP_INT__
-			if (getISR(s) & Sn_IR_TIMEOUT)
-#else
-			if (IINCHIP_READ(Sn_IR(s)) & Sn_IR_TIMEOUT)
-#endif
-			{
-#ifdef __DEF_IINCHIP_INT__
-				putISR(s, getISR(s) & ~(Sn_IR_TIMEOUT));  // clear TIMEOUT Interrupt
-#else
-				IINCHIP_WRITE(Sn_IR(s), (Sn_IR_TIMEOUT));  // clear TIMEOUT Interrupt
-#endif
-				ret = (int8)ERROR_TIME_OUT;
-				break;
-			}
-		}
-		ClearSubnet();	// for errata
+		while (IINCHIP_READ(Sn_CR(s)) );	// wait for completion
 	}
 
-	return ret;
+	return RET_OK;
+}
+
+int8 TCPConnChk(uint8 s)
+{
+	uint8 socksr;
+
+	if(s > TOTAL_SOCK_NUM) {
+		ERRA("wrong socket number(%d)", s);
+		return SOCKERR_NOT_TCP;
+	}
+
+	socksr = IINCHIP_READ(Sn_SR(s));
+	//if(socksr == SOCK_ESTABLISHED || socksr == SOCK_SYNSENT) {		????????
+	if(socksr == SOCK_ESTABLISHED) {
+		//ClearSubnet();	// for errata
+		return RET_OK;
+	} else if(IINCHIP_READ(Sn_IR(s)) & Sn_IR_TIMEOUT) {
+		IINCHIP_WRITE(Sn_IR(s), (Sn_IR_TIMEOUT));  // clear TIMEOUT Interrupt
+		//ClearSubnet();	// for errata
+		return SOCKERR_TIME_OUT;
+	}
+
+	return SOCKERR_BUSY;
 }
 
 
@@ -499,37 +461,28 @@ int8 TCPClientOpen(SOCKET s, uint16 port, uint8 * destip, uint16 destport)
 @brief	This Socket function open UDP socket.
 @return 	1 - success, 0 - fail.
 */  
-int8 UDPOpen(SOCKET s, uint16 port)
+int8 UDPOpen(uint8 s, uint16 port)
 {
-	uint8 ret;
-
-	DBG("start");
-
 	if(s > TOTAL_SOCK_NUM) {
 		ERRA("wrong socket number(%d)", s);
-		return (int8)ERROR_NOT_UDP_SOCKET;
+		return SOCKERR_NOT_UDP;
+	} else DBG("start");
+
+	if (port == 0) {	// if don't set the source port, set local_port number.
+		if(local_port == 0xffff) local_port = 0xc000;
+		else local_port++;
+		port = local_port;
 	}
 
 	UDPClose(s);
 	IINCHIP_WRITE(Sn_MR(s),Sn_MR_UDP);
-	if (port != 0) {
-		IINCHIP_WRITE(Sn_PORT0(s),(uint8)((port & 0xff00) >> 8));
-		IINCHIP_WRITE((Sn_PORT0(s) + 1),(uint8)(port & 0x00ff));
-	} else {
-		local_port++; // if don't set the source port, set local_port number.
-		IINCHIP_WRITE(Sn_PORT0(s),(uint8)((local_port & 0xff00) >> 8));
-		IINCHIP_WRITE((Sn_PORT0(s) + 1),(uint8)(local_port & 0x00ff));
-	}
+	IINCHIP_WRITE(Sn_PORT0(s),(uint8)((port & 0xff00) >> 8));
+	IINCHIP_WRITE((Sn_PORT0(s) + 1),(uint8)(port & 0x00ff));
 	IINCHIP_WRITE(Sn_CR(s),Sn_CR_OPEN); // run sockinit Sn_CR
-
-	/* wait to process the command... */
-	while( IINCHIP_READ(Sn_CR(s)) ) ;
-
-	ret = SUCCESS;
-
+	while(IINCHIP_READ(Sn_CR(s)));	// wait to process the command...
 	DBGA("Sn_SR = %.2x , Protocol = %.2x", IINCHIP_READ(Sn_SR(s)), IINCHIP_READ(Sn_MR(s)));
 
-	return ret;
+	return RET_OK;
 }
 
 
@@ -537,232 +490,228 @@ int8 UDPOpen(SOCKET s, uint16 port)
 @brief	This function close the TCP socket and parameter is "s" which represent the socket number
 @return 	1 - success, 0 - fail.
 */ 
-int8 TCPClose(SOCKET s)
+int8 TCPClose(uint8 s)
 {
-	uint8 status=0;
-	uint8 cnt=0;
+	int8 ret;
 
 	DBG("start");
+	ret = TCPCloseNB(s);
+	if(ret != RET_OK) return ret;
+
+	do {
+		ret = TCPCloseCHK(s);
+	} while(ret == SOCKERR_BUSY);
+
+	return ret;
+}
+
+int8 TCPCloseNB(uint8 s)
+{
+	uint8 status;
 
 	if(s > TOTAL_SOCK_NUM) {
 		ERRA("wrong socket number(%d)", s);
-		return (int8)ERROR_NOT_TCP_SOCKET;
-	}
+		return SOCKERR_NOT_TCP;
+	} else DBG("start");
 
 	IINCHIP_WRITE(Sn_CR(s),Sn_CR_DISCON);
-	/* wait to process the command... */
-	while( IINCHIP_READ(Sn_CR(s)) ) ;
+	while(IINCHIP_READ(Sn_CR(s)));  // wait to process the command...
 
 	status = getSn_SR(s);
-	if(status == SOCK_ESTABLISHED)
-		return FAIL;
+	if(status == SOCK_CLOSED) return SOCKERR_WRONG_STATUS;
+	else tcp_close_elapse[s] = wizpf_get_systick();
 
-	// FIN wait
-	while(status != SOCK_CLOSED)
-	{
-		Delay_ms(100);
-		cnt++;
-		if(cnt > 2) break;
-	}
-
-	IINCHIP_WRITE(Sn_CR(s),Sn_CR_CLOSE);
-	/* wait to process the command... */
-	while( IINCHIP_READ(Sn_CR(s)) ) ;
-
-	/* clear interrupt */	
-	#ifdef __DEF_IINCHIP_INT__
-                /* all clear */
-	       putISR(s, 0x00);
-	#else
-                /* all clear */
-		IINCHIP_WRITE(Sn_IR(s), 0xFF);
-	#endif
-
-	return SUCCESS;
+	return RET_OK;
 }
 
+int8 TCPCloseCHK(uint8 s)
+{
+#define TIMEOUT_CLOSE_WAIT	200
+	uint8 status;
+
+	if(s > TOTAL_SOCK_NUM) {
+		ERRA("wrong socket number(%d)", s);
+		return SOCKERR_NOT_TCP;
+	} else DBG("start");
+
+	status = getSn_SR(s);
+	if(status == SOCK_CLOSED) goto END_OK;
+	else if(wizpf_tick_elapse(tcp_close_elapse[s]) < TIMEOUT_CLOSE_WAIT)
+		return SOCKERR_BUSY;
+
+	IINCHIP_WRITE(Sn_CR(s),Sn_CR_CLOSE);
+	while(IINCHIP_READ(Sn_CR(s)));	// wait to process the command...
+
+END_OK:
+	IINCHIP_WRITE(Sn_IR(s), 0xFF);	// interrupt all clear
+	return RET_OK;
+}
+
+int8 TCPClsRcvCHK(uint8 s)
+{
+#define TIMEOUT_CLOSE_WAIT	200
+	uint8 status;
+
+	if(s > TOTAL_SOCK_NUM) {
+		ERRA("wrong socket number(%d)", s);
+		return SOCKERR_NOT_TCP;
+	}
+
+	status = getSn_SR(s);
+	if(status == SOCK_CLOSED) goto END_OK;
+	if(status == SOCK_CLOSE_WAIT) {
+		IINCHIP_WRITE(Sn_CR(s),Sn_CR_CLOSE);
+		while(IINCHIP_READ(Sn_CR(s)));	// wait to process the command...
+	} else return SOCKERR_BUSY;
+
+END_OK:
+	IINCHIP_WRITE(Sn_IR(s), 0xFF);	// interrupt all clear
+	return RET_OK;
+}
 
 /**
 @brief	This function close the UDP socket and parameter is "s" which represent the socket number
 @return 	1 - success, 0 - fail.
 */ 
-int8 UDPClose(SOCKET s)
+int8 UDPClose(uint8 s)
 {
-	DBG("start");
-
 	if(s > TOTAL_SOCK_NUM) {
 		ERRA("wrong socket number(%d)", s);
-		return (int8)ERROR_NOT_UDP_SOCKET;
-	}
+		return SOCKERR_NOT_UDP;
+	} else DBG("start");
 
 	IINCHIP_WRITE(Sn_CR(s),Sn_CR_CLOSE);
-
-	/* wait to process the command... */
-	while( IINCHIP_READ(Sn_CR(s)) ) ;
-
-	/* clear interrupt */	
-	#ifdef __DEF_IINCHIP_INT__
-                /* all clear */
-	       putISR(s, 0x00);
-	#else
-                /* all clear */
-		IINCHIP_WRITE(Sn_IR(s), 0xFF);
-	#endif
-
-	return SUCCESS;
+	while(IINCHIP_READ(Sn_CR(s)));  // wait to process the command...
+	IINCHIP_WRITE(Sn_IR(s), 0xFF);	// interrupt all clear
+	return RET_OK;
 }
-
 
 /**
 @brief	This function used to send the data in TCP mode
 @return	1 for success else 0.
 */ 
-int16 TCPSend(SOCKET s, const uint8 * src, uint16 len)
+int32 TCPSend(uint8 s, const int8 *src, uint16 len)
 {
-	uint8 status=0;
-	uint16 ret=0;
-	uint16 freesize=0;
-	uint16 txrd, txrd_before_send;
+	int32 ret;
 
-	DBG("start");
+	while(1) {
+		ret = TCPSendNB(s, src, len);
+		if(ret == RET_OK) break;
+		if(ret != SOCKERR_BUSY) return ret;
+	}
+
+	while(1) {
+		ret = TCPSendCHK(s);
+		if(ret >= 0 || ret != SOCKERR_BUSY) break;
+	}
+	
+	return ret;
+}
+
+int8 TCPSendNB(uint8 s, const int8 *src, uint16 len)
+{
+	uint8 status = 0;
 
 	if(s > TOTAL_SOCK_NUM) {
 		ERRA("wrong socket number(%d)", s);
-		return (int16)ERROR_NOT_TCP_SOCKET;
-	}
+		return SOCKERR_NOT_TCP;
+	} else if(len == 0) {
+		ERR("Zero length");
+		return SOCKERR_WRONG_ARG;
+	} else DBG("start");
 
 	status = getSn_SR(s);
-	if(status == SOCK_CLOSED)			return (int16)ERROR_CLOSED;
-	if((IINCHIP_READ(Sn_MR(s))&0x0F) != Sn_MR_TCP)	return (int16)ERROR_NOT_TCP_SOCKET;
-	if(status == SOCK_FIN_WAIT)			return (int16)ERROR_FIN_WAIT;
-	if(status != SOCK_ESTABLISHED && status != SOCK_CLOSE_WAIT)	return (int16)ERROR_NOT_ESTABLISHED;
+	if(status == SOCK_CLOSED) return SOCKERR_CLOSED;
+	if((IINCHIP_READ(Sn_MR(s))&0x0F) != Sn_MR_TCP) return SOCKERR_NOT_TCP;
+	if(status == SOCK_FIN_WAIT) return SOCKERR_FIN_WAIT;
+	if(status != SOCK_ESTABLISHED && status != SOCK_CLOSE_WAIT) return SOCKERR_NOT_ESTABLISHED;
 
 	init_windowfull_retry_cnt(s);
+	if(len > getIINCHIP_TxMAX(s)) len = getIINCHIP_TxMAX(s); // check size not to exceed MAX size.
+	if(GetSocketTxFreeBufferSize(s) < len) return SOCKERR_BUSY;
 
-	if (len > getIINCHIP_TxMAX(s)) ret = getIINCHIP_TxMAX(s); // check size not to exceed MAX size.
-	else ret = len;
-
-	// if freebuf is available, start.
-	do 
-	{
-		freesize = GetSocketTxFreeBufferSize(s);
-		DBGA("socket %d freesize(%d) empty or error", s, freesize);
-	} while (freesize < ret);
-
-	// copy data
-	send_data_processing(s, (uint8 *)src, ret);
+	send_data_processing(s, (uint8*)src, len);	// copy data
         
-	txrd_before_send = IINCHIP_READ(Sn_TX_RD0(s));
-	txrd_before_send = (txrd_before_send << 8) + IINCHIP_READ(Sn_TX_RD0(s) + 1);
+	txrd_checker[s] = IINCHIP_READ(Sn_TX_RD0(s));
+	txrd_checker[s] = (txrd_checker[s] << 8) + IINCHIP_READ(Sn_TX_RD0(s) + 1);
 
 	IINCHIP_WRITE(Sn_CR(s),Sn_CR_SEND);
-	
-	/* wait to process the command... */
-	while( IINCHIP_READ(Sn_CR(s)) ) ;
-	
+	while(IINCHIP_READ(Sn_CR(s)));  // wait to process the command...
 
-#ifdef __DEF_IINCHIP_INT__
-	while ( (getISR(s) & Sn_IR_SEND_OK) != Sn_IR_SEND_OK )
-#else
-	while ( (IINCHIP_READ(Sn_IR(s)) & Sn_IR_SEND_OK) != Sn_IR_SEND_OK )
-#endif
-	{
-		if(IINCHIP_READ(Sn_SR(s)) == SOCK_CLOSED)
-		{
-			DBG("SOCK_CLOSED");                    
-			TCPClose(s);
-			return (int16)ERROR_CLOSED;
-		}
-	}
-#ifdef __DEF_IINCHIP_INT__
-	putISR(s, getISR(s) & (~Sn_IR_SEND_OK));
-#else
-	IINCHIP_WRITE(Sn_IR(s), Sn_IR_SEND_OK);
-#endif
-
-                
-	txrd = IINCHIP_READ(Sn_TX_RD0(s));
-	txrd = (txrd << 8) + IINCHIP_READ(Sn_TX_RD0(s) + 1);
-
-	if(txrd > txrd_before_send) {
-		ret = txrd - txrd_before_send;
-	} else {
-		ret = (0xffff - txrd_before_send) + txrd + 1;
-	}
-
-	return ret;
+	return RET_OK;
 }
-
 
 /**
 @brief	This function used to send the data in TCP mode
 @return	1 for success else 0.
 */ 
-int16 TCPReSend(SOCKET s)
+int32 TCPReSend(uint8 s)
 {
-	uint8 status=0;
-	uint16 ret=0;
-	uint16 txrd, txrd_before_send;
+	int32 ret;
 
-	DBG("start");
-
-	if(s > TOTAL_SOCK_NUM) {
-		ERRA("wrong socket number(%d)", s);
-		return (int16)ERROR_NOT_TCP_SOCKET;
+	while(1) {
+		ret = TCPReSendNB(s);
+		if(ret == RET_OK) break;
+		if(ret != SOCKERR_BUSY) return ret;
 	}
 
-	status = getSn_SR(s);
-	if(status == SOCK_CLOSED)			return (int16)ERROR_CLOSED;
-	if((IINCHIP_READ(Sn_MR(s))&0x0F) != Sn_MR_TCP)	return (int16)ERROR_NOT_TCP_SOCKET;
-	if(status == SOCK_FIN_WAIT)			return (int16)ERROR_FIN_WAIT;
-	if(status != SOCK_ESTABLISHED && status != SOCK_CLOSE_WAIT)	return (int16)ERROR_NOT_ESTABLISHED;
-
-	if(incr_windowfull_retry_cnt(s) > WINDOWFULL_MAX_RETRY_NUM)
-		return ERROR_WINDOW_FULL;
-
-	txrd_before_send = IINCHIP_READ(Sn_TX_RD0(s));
-	txrd_before_send = (txrd_before_send << 8) + IINCHIP_READ(Sn_TX_RD0(s) + 1);
-  
-	IINCHIP_WRITE(Sn_CR(s),Sn_CR_SEND);
+	while(1) {
+		ret = TCPSendCHK(s);
+		if(ret >= 0 || ret != SOCKERR_BUSY) break;
+	}
 	
-	/* wait to process the command... */
-	while( IINCHIP_READ(Sn_CR(s)) ) ;
-	
-
-#ifdef __DEF_IINCHIP_INT__
-	while ( (getISR(s) & Sn_IR_SEND_OK) != Sn_IR_SEND_OK )
-#else
-	while ( (IINCHIP_READ(Sn_IR(s)) & Sn_IR_SEND_OK) != Sn_IR_SEND_OK )
-#endif
-	{
-		if(IINCHIP_READ(Sn_SR(s)) == SOCK_CLOSED)
-		{
-			DBG("SOCK_CLOSED");                    
-			TCPClose(s);
-			return (int16)ERROR_CLOSED;
-		}
-	}
-#ifdef __DEF_IINCHIP_INT__
-	putISR(s, getISR(s) & (~Sn_IR_SEND_OK));
-#else
-	IINCHIP_WRITE(Sn_IR(s), Sn_IR_SEND_OK);
-#endif
-
-                
-	txrd = IINCHIP_READ(Sn_TX_RD0(s));
-	txrd = (txrd << 8) + IINCHIP_READ(Sn_TX_RD0(s) + 1);
-
-	if(txrd > txrd_before_send) {
-		ret = txrd - txrd_before_send;
-	} else {
-		ret = (0xffff - txrd_before_send) + txrd + 1;
-	}
-
-	Delay_ms(WINDOWFULL_WAIT_TIME);
-
 	return ret;
 }
 
+int8 TCPReSendNB(uint8 s)
+{
+	uint8 status=0;
+
+	if(s > TOTAL_SOCK_NUM) {
+		ERRA("wrong socket number(%d)", s);
+		return SOCKERR_NOT_TCP;
+	} else DBG("start");
+
+	status = getSn_SR(s);
+	if(status == SOCK_CLOSED) return SOCKERR_CLOSED;
+	if((IINCHIP_READ(Sn_MR(s))&0x0F) != Sn_MR_TCP) return SOCKERR_NOT_TCP;
+	if(status == SOCK_FIN_WAIT) return SOCKERR_FIN_WAIT;
+	if(status != SOCK_ESTABLISHED && status != SOCK_CLOSE_WAIT) return SOCKERR_NOT_ESTABLISHED;
+
+	status = incr_windowfull_retry_cnt(s);
+	if(status == 1) tcp_resend_elapse[s] = wizpf_get_systick();
+	else if(status > WINDOWFULL_MAX_RETRY_NUM) return SOCKERR_WINDOW_FULL;
+	else if(wizpf_tick_elapse(tcp_resend_elapse[s]) < WINDOWFULL_WAIT_TIME)
+		return SOCKERR_BUSY;
+
+	txrd_checker[s] = IINCHIP_READ(Sn_TX_RD0(s));
+	txrd_checker[s] = (txrd_checker[s] << 8) + IINCHIP_READ(Sn_TX_RD0(s) + 1);
+  
+	IINCHIP_WRITE(Sn_CR(s),Sn_CR_SEND);
+	while(IINCHIP_READ(Sn_CR(s)));  // wait to process the command...
+	
+	return RET_OK;
+}
+
+int32 TCPSendCHK(uint8 s)
+{
+	uint16 txrd;
+
+	if(!(IINCHIP_READ(Sn_IR(s)) & Sn_IR_SEND_OK)) {
+		if(IINCHIP_READ(Sn_SR(s)) == SOCK_CLOSED) {
+			DBG("SOCK_CLOSED");                    
+			TCPClose(s);
+			return SOCKERR_CLOSED;
+		}
+		return SOCKERR_BUSY;
+	} else IINCHIP_WRITE(Sn_IR(s), Sn_IR_SEND_OK);
+         
+	txrd = IINCHIP_READ(Sn_TX_RD0(s));
+	txrd = (txrd << 8) + IINCHIP_READ(Sn_TX_RD0(s) + 1);
+
+	if(txrd > txrd_checker[s]) return txrd - txrd_checker[s];
+	else return (0xffff - txrd_checker[s]) + txrd + 1;
+}
 
 /**
 @brief	This function is an application I/F function which is used to receive the data in TCP mode.
@@ -770,42 +719,34 @@ int16 TCPReSend(SOCKET s)
 		
 @return	received data size for success else -1.
 */ 
-int16 TCPRecv(SOCKET s, uint8 * buf, uint16 len)
+int32 TCPRecv(uint8 s, int8 *buf, uint16 len)
 {
-	uint8 status=0;
-	uint16 ret=0, RSR_len=0;
-
-	DBG("start");
+	uint8 status = 0;
+	uint16 RSR_len = 0;
 
 	if(s > TOTAL_SOCK_NUM) {
 		ERRA("wrong socket number(%d)", s);
-		return (int16)ERROR_NOT_TCP_SOCKET;
+		return SOCKERR_NOT_TCP;
+	} else if(len == 0) {
+		ERR("Zero length");
+		return SOCKERR_WRONG_ARG;
 	}
 
-	RSR_len = GetSocketRxRecvBufferSize(s);
+	RSR_len = GetSocketRxRecvBufferSize(s);	// Check Receive Buffer of W5200
 	if(RSR_len == 0){
 		status = getSn_SR(s);
-		if(status == SOCK_CLOSED)				return (int16)ERROR_CLOSED;
-		if((IINCHIP_READ(Sn_MR(s))&0x0F) != 0x01)		return (int16)ERROR_NOT_TCP_SOCKET;
-		if(status == SOCK_CLOSE_WAIT)				return (int16)ERROR_CLOSE_WAIT;
-		if(status != SOCK_ESTABLISHED && status != SOCK_FIN_WAIT)	return (int16)ERROR_NOT_ESTABLISHED;
-		if(RSR_len == 0)					return  RSR_len;	// Check Receive Buffer of W5200
-	}
-
-	if ( len > 0 )
-	{
+		if(status == SOCK_CLOSED) return SOCKERR_CLOSED;
+		if((IINCHIP_READ(Sn_MR(s))&0x0F) != Sn_MR_TCP) return SOCKERR_NOT_TCP;
+		if(status == SOCK_CLOSE_WAIT) return SOCKERR_CLOSE_WAIT;
+		if(status != SOCK_ESTABLISHED && status != SOCK_CLOSE_WAIT) return SOCKERR_NOT_ESTABLISHED;
+	} else {
 		if(len < RSR_len) RSR_len = len;
-
-		recv_data_processing(s, buf, RSR_len);
+		recv_data_processing(s, (uint8*)buf, RSR_len);
 		IINCHIP_WRITE(Sn_CR(s),Sn_CR_RECV);
-
-		/* wait to process the command... */
-		while( IINCHIP_READ(Sn_CR(s)));
-		/* ------- */
-
-		ret = RSR_len;
+		while(IINCHIP_READ(Sn_CR(s)));		// wait to process the command...
 	}
-	return ret;
+
+	return RSR_len;
 }
 
 
@@ -815,33 +756,56 @@ int16 TCPRecv(SOCKET s, uint8 * buf, uint16 len)
 		
 @return	This function return send data size for success else -1.
 */ 
-int16 UDPSend(SOCKET s, const uint8 * buf, uint16 len, uint8 * addr, uint16 port)
+int32 UDPSend(uint8 s, const int8 *buf, uint16 len, uint8 *addr, uint16 port)
 {
-	uint8 status=0;
-	uint16 ret=0;
-	
-	DBG("start");
+	int32 ret = 0;
+
+	ret = UDPSendNB(s, buf, len, addr, port);
+	if(ret < RET_OK) return ret;
+	else len = ret;
+
+	do {
+		ret = UDPSendCHK(s);
+		if(ret == RET_OK) return len;
+		if(ret != SOCKERR_BUSY) return ret;
+	} while(1);
+}
+
+int32 UDPSendNB(uint8 s, const int8 *buf, uint16 len, uint8 *addr, uint16 port)
+{
+	uint8 srcip[4], snmask[4], status = 0;
 
 	if(s > TOTAL_SOCK_NUM) {
 		ERRA("wrong socket number(%d)", s);
-		return (int16)ERROR_NOT_UDP_SOCKET;
-	}
+		return SOCKERR_NOT_UDP;
+	} else if(len == 0 || addr == NULL) {
+		if(len == 0) ERR("Zero length");
+		else ERR("NULL Dst IP");
+		return SOCKERR_WRONG_ARG;
+	} else DBG("start");
 
 	status = getSn_SR(s);
-	if(status == SOCK_CLOSED)			return (int16)ERROR_CLOSED;
-	if((IINCHIP_READ(Sn_MR(s))&0x0F) != Sn_MR_UDP)	return (int16)ERROR_NOT_UDP_SOCKET;
-	if(status != SOCK_UDP)				return (int16)ERROR_NOT_UDP_SOCKET;
+	if(status == SOCK_CLOSED) return SOCKERR_CLOSED;
+	if((IINCHIP_READ(Sn_MR(s))&0x0F) != Sn_MR_UDP) return SOCKERR_NOT_UDP;
+	if(status != SOCK_UDP) return SOCKERR_NOT_UDP;
 
-	if (len > getIINCHIP_TxMAX(s)) ret = getIINCHIP_TxMAX(s); // check size not to exceed MAX size.
-	else ret = len;
+	if (len > getIINCHIP_TxMAX(s)) len = getIINCHIP_TxMAX(s); // check size not to exceed MAX size.
 
-	if(	((addr[0] == 0x00) && (addr[1] == 0x00) && (addr[2] == 0x00) && (addr[3] == 0x00)) ||
-		((port == 0x00)) ||(ret == 0) ) 
+	getSIPR(srcip);
+	getSUBR(snmask);
+	if((addr[0]==0x00 && addr[1]==0x00 && addr[2]==0x00 && 
+		addr[3]==0x00) || (port==0x00))
 	{
-		/* added return value */
-		ret = 0;
-		DBGA("%d Fail[%.2x.%.2x.%.2x.%.2x, %.d, %d]",s, addr[0], addr[1], addr[2], addr[3] , port, len);
-		DBG("Fail[invalid ip,port]");
+		DBG("invalid ip or port");
+		DBGA("SOCK(%d)-[%02x.%02x.%02x.%02x, %d, %d]",s, 
+			addr[0], addr[1], addr[2], addr[3] , port, len);
+		return SOCKERR_WRONG_ARG;
+	}
+	else if( (srcip[0]==0 && srcip[1]==0 && srcip[2]==0 && srcip[3]==0) && 
+		(snmask[0]!=0 || snmask[1]!=0 || snmask[2]!=0 || snmask[3]!=0) ) //Mikej : Errata
+	{
+		DBG("Source IP is NULL while SN Mask is Not NULL");
+		return SOCKERR_NULL_SRC_IP;
 	}
 	else
 	{
@@ -851,50 +815,32 @@ int16 UDPSend(SOCKET s, const uint8 * buf, uint16 len, uint8 * addr, uint16 port
 		IINCHIP_WRITE((Sn_DIPR0(s) + 3),addr[3]);
 		IINCHIP_WRITE(Sn_DPORT0(s),(uint8)((port & 0xff00) >> 8));
 		IINCHIP_WRITE((Sn_DPORT0(s) + 1),(uint8)(port & 0x00ff));
-		// copy data
-		send_data_processing(s, (uint8 *)buf, ret);
-
-		SetSubnet(Subnet);	// for errata
+		send_data_processing(s, (uint8*)buf, len);	// copy data
+		//SetSubnet(SN);	// for errata
 		IINCHIP_WRITE(Sn_CR(s),Sn_CR_SEND);
-
-		/* wait to process the command... */
-		while( IINCHIP_READ(Sn_CR(s)) ) ;
-
-#ifdef __DEF_IINCHIP_INT__
-		while ( (getISR(s) & Sn_IR_SEND_OK) != Sn_IR_SEND_OK ) 
-#else
-		while ( (IINCHIP_READ(Sn_IR(s)) & Sn_IR_SEND_OK) != Sn_IR_SEND_OK ) 
-#endif
-		{
-#ifdef __DEF_IINCHIP_INT__
-		if (getISR(s) & Sn_IR_TIMEOUT)
-#else
-			if (IINCHIP_READ(Sn_IR(s)) & Sn_IR_TIMEOUT)
-#endif
-			{
-				DBG("send fail");
-				/* clear interrupt */
-#ifdef __DEF_IINCHIP_INT__
-				putISR(s, getISR(s) & ~(Sn_IR_SEND_OK | Sn_IR_TIMEOUT));  /* clear SEND_OK & TIMEOUT */
-#else
-				IINCHIP_WRITE(Sn_IR(s), (Sn_IR_SEND_OK | Sn_IR_TIMEOUT)); /* clear SEND_OK & TIMEOUT */
-#endif
-				return (int16)ERROR_TIME_OUT;
-			}
-		}
-
-#ifdef __DEF_IINCHIP_INT__
-		putISR(s, getISR(s) & (~Sn_IR_SEND_OK));
-#else
-		IINCHIP_WRITE(Sn_IR(s), Sn_IR_SEND_OK);
-#endif
-
-		ClearSubnet();	// for errata
+		while(IINCHIP_READ(Sn_CR(s)));  // wait to process the command...
 	}
 
-	return ret;
+	return len;
 }
 
+int8 UDPSendCHK(uint8 s)
+{
+	uint8 ir = IINCHIP_READ(Sn_IR(s));
+
+	//DBGA("WATCH UDP Send CHK - sock(%d)", s);
+	if(!(ir & Sn_IR_SEND_OK)) {
+		if(ir & Sn_IR_TIMEOUT) {
+			DBG("send fail");
+			IINCHIP_WRITE(Sn_IR(s), (Sn_IR_SEND_OK | Sn_IR_TIMEOUT)); // clear SEND_OK & TIMEOUT
+			return SOCKERR_TIME_OUT;
+		}
+		return SOCKERR_BUSY;
+	} else IINCHIP_WRITE(Sn_IR(s), Sn_IR_SEND_OK);
+	//ClearSubnet();	// for errata
+
+	return RET_OK;
+}
 
 /**
 @brief	This function is an application I/F function which is used to receive the data in other then
@@ -902,64 +848,90 @@ int16 UDPSend(SOCKET s, const uint8 * buf, uint16 len, uint8 * addr, uint16 port
 	
 @return	This function return received data size for success else -1.
 */ 
-int16 UDPRecv(SOCKET s, uint8 * buf, uint16 len, uint8 * addr, uint16 *port)
+int32 UDPRecv(uint8 s, int8 *buf, uint16 len, uint8 *addr, uint16 *port)
 {
-	uint8 status=0;
-	uint16 data_len=0, RSR_len=0;
-
-	DBG("start");
+	uint8 prebuf[8], status = 0;
+	uint16 tmp_len = 0, RSR_len = 0;
 
 	if(s > TOTAL_SOCK_NUM) {
 		ERRA("wrong socket number(%d)", s);
-		return (int16)ERROR_NOT_UDP_SOCKET;
+		return SOCKERR_NOT_UDP;
+	} else if(len == 0) {
+		ERR("Zero length");
+		return SOCKERR_WRONG_ARG;
 	}
 
 	status = getSn_SR(s);
-	if(status == SOCK_CLOSED)				return (int16)ERROR_CLOSED;
-	if((IINCHIP_READ(Sn_MR(s))&0x0F) != Sn_MR_UDP)		return (int16)ERROR_NOT_UDP_SOCKET;
-	if(status != SOCK_UDP)					return (int16)ERROR_NOT_UDP_SOCKET;
-	
-	RSR_len = GetSocketRxRecvBufferSize(s);
-	if(RSR_len == 0) return RSR_len;	// Check Receive Buffer of W5200
+	if(status == SOCK_CLOSED) return SOCKERR_CLOSED;
+	if((IINCHIP_READ(Sn_MR(s))&0x0F) != Sn_MR_UDP) return SOCKERR_NOT_UDP;
+	if(status != SOCK_UDP) return SOCKERR_NOT_UDP;
 
-	if ( len > 0 )
-	{
-		switch (IINCHIP_READ(Sn_MR(s)) & 0x07)
-		{
-		case Sn_MR_UDP :
-			recv_data_processing(s, buf, RSR_len);
-			// read peer's IP address, port number.
-			addr[0] = buf[0];
-			addr[1] = buf[1];
-			addr[2] = buf[2];
-			addr[3] = buf[3];
-			*port = buf[4];
-			*port = (*port << 8) + buf[5];
-			data_len = buf[6];
-			data_len = (data_len << 8) + buf[7];
-			
-			DBG("UDP msg arrived");
-			DBGA("source Port : %d", *port);
-			DBGA("source IP : %d.%d.%d.%d", addr[0], addr[1], addr[2], addr[3]);
-			DBGA("payload length : %d", data_len);
-
-			memcpy(buf, &buf[8], data_len); // data copy.
-
-			break;
-
-		case Sn_MR_IPRAW :
-		case Sn_MR_MACRAW :
-		default :
-			break;
-	}
+	RSR_len = GetSocketRxRecvBufferSize(s);	// Check Receive Buffer of W5200
+	if(RSR_len < 8) {
+		DBGA("wrong data received (%d)", RSR_len);
+		recv_data_ignore(s, RSR_len);
 		IINCHIP_WRITE(Sn_CR(s),Sn_CR_RECV);
+		while(IINCHIP_READ(Sn_CR(s)));
+		return SOCKERR_NOT_SPECIFIED;
+	} else {
+		recv_data_processing(s, prebuf, 8);
+		IINCHIP_WRITE(Sn_CR(s),Sn_CR_RECV);	// 데이터를 처리한 후 이것을 해줘야 적용됨
+		if(addr) {		// read peer's IP address, port number.
+			addr[0] = prebuf[0];
+			addr[1] = prebuf[1];
+			addr[2] = prebuf[2];
+			addr[3] = prebuf[3];
+		}
+		if(port) {
+			*port = prebuf[4];
+			*port = (*port << 8) + prebuf[5];
+		}
+		tmp_len = prebuf[6];	// 이게 이상한 값일 경우 답 없음
+		tmp_len = (tmp_len << 8) + prebuf[7];
+		while(IINCHIP_READ(Sn_CR(s)));	// IINCHIP_WRITE(Sn_CR(s),Sn_CR_RECV); 명령 후 해야함, 시간 벌려고 바로 안함
 
-		/* wait to process the command... */
-		while( IINCHIP_READ(Sn_CR(s)) ) ;
+		DBGA("UDP Recv - addr(%d.%d.%d.%d:%d), t(%d), R(%d)", 
+			addr[0], addr[1], addr[2], addr[3], *port, tmp_len, RSR_len);
+		if(tmp_len == 0) {	// 길이가 0으로 나와 이상한 경우
+			ERR("UDP Recv len Zero - remove rest all");
+			recv_data_ignore(s, GetSocketRxRecvBufferSize(s));	// 전부 제거
+			IINCHIP_WRITE(Sn_CR(s),Sn_CR_RECV);
+			while(IINCHIP_READ(Sn_CR(s)));
+			return SOCKERR_NOT_SPECIFIED;
+		}
+		RSR_len = tmp_len;
 	}
+
+	if(len < RSR_len) {		// 해당 패킷이 버퍼보다 큰 경우 뒷부분은 그냥 버림
+		tmp_len = RSR_len - len;
+		RSR_len = len;
+		DBGA("Recv buffer not enough - len(%d)", len);
+	} else tmp_len = 0;
+
+	switch (IINCHIP_READ(Sn_MR(s)) & 0x07)
+	{
+	case Sn_MR_UDP:
+		recv_data_processing(s, (uint8*)buf, RSR_len);
+		IINCHIP_WRITE(Sn_CR(s),Sn_CR_RECV);
+		if(tmp_len) {
+			while(IINCHIP_READ(Sn_CR(s)));
+			DBG("Ignore rest data");
+			recv_data_ignore(s, tmp_len); // 안버리면 이후 처리가 곤란함
+			IINCHIP_WRITE(Sn_CR(s),Sn_CR_RECV);
+			while(IINCHIP_READ(Sn_CR(s)));
+			tmp_len = GetSocketRxRecvBufferSize(s);
+			if(tmp_len) DBGA("another rest data(%d)", tmp_len);
+			else DBG("No rest data");
+		}
+		break;
+	case Sn_MR_IPRAW:	
+	case Sn_MR_MACRAW:
+	default :
+		break;
+	}
+	while(IINCHIP_READ(Sn_CR(s)));
 	
-	DBG("recvfrom() end ..");
-	return data_len;
+	return RSR_len;
 }
 
 

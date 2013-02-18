@@ -80,6 +80,7 @@
 
 	#include "stm32f10x.h"
 	#include "host/wizspi.h"
+	#define MAX_TICK_ELAPSE	0x7FFFFFFF	// elapse¡¤I A©ªA¢´¡Æ¢®¢¥ECN +©ö©¡Ca AO¢¥e ¡Æ¨£
 
 #endif
 
@@ -175,72 +176,82 @@
 #define WIZ_LOG_LEVEL 2
 #endif
 
-#ifndef FILE_LOG_SILENCE
-#ifdef PRINT_TIME_LOG
-#define ERR(fmt)  do { if(WIZ_LOG_LEVEL > 0) printf("### ERROR ### [%5d.%03d] %s(%d): "fmt"\r\n", \
+#if (WIZ_LOG_LEVEL > 0) && defined(PRINT_TIME_LOG) && !defined(FILE_LOG_SILENCE)
+#define ERR(fmt)  do { printf("### ERROR ### [%5d.%03d] %s(%d): "fmt"\r\n", \
 	wizpf_get_systick()/1000, wizpf_get_systick()%1000, __FUNCTION__, __LINE__); } while(0)
-#define ERRA(fmt, ...)  do { if(WIZ_LOG_LEVEL > 0) printf("### ERROR ### [%5d.%03d] %s(%d): "fmt"\r\n", \
+#define ERRA(fmt, ...)  do { printf("### ERROR ### [%5d.%03d] %s(%d): "fmt"\r\n", \
 	wizpf_get_systick()/1000, wizpf_get_systick()%1000, __FUNCTION__, __LINE__, __VA_ARGS__); } while(0)
-#define ERRF(fmt) do { if(WIZ_LOG_LEVEL > 0) printf("### ERROR ### [%5d.%03d] %s(%d): "fmt, \
+#define ERRF(fmt) do { printf("### ERROR ### [%5d.%03d] %s(%d): "fmt, \
 	wizpf_get_systick()/1000, wizpf_get_systick()%1000, __FUNCTION__, __LINE__); } while(0)
-#define ERRFA(fmt, ...) do { if(WIZ_LOG_LEVEL > 0) printf("### ERROR ### [%5d.%03d] %s(%d): "fmt, \
+#define ERRFA(fmt, ...) do { printf("### ERROR ### [%5d.%03d] %s(%d): "fmt, \
 	wizpf_get_systick()/1000, wizpf_get_systick()%1000, __FUNCTION__, __LINE__, __VA_ARGS__); } while(0)
-
-#define LOG(fmt)  do { if(WIZ_LOG_LEVEL > 1) printf("[%5d.%03d] "fmt"\r\n", \
-	wizpf_get_systick()/1000, wizpf_get_systick()%1000); } while(0)
-#define LOGA(fmt, ...)  do { if(WIZ_LOG_LEVEL > 1) printf("[%5d.%03d] "fmt"\r\n", \
-	wizpf_get_systick()/1000, wizpf_get_systick()%1000, __VA_ARGS__); } while(0)
-#define LOGF(fmt) do { if(WIZ_LOG_LEVEL > 1) printf("[%5d.%03d] "fmt, \
-	wizpf_get_systick()/1000, wizpf_get_systick()%1000); } while(0)
-#define LOGFA(fmt, ...) do { if(WIZ_LOG_LEVEL > 1) printf("[%5d.%03d] "fmt, \
-	wizpf_get_systick()/1000, wizpf_get_systick()%1000, __VA_ARGS__); } while(0)
-
-#define DBG(fmt)  do { if(WIZ_LOG_LEVEL > 2) printf("[D] [%5d.%03d] %s(%d): "fmt"\r\n", \
-	wizpf_get_systick()/1000, wizpf_get_systick()%1000, __FUNCTION__, __LINE__); } while(0)
-#define DBGA(fmt, ...)  do { if(WIZ_LOG_LEVEL > 2) printf("[D] [%5d.%03d] %s(%d): "fmt"\r\n", \
-	wizpf_get_systick()/1000, wizpf_get_systick()%1000, __FUNCTION__, __LINE__, __VA_ARGS__); } while(0)
-#define DBGF(fmt) do { if(WIZ_LOG_LEVEL > 2) printf("[D] [%5d.%03d] %s(%d): "fmt, \
-	wizpf_get_systick()/1000, wizpf_get_systick()%1000, __FUNCTION__, __LINE__); } while(0)
-#define DBGFA(fmt, ...) do { if(WIZ_LOG_LEVEL > 2) printf("[D] [%5d.%03d] %s(%d): "fmt, \
-	wizpf_get_systick()/1000, wizpf_get_systick()%1000, __FUNCTION__, __LINE__, __VA_ARGS__); } while(0)
-
-#else
-#define ERR(fmt)  do { if(WIZ_LOG_LEVEL > 0) printf("### ERROR ### %s(%d): "fmt"\r\n", __FUNCTION__, __LINE__); } while(0)
-#define ERRA(fmt, ...)  do { if(WIZ_LOG_LEVEL > 0) printf("### ERROR ### %s(%d): "fmt"\r\n", __FUNCTION__, __LINE__, __VA_ARGS__); } while(0)
-#define ERRF(fmt) do { if(WIZ_LOG_LEVEL > 0) printf("### ERROR ### %s(%d): "fmt, __FUNCTION__, __LINE__); } while(0)
-#define ERRFA(fmt, ...) do { if(WIZ_LOG_LEVEL > 0) printf("### ERROR ### %s(%d): "fmt, __FUNCTION__, __LINE__, __VA_ARGS__); } while(0)
-
-#define LOG(fmt)  do { if(WIZ_LOG_LEVEL > 1) printf(fmt"\r\n"); } while(0)
-#define LOGA(fmt, ...)  do { if(WIZ_LOG_LEVEL > 1) printf(fmt"\r\n", __VA_ARGS__); } while(0)
-#define LOGF(fmt) do { if(WIZ_LOG_LEVEL > 1) printf(fmt); } while(0)
-#define LOGFA(fmt, ...) do { if(WIZ_LOG_LEVEL > 1) printf(fmt, __VA_ARGS__); } while(0)
-
-#define DBG(fmt)  do { if(WIZ_LOG_LEVEL > 2) printf("[D] %s(%d): "fmt"\r\n", __FUNCTION__, __LINE__); } while(0)
-#define DBGA(fmt, ...)  do { if(WIZ_LOG_LEVEL > 2) printf("[D] %s(%d): "fmt"\r\n", __FUNCTION__, __LINE__, __VA_ARGS__); } while(0)
-#define DBGF(fmt) do { if(WIZ_LOG_LEVEL > 2) printf("[D] %s(%d): "fmt, __FUNCTION__, __LINE__); } while(0)
-#define DBGFA(fmt, ...) do { if(WIZ_LOG_LEVEL > 2) printf("[D] %s(%d): "fmt, __FUNCTION__, __LINE__, __VA_ARGS__); } while(0)
-#endif
-
-#define NL1	printf("\r\n");
-#define NL2	printf("\r\n\r\n");
-#define NL3	printf("\r\n\r\n\r\n");
-
+#elif (WIZ_LOG_LEVEL > 0) && !defined(PRINT_TIME_LOG) && !defined(FILE_LOG_SILENCE)
+#define ERR(fmt)  do { printf("### ERROR ### %s(%d): "fmt"\r\n", __FUNCTION__, __LINE__); } while(0)
+#define ERRA(fmt, ...)  do { printf("### ERROR ### %s(%d): "fmt"\r\n", __FUNCTION__, __LINE__, __VA_ARGS__); } while(0)
+#define ERRF(fmt) do { printf("### ERROR ### %s(%d): "fmt, __FUNCTION__, __LINE__); } while(0)
+#define ERRFA(fmt, ...) do { printf("### ERROR ### %s(%d): "fmt, __FUNCTION__, __LINE__, __VA_ARGS__); } while(0)
 #else
 #define ERR(fmt)
 #define ERRA(fmt, ...)
 #define ERRF(fmt)
 #define ERRFA(fmt, ...)
+#endif
 
+#if (WIZ_LOG_LEVEL > 1) && defined(PRINT_TIME_LOG) && !defined(FILE_LOG_SILENCE)
+#define LOG(fmt)  do { printf("[%5d.%03d] "fmt"\r\n", \
+	wizpf_get_systick()/1000, wizpf_get_systick()%1000); } while(0)
+#define LOGA(fmt, ...)  do { printf("[%5d.%03d] "fmt"\r\n", \
+	wizpf_get_systick()/1000, wizpf_get_systick()%1000, __VA_ARGS__); } while(0)
+#define LOGF(fmt) do { printf("[%5d.%03d] "fmt, \
+	wizpf_get_systick()/1000, wizpf_get_systick()%1000); } while(0)
+#define LOGFA(fmt, ...) do { printf("[%5d.%03d] "fmt, \
+	wizpf_get_systick()/1000, wizpf_get_systick()%1000, __VA_ARGS__); } while(0)
+#elif (WIZ_LOG_LEVEL > 1) && !defined(PRINT_TIME_LOG) && !defined(FILE_LOG_SILENCE)
+#define LOG(fmt)  do { printf(fmt"\r\n"); } while(0)
+#define LOGA(fmt, ...)  do { printf(fmt"\r\n", __VA_ARGS__); } while(0)
+#define LOGF(fmt) do { printf(fmt); } while(0)
+#define LOGFA(fmt, ...) do { printf(fmt, __VA_ARGS__); } while(0)
+#else
 #define LOG(fmt)
 #define LOGA(fmt, ...)
 #define LOGF(fmt)
 #define LOGFA(fmt, ...)
+#endif
 
+#if (WIZ_LOG_LEVEL > 2) && defined(PRINT_TIME_LOG) && !defined(FILE_LOG_SILENCE)
+#define DBG(fmt)  do { printf("[D] [%5d.%03d] %s(%d): "fmt"\r\n", \
+	wizpf_get_systick()/1000, wizpf_get_systick()%1000, __FUNCTION__, __LINE__); } while(0)
+#define DBGA(fmt, ...)  do { printf("[D] [%5d.%03d] %s(%d): "fmt"\r\n", \
+	wizpf_get_systick()/1000, wizpf_get_systick()%1000, __FUNCTION__, __LINE__, __VA_ARGS__); } while(0)
+#define DBGF(fmt) do { printf("[D] [%5d.%03d] %s(%d): "fmt, \
+	wizpf_get_systick()/1000, wizpf_get_systick()%1000, __FUNCTION__, __LINE__); } while(0)
+#define DBGFA(fmt, ...) do { printf("[D] [%5d.%03d] %s(%d): "fmt, \
+	wizpf_get_systick()/1000, wizpf_get_systick()%1000, __FUNCTION__, __LINE__, __VA_ARGS__); } while(0)
+#elif (WIZ_LOG_LEVEL > 2) && !defined(PRINT_TIME_LOG) && !defined(FILE_LOG_SILENCE)
+#define DBG(fmt)  do { printf("[D] %s(%d): "fmt"\r\n", __FUNCTION__, __LINE__); } while(0)
+#define DBGA(fmt, ...)  do { printf("[D] %s(%d): "fmt"\r\n", __FUNCTION__, __LINE__, __VA_ARGS__); } while(0)
+#define DBGF(fmt) do { printf("[D] %s(%d): "fmt, __FUNCTION__, __LINE__); } while(0)
+#define DBGFA(fmt, ...) do { printf("[D] %s(%d): "fmt, __FUNCTION__, __LINE__, __VA_ARGS__); } while(0)
+#else
 #define DBG(fmt)
 #define DBGA(fmt, ...)
 #define DBGF(fmt)
 #define DBGFA(fmt, ...)
+#endif
 
+#if (WIZ_LOG_LEVEL > 2) && !defined(FILE_LOG_SILENCE)
+#define DBGCRTC(cond_v, fmt) do { if(cond_v) {ERR(fmt); while(1); } } while(0)
+#define DBGCRTCA(cond_v, fmt, ...) do { if(cond_v) {ERRA(fmt, __VA_ARGS__); while(1); } } while(0)
+#else
+#define DBGCRTC(cond_v, fmt)
+#define DBGCRTCA(cond_v, fmt, ...)
+#endif
+
+#if (WIZ_LOG_LEVEL > 0) && !defined(FILE_LOG_SILENCE)
+#define NL1	printf("\r\n");
+#define NL2	printf("\r\n\r\n");
+#define NL3	printf("\r\n\r\n\r\n");
+#else
 #define NL1
 #define NL2
 #define NL3
