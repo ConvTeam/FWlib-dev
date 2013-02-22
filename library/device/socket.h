@@ -33,7 +33,7 @@
 #define SOCKERR_NOT_SPECIFIED	-14
 
 #define MAX_BUF_SIZE			1460		// ??
-#define KEEP_ALIVE_TIME			30	// 30sec // ??
+#define KEEP_ALIVE_TIME			30			// ??
 
 #define NETINFO_STATIC			1
 #define NETINFO_DHCP_BUSY		2

@@ -45,7 +45,7 @@ do { \
 		netinfo.Mac[1], netinfo.Mac[2], netinfo.Mac[3], netinfo.Mac[4], netinfo.Mac[5]);
 
 #if (USE_DHCP == VAL_ENABLE)
-	NETINIT_ADDR_SET("Default");	// DHCP실패 시 사용할 디폴트 값을 입력
+	NETINIT_ADDR_SET("Default");	// Set the addresses which would be used when DHCP failed
 	dhcp_init(dhcp_sock, ip_update, ip_conflict, &netinfo);
 	//while(1) {dhcp_run();if(dhcp_get_state() == DHCP_STATE_BOUND) break;}
 #else
@@ -131,18 +131,18 @@ do { \
 
 	for(i=0; i<TOTAL_SOCK_NUM; i++) {
 		if(watch_sock[i] == 0) continue;
-		if(watch_sock[i] & WATCH_SOCK_RECV) {			// 높은 빈도 각각확인 - Connected시 항상 불림
+		if(watch_sock[i] & WATCH_SOCK_RECV) {		// checked every time when 'connected' state
 			if(GetSocketRxRecvBufferSize(i) > 0) WCF_HANDLE(WATCH_SOCK_RECV, RET_OK);
 		}
-		if(watch_sock[i] & WATCH_SOCK_CLS_EVT) {	// 높은 빈도 각각확인 - Connected시 항상 불림
+		if(watch_sock[i] & WATCH_SOCK_CLS_EVT) {	// checked every time when 'connected' state
 			ret = TCPClsRcvCHK(i);
 			if(ret != SOCKERR_BUSY) WCF_HANDLE(WATCH_SOCK_CLS_EVT, ret);
 		}
-		if(watch_sock[i] & WATCH_SOCK_CONN_EVT) {// 높은 빈도 각각확인 - Listen시 항상 불림
+		if(watch_sock[i] & WATCH_SOCK_CONN_EVT) {	// checked every time when 'listen' state
 			ret = TCPConnChk(i);
 			if(ret != SOCKERR_BUSY) WCF_HANDLE(WATCH_SOCK_CONN_EVT, ret);
 		}
-		if((watch_sock[i] & WATCH_SOCK_MASK_LOW) == 0) continue;// 빈도 낮은 놈들은 모아서 처리
+		if((watch_sock[i] & WATCH_SOCK_MASK_LOW) == 0) continue;	// things which would be checked occasionally will be checked all together
 		if(watch_sock[i] & WATCH_SOCK_CLS_TRY) {
 			ret = TCPCloseCHK(i);
 			if(ret != SOCKERR_BUSY) WCF_HANDLE(WATCH_SOCK_CLS_TRY, ret);

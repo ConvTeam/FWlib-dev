@@ -38,14 +38,14 @@ struct atc_eventq {
 
 extern void cmd_resp(int8 retval, int8 idval);
 
-static int8  sockstat[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO] = {0,};	// sock 상태 확인 용	// 0번은 편의를 위해 희생함 (총 8바이트 버림)
-static int16 sockport[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO] = {0,};	// src포트 확인 용
-static int8  sockbusy[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO] = {0,};	// 명령 가능상태 확인 용
-static int8  udpip[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO][4] = {0,};	// UDP Destination 주소 저장용
-static int16 udpport[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO]  = {0,};	// UDP Destination 포트 저장용
-static int16 tcpleft[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO]  = {0,};	// TCP Resend를 대비하여 전송될 데이터 길이 저장용
-static int8  recvord[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO]  = {0,};	// 데이터 수신 순서 저장
-static int8  recvnum = 0;							// 데이터를 수신한 소켓의 수
+static int8  sockstat[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO] = {0,};	// for sock check (0 is ignored)
+static int16 sockport[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO] = {0,};	// for src port check
+static int8  sockbusy[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO] = {0,};	// for sock busy check
+static int8  udpip[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO][4] = {0,};	// to store UDP Destination address
+static int16 udpport[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO]  = {0,};	// to store UDP Destination port
+static int16 tcpleft[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO]  = {0,};	// remained data len to send for TCP Resend
+static int8  recvord[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO]  = {0,};	// for check order of data recv
+static int8  recvnum = 0;							// the number of sock which received data
 struct atc_eventq *eventqueue;
 uint8 eqp_cnt = 0;
 
@@ -76,7 +76,7 @@ static int8 sock_put(uint8 sock)
 		udpip[sock][3] = udpport[sock] = 0;
 	}
 	sockstat[sock] = SOCK_STAT_IDLE;
-	sockport[sock] = 0;	// 없어도 되지만 걍 혹시나 해서
+	sockport[sock] = 0;
 	sockwatch_clr(sock, WATCH_SOCK_ALL_MASK);
 	return RET_OK;
 }
@@ -157,13 +157,13 @@ static void atc_resend_alarm(int8 arg)
 		if(ret == SOCKERR_BUSY) {
 			alarm_set(WINDOWFULL_WAIT_TIME, atc_resend_alarm, arg);
 		} else if(ret == SOCKERR_WINDOW_FULL) {
-			sockbusy[arg] = VAL_FALSE;	// async 명령 완료
+			sockbusy[arg] = VAL_FALSE;
 			DBGA("WATCH_SOCK_TCP_SEND fail - ret(%d)", ret);
 			cmd_resp(RET_TIMEOUT, arg);
-		} else {	// 위랑 다른 것은 소켓이 종료하는 것임
-			sockbusy[arg] = VAL_FALSE;	// async 명령 완료
+		} else {
+			sockbusy[arg] = VAL_FALSE;
 			DBGA("WATCH_SOCK_TCP_SEND fail - ret(%d)", ret);
-			sock_put(arg);	// 이미 종료된 상태임?? 일단 해보기
+			sock_put(arg);
 			cmd_resp(RET_TIMEOUT, arg);
 		}
 	} else sockwatch_set(arg, WATCH_SOCK_TCP_SEND);
@@ -175,47 +175,46 @@ void atc_async_cb(uint8 sock, uint8 item, int32 ret)
 
 	switch(item) {
 	case WATCH_SOCK_UDP_SEND:	DBG("WATCH_SOCK_UDP_SEND");
-		sockbusy[sock] = VAL_FALSE;	// async 명령 완료		//DBGA("WATCH UDP Sent - sock(%d), item(%d)", sock, item);
+		sockbusy[sock] = VAL_FALSE;	//DBGA("WATCH UDP Sent - sock(%d), item(%d)", sock, item);
 		if(ret == RET_OK) {
 			cmd_resp(RET_OK, sock);
 		} else {
 			DBGA("WATCH_SOCK_UDP_SEND fail - ret(%d)", ret);
-			//sock_put(sock); ?? 종료할려면 act_ncls실행시키던지 해야함. 사용해보고 필요시 할 것
 			cmd_resp(RET_TIMEOUT, sock);
 		}
 		break;
 	case WATCH_SOCK_TCP_SEND:	DBG("WATCH_SOCK_TCP_SEND");
-		if(ret < RET_OK) {	// 성공하면 길이를 반환하므로 실패를 먼저 처리
-			sockbusy[sock] = VAL_FALSE;	// async 명령 완료
+		if(ret < RET_OK) {
+			sockbusy[sock] = VAL_FALSE;
 			DBGA("WATCH_SOCK_TCP_SEND fail - ret(%d)", ret);
-			sock_put(sock);	// 이미 종료된 상태임?? 일단 해보기
+			sock_put(sock);
 			cmd_resp(RET_TIMEOUT, sock);
 		} else {
 			tcpleft[sock] -= ret;
-			if(tcpleft[sock] > 0) {	// 전송할 데이터가 남은 경우
+			if(tcpleft[sock] > 0) {
 				ret = TCPReSendNB(sock);
 				if(ret != RET_OK) {
 					if(ret == SOCKERR_BUSY) {
 						alarm_set(WINDOWFULL_WAIT_TIME, atc_resend_alarm, sock);
 					} else if(ret == SOCKERR_WINDOW_FULL) {
-						sockbusy[sock] = VAL_FALSE;	// async 명령 완료
+						sockbusy[sock] = VAL_FALSE;
 						DBGA("WATCH_SOCK_TCP_SEND fail - ret(%d)", ret);
 						cmd_resp(RET_TIMEOUT, sock);
-					} else {	// 위랑 다른 것은 소켓이 종료하는 것임
-						sockbusy[sock] = VAL_FALSE;	// async 명령 완료
+					} else {
+						sockbusy[sock] = VAL_FALSE;
 						DBGA("WATCH_SOCK_TCP_SEND fail - ret(%d)", ret);
-						sock_put(sock);	// 이미 종료된 상태임?? 일단 해보기
+						sock_put(sock);
 						cmd_resp(RET_TIMEOUT, sock);
 					}
 				} else sockwatch_set(sock, WATCH_SOCK_TCP_SEND);
-			} else {	// 전송 성공
-				sockbusy[sock] = VAL_FALSE;	// async 명령 완료
+			} else {
+				sockbusy[sock] = VAL_FALSE;
 				cmd_resp(RET_OK, sock);
 			}
 		}
 		break;
 	case WATCH_SOCK_CONN_TRY:	DBG("WATCH_SOCK_CONN_TRY");
-		sockbusy[sock] = VAL_FALSE;	// async 명령 완료
+		sockbusy[sock] = VAL_FALSE;
 		if(ret == RET_OK) {
 			BITSET(sockstat[sock], SOCK_STAT_CONNECTED);
 			sockwatch_set(sock, WATCH_SOCK_CLS_EVT);
@@ -228,12 +227,12 @@ void atc_async_cb(uint8 sock, uint8 item, int32 ret)
 		}
 		break;
 	case WATCH_SOCK_CLS_TRY:	DBG("WATCH_SOCK_CLS_TRY");
-		sockbusy[sock] = VAL_FALSE;	// async 명령 완료
+		sockbusy[sock] = VAL_FALSE;
 		if(ret == RET_OK) {
 			sock_put(sock);
 			cmd_resp(RET_ASYNC, sock);
 		} else {
-			CRITICAL_ERRA("WATCH_SOCK_CONN_EVT fail - ret(%d)", ret);	// Error 없는 것으로 보임
+			CRITICAL_ERRA("WATCH_SOCK_CONN_EVT fail - ret(%d)", ret);
 		}
 		break;
 	case WATCH_SOCK_CONN_EVT:	DBG("WATCH_SOCK_CONN_EVT");
@@ -244,11 +243,11 @@ void atc_async_cb(uint8 sock, uint8 item, int32 ret)
 			if(atci.poll != POLL_MODE_FULL) EVENT_RESP(sock, SOCKEVENT_CONN);
 			else event_enqueue(sock, SOCKEVENT_CONN);
 		} else {
-			CRITICAL_ERRA("WATCH_SOCK_CONN_EVT fail - ret(%d)", ret);	// Error 없는 것으로 보임
+			CRITICAL_ERRA("WATCH_SOCK_CONN_EVT fail - ret(%d)", ret);
 		}
 		break;
 	case WATCH_SOCK_CLS_EVT:	DBG("WATCH_SOCK_CLS_EVT");
-		sockbusy[sock] = VAL_FALSE;	// async 명령 완료
+		sockbusy[sock] = VAL_FALSE;
 		if(ret == RET_OK) {
 			if(sockwatch_chk(sock, WATCH_SOCK_CLS_TRY) == RET_OK) 
 				cmd_resp(RET_OK, sock);
@@ -256,7 +255,7 @@ void atc_async_cb(uint8 sock, uint8 item, int32 ret)
 			if(atci.poll != POLL_MODE_FULL) EVENT_RESP(sock, SOCKEVENT_CLS);
 			else event_enqueue(sock, SOCKEVENT_CLS);
 		} else {
-			CRITICAL_ERRA("WATCH_SOCK_CONN_EVT fail - ret(%d)", ret);	// Error 없는 것으로 보임
+			CRITICAL_ERRA("WATCH_SOCK_CONN_EVT fail - ret(%d)", ret);
 		}
 		break;
 	case WATCH_SOCK_RECV:	DBG("WATCH_SOCK_RECV");
@@ -266,17 +265,16 @@ void atc_async_cb(uint8 sock, uint8 item, int32 ret)
 			if(atci.poll != POLL_MODE_NONE) {
 				recvnum++;
 				if(recvord[sock] == 0) {
-					for(i=ATC_SOCK_NUM_START; i<=ATC_SOCK_NUM_END; i++)	// 최근에 온것부터 1~총rx한sock개수, 받은거없으면 0
-						if(recvord[i] != 0) recvord[i]++; // 자기말고 전부 하나 뒤로
+					for(i=ATC_SOCK_NUM_START; i<=ATC_SOCK_NUM_END; i++)
+						if(recvord[i] != 0) recvord[i]++;
 				} else {
-					for(i=ATC_SOCK_NUM_START; i<=ATC_SOCK_NUM_END; i++)	// 최근에 온것부터 1~총rx한sock개수, 받은거없으면 0
-						if(recvord[i] != 0 && recvord[i] < recvord[sock]) recvord[i]++; // 자기말고 전부 하나 뒤로
+					for(i=ATC_SOCK_NUM_START; i<=ATC_SOCK_NUM_END; i++)
+						if(recvord[i] != 0 && recvord[i] < recvord[sock]) recvord[i]++;
 				}
 				recvord[sock] = 1;
 				if(atci.poll != POLL_MODE_FULL) 
-					EVENT_RESP_SIZE(sock, SOCKEVENT_RECV, GetSocketRxRecvBufferSize(sock));	// INT의 경우, POL은 나중에 구현 할 것
+					EVENT_RESP_SIZE(sock, SOCKEVENT_RECV, GetSocketRxRecvBufferSize(sock));
 				else event_enqueue(sock, SOCKEVENT_RECV);
-				// 수신된 값에서 헤더길이 8을 제하는 것은 패킷이 하나인 경우에만 의미가 잇으므로 -8은 안하기로 함
 			} else {
 				act_nrecv(sock, WORK_BUF_SIZE);
 			}
@@ -286,7 +284,7 @@ void atc_async_cb(uint8 sock, uint8 item, int32 ret)
 	}
 }
 
-void act_nset_q(int8 num)	// 1~6 해당 인자만 출력, -1 전부 출력
+void act_nset_q(int8 num)
 {
 	wiz_NetInfo ni;
 
@@ -329,22 +327,22 @@ void act_nset_a(int8 mode, uint8 *ip, uint8 *sn,
 	if(sn) memcpy(ni.SN, sn, 4);
 	if(gw) memcpy(ni.GW, gw, 4);
 	if(dns1) memcpy(ni.DNS, dns1, 4);
-	if(dns2) {	// 2번은 지원안함
-		MAKE_TCMD_DIGIT(atci.tcmd.arg1, 6);	// 6번 Arg가 문제임을 표시
+	if(dns2) {
+		MAKE_TCMD_DIGIT(atci.tcmd.arg1, 6);
 		CMD_RESP_RET(RET_NOT_ALLOWED, VAL_NONE);
 	}
 
 	if(mode == 'S') {
-		if(dhcp_static_mode(&ni) != RET_OK) { // storage에 적용 후 Static으로 실적용
-			dhcp_set_storage(&ni);	// 이미 static인 경우, 직접 storage와 실적용을 수행
+		if(dhcp_static_mode(&ni) != RET_OK) {
+			dhcp_set_storage(&ni);
 			SetNetInfo(&ni);
 		}
 	} else if(mode == 'D') {
-		dhcp_set_storage(&ni); // DHCP동작과는 상관없이 storage는 업데이트함
-		dhcp_alarm_start(NULL); // 이미 dhcp인 경우라도 성공으로 리턴
-	} else {	//  모드전환없이 주소만 설정한 경우
-		dhcp_set_storage(&ni); // 일단 storage에 업데이트
-		GetNetInfo(&ni);	// static이면 바로 실적용해줌
+		dhcp_set_storage(&ni);
+		dhcp_alarm_start(NULL);
+	} else {
+		dhcp_set_storage(&ni);
+		GetNetInfo(&ni);
 		if(ni.DHCP == NETINFO_STATIC) SetNetInfo(&ni);
 	}
 	CMD_RESP_RET(RET_OK, VAL_NONE);
@@ -406,14 +404,14 @@ void act_nmac_a(uint8 *mac)
 
 void act_nopen_q(void)
 {
-	// 각이 안나옴
+	cmd_resp(RET_NOT_ALLOWED, VAL_NONE);
 }
 
 void act_nopen_a(int8 type,  int8 save, uint16 sport, uint8 *dip, uint16 dport)
-{	// save 부분 구현 할 것
+{
 	int8 ret, sock, i;
 
-	for(i=ATC_SOCK_NUM_START; i<=ATC_SOCK_NUM_END; i++) {	// src port 유효성 검사
+	for(i=ATC_SOCK_NUM_START; i<=ATC_SOCK_NUM_END; i++) {
 		if(sockstat[i] != SOCK_STAT_IDLE && sockport[i] == sport) {
 			DBGA("src port(%d) is using now by sock(%d)", sport, i);
 			MAKE_TCMD_DIGIT(atci.tcmd.arg1, 2);
@@ -421,19 +419,19 @@ void act_nopen_a(int8 type,  int8 save, uint16 sport, uint8 *dip, uint16 dport)
 		}
 	}
 
-	if(save == 'S' || save == 'A') {	// 저장되어 booting시 실행
-		// 이렇게 되면 소켓이 특정되지가 않으므로 하나만 가능한가? 심지어 삭제도 안됨
+	if(save == 'S' || save == 'A') {
+		
 	}
 
-	if(save == 'O' || save == 'A') {	// 즉시 실행
-		if(type == 'S') {			// TCP Server
+	if(save == 'O' || save == 'A') {
+		if(type == 'S') {
 			sock = sock_get(SOCK_STAT_TCP_SRV, sport);
 			if(sock == RET_NOK) CMD_RESP_RET(RET_NO_SOCK, VAL_NONE);
 			ret = TCPServerOpen(sock, sport);
 			if(ret != RET_OK) CMD_RESP_RET(RET_UNSPECIFIED, VAL_NONE);
 			sockwatch_set(sock, WATCH_SOCK_CONN_EVT);
 			CMD_RESP_RET(RET_OK, sock);
-		} else if(type == 'C') {	// TCP Client
+		} else if(type == 'C') {
 			sock = sock_get(SOCK_STAT_TCP_CLT, sport);
 			if(sock == RET_NOK) CMD_RESP_RET(RET_NO_SOCK, VAL_NONE);
 			ret = TCPCltOpenNB(sock, sport, dip, dport);
@@ -442,16 +440,16 @@ void act_nopen_a(int8 type,  int8 save, uint16 sport, uint8 *dip, uint16 dport)
 				CMD_RESP_RET(RET_WRONG_ADDR, VAL_NONE);
 			}
 			sockwatch_set(sock, WATCH_SOCK_CONN_TRY);
-			sockbusy[sock] = VAL_TRUE;	// async시 명령 실행 중임을 표시
+			sockbusy[sock] = VAL_TRUE;
 			CMD_RESP_RET(RET_ASYNC, sock);
-		} else {					// UDP
+		} else {
 			if(dip != NULL) {
 				memcpy(udpip[sock], dip, 4);
 				udpport[sock] = dport;
 			}
 			sock = sock_get(SOCK_STAT_UDP, sport);
 			if(sock == RET_NOK) CMD_RESP_RET(RET_NO_SOCK, VAL_NONE);
-			UDPOpen(sock, sport);	// 에러 날 것 없음
+			UDPOpen(sock, sport);
 			sockwatch_set(sock, WATCH_SOCK_RECV);
 			CMD_RESP_RET(RET_OK, sock);
 		}
@@ -464,20 +462,20 @@ void act_ncls(uint8 sock)
 
 	if(sockbusy[sock] == VAL_TRUE) CMD_RESP_RET(RET_BUSY, VAL_NONE);
 	if(sockstat[sock] == SOCK_STAT_IDLE) CMD_RESP_RET(RET_SOCK_CLS, VAL_NONE);
-	if(sockstat[sock] & SOCK_STAT_TCP_MASK) {	// TCP
+	if(sockstat[sock] & SOCK_STAT_TCP_MASK) {
 		ret = TCPCloseNB(sock);
-		if(ret != RET_OK) CMD_RESP_RET(RET_OK, VAL_NONE);	// 이미 close되어 잇음 - 바로 완료
+		if(ret != RET_OK) CMD_RESP_RET(RET_OK, VAL_NONE);
 		sockwatch_set(sock, WATCH_SOCK_CLS_TRY);
-		sockbusy[sock] = VAL_TRUE;	// async시 명령 실행 중임을 표시
+		sockbusy[sock] = VAL_TRUE;
 		CMD_RESP_RET(RET_ASYNC, sock);
-	} else {	// UDP
-		UDPClose(sock);	// 에러 날 것 없음
+	} else {
+		UDPClose(sock);
 		sock_put(sock);
 		CMD_RESP_RET(RET_OK, VAL_NONE);
 	}
 }
 
-int8 act_nsend_chk(uint8 sock, uint16 *len, uint8 *dip, uint16 *dport)	// 전송 가능 여부를 판단
+int8 act_nsend_chk(uint8 sock, uint16 *len, uint8 *dip, uint16 *dport)
 {
 	uint16 availlen;
 
@@ -490,7 +488,7 @@ int8 act_nsend_chk(uint8 sock, uint16 *len, uint8 *dip, uint16 *dport)	// 전송 �
 		return RET_NOK;
 	}
 
-	if(sockstat[sock] & SOCK_STAT_TCP_MASK) {	// TCP	//TCP이면 주소값 와도 무시 ??
+	if(sockstat[sock] & SOCK_STAT_TCP_MASK) {	// TCP
 		if(!(sockstat[sock] & SOCK_STAT_CONNECTED)) {
 			cmd_resp(RET_NOT_CONN, VAL_NONE);
 			return RET_NOK;
@@ -530,13 +528,13 @@ void act_nsend(uint8 sock, int8 *buf, uint16 len, uint8 *dip, uint16 *dport)
 
 	if(sockstat[sock] & SOCK_STAT_TCP_MASK) {	// TCP
 		ret = TCPSendNB(sock, buf, len);
-		if(ret == SOCKERR_BUSY) // I think this would not be called
+		if(ret == SOCKERR_BUSY)
 			CRITICAL_ERRA("Impossible TCP send busy - len(%d), avail(%d)", 
 			len, GetSocketTxFreeBufferSize(sock));
-		if(ret != RET_OK) CMD_RESP_RET(RET_NOT_CONN, VAL_NONE);	// 위에서 체크하지만 부담없으므로 일단 놔둠
-		tcpleft[sock] = len;	// 비교를 위해서 저장해둠
+		if(ret != RET_OK) CMD_RESP_RET(RET_NOT_CONN, VAL_NONE);
+		tcpleft[sock] = len;
 		sockwatch_set(sock, WATCH_SOCK_TCP_SEND);
-		sockbusy[sock] = VAL_TRUE;	// async시 명령 실행 중임을 표시
+		sockbusy[sock] = VAL_TRUE;
 	} else {									// UDP
 		ret = UDPSendNB(sock, buf, len, dip, *dport);
 		if(ret == SOCKERR_BUSY) 
@@ -547,11 +545,11 @@ void act_nsend(uint8 sock, int8 *buf, uint16 len, uint8 *dip, uint16 *dport)
 			CMD_RESP_RET(RET_WRONG_ADDR, VAL_NONE);
 		}
 		sockwatch_set(sock, WATCH_SOCK_UDP_SEND);
-		sockbusy[sock] = VAL_TRUE;	// async시 명령 실행 중임을 표시
+		sockbusy[sock] = VAL_TRUE;
 	}
 }
 
-void act_nrecv(int8 sock, uint16 maxlen)	// sockbusy로 분리 안시켜도 되나 ??? 일단 그냥 해보자
+void act_nrecv(int8 sock, uint16 maxlen)
 {
 	uint8 dstip[4], i;
 	uint16 dstport;
@@ -740,7 +738,7 @@ void act_mevt_q(void)
 		if(sockstat[i] != SOCK_STAT_IDLE) cnt++;
 	}
 
-	cnt *= 7;	// 개당 7바이트 소요
+	cnt *= 7;
 
 	tbuf = malloc(cnt+1);
 	if(tbuf == NULL) {
@@ -812,15 +810,6 @@ void act_mevt_a(int8 id)
 //{
 //	
 //}
-
-
-
-
-
-
-#if 0	// 다른 플랫폼에 포팅하는 경우 추가해야 하는 부분 업데이트 할 것
-
-#endif
 
 
 

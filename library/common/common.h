@@ -26,7 +26,6 @@
 #endif
 
 	//Todo
-	//#define __GNUC__		// ??
 
 #endif
 
@@ -38,8 +37,8 @@
 #error Duplicate definition of PLATFORM
 #endif
 
-	#define HOST_STM32F10X	// ??
-	#define DEVICE_W5200	// ??
+	#define HOST_STM32F10X
+	#define DEVICE_W5200
 	#include "host/STM32F10x/WIZ_W5200/w5200_evb.h"
 
 #endif
@@ -80,7 +79,7 @@
 
 	#include "stm32f10x.h"
 	#include "host/wizspi.h"
-	#define MAX_TICK_ELAPSE	0x7FFFFFFF	// elapse¡¤I A©ªA¢´¡Æ¢®¢¥ECN +©ö©¡Ca AO¢¥e ¡Æ¨£
+	#define MAX_TICK_ELAPSE	0x7FFFFFFF	// Maximum elapse time you can set
 
 #endif
 
@@ -258,11 +257,6 @@
 #endif
 
 //-------------------------------------------------------------------------------------------
-
-
-
-
-
 
 
 

@@ -54,7 +54,7 @@ int8 alarm_set(uint32 time, alarm_cbfunc cb, int8 arg)
 	if(time > MAX_TICK_ELAPSE || cb == NULL) return RET_NOK;
 
 	//if(time) DBGA("Set with delay: Time(%d), CB(%p), ARG(%d)", time, (void*)cb, arg);
-	time += wizpf_get_systick();	// ０A易oCA﹞I０i AEAI卦足 - tick伊伊 ０A易oCA﹞I０i 伊C易C﹞I ∮o﹉u取帚A卦
+	time += wizpf_get_systick();
 
 	adbl = &alst;
 	while(*adbl && (*adbl)->time <= time) {

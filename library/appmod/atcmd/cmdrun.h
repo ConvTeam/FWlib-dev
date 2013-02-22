@@ -92,9 +92,9 @@ struct atc_info {
 	uint16 sendlen;
 	uint16 recvlen;
 	int8 echo;
-	int8 mode;	// 일단 변수만 만들어 둠
+	int8 mode;		// Reserved
 	int8 poll;
-	int8 country;	// 일단 변수만 만들어 둠
+	int8 country;	// Reserved
 };
 
 extern struct atc_info atci;
