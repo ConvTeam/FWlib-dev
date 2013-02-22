@@ -28,9 +28,9 @@ void network_disp(wiz_NetInfo *netinfo);
 int8 ip_check(int8 *str, uint8 *ip);
 int8 port_check(int8 *str, uint16 *port);
 int8 mac_check(int8 *str, uint8 *mac);
-int8* inet_ntoa(uint32 addr);				/* Convert 32bit Address into Dotted Decimal Format */
+int8* inet_ntoa(uint32 addr);					/* Convert 32bit Address into Dotted Decimal Format */
 int8* inet_ntoa_pad(uint32 addr);
-uint32 inet_addr(uint8* addr);	/* Converts a string containing an (Ipv4) Internet Protocol decimal dotted address into a 32bit address */
+uint32 inet_addr(uint8* addr);		/* Converts a string containing an (Ipv4) Internet Protocol decimal dotted address into a 32bit address */
 uint16 htons( uint16 hostshort);	/* htons function converts a unsigned short from host to TCP/IP network byte order (which is big-endian).*/
 uint32 htonl(uint32 hostlong);		/* htonl function converts a unsigned long from host to TCP/IP network byte order (which is big-endian). */
 uint32 ntohs(uint16 netshort);		/* ntohs function converts a unsigned short from TCP/IP network byte order to host byte order (which is little-endian on Intel processors). */

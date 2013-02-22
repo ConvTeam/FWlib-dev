@@ -41,7 +41,7 @@ int32 main(void)
 		alarm_run();
 		sockwatch_run();
 
-		if(wizpf_tick_elapse(tick) > 1000) {
+		if(wizpf_tick_elapse(tick) > 1000) {	// running check
 			wizpf_led_set(WIZ_LED3, VAL_TOG);
 			tick = wizpf_get_systick();
 		}
