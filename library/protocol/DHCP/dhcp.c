@@ -30,7 +30,7 @@
 #define DHCP_RETRY_DELAY		5000	// tick
 //#define DHCP_INTERVAL_OPEN_RETRY	1000	// tick
 //#define DHCP_RECV_WAIT_TIME		3000	// tick
-#define DHCP_OPEN_DELAY			0	// tick
+#define DHCP_OPEN_DELAY			0		// tick
 #define DHCP_SEND_RETRY_COUNT	3
 
 #define IS_IP_SET(ip_p) (ip_p[0]+ip_p[1]+ip_p[2]+ip_p[3] != 0)
@@ -176,8 +176,8 @@ int8 dhcp_init(uint8 sock, pFunc ip_update_hook, pFunc ip_conflict_hook, wiz_Net
 		dhcp_async = TRUE;
 #endif
 
-	memset(&di, 0, sizeof(di));	//memset(&workinfo, 0, sizeof(workinfo));
-	memcpy(&storage, def, sizeof(storage));	//memcpy(workinfo.Mac, storage.Mac, 6);
+	memset(&di, 0, sizeof(di));
+	memcpy(&storage, def, sizeof(storage));
 	memset(&workinfo, 0, sizeof(workinfo));
 	memcpy(workinfo.Mac, storage.Mac, 6);
 	SetNetInfo(&workinfo);
@@ -189,13 +189,6 @@ int8 dhcp_init(uint8 sock, pFunc ip_update_hook, pFunc ip_conflict_hook, wiz_Net
 	IINCHIP_WRITE(WIZC_SIPR1, 0);
 	IINCHIP_WRITE(WIZC_SIPR2, 0);
 	IINCHIP_WRITE(WIZC_SIPR3, 0);
-	//workinfo.DHCP = NETINFO_DHCP_BUSY;
-	//SetNetInfo(&workinfo);
-	//SET_STATE(DHCP_STATE_INIT);
-	//di.action = DHCP_ACT_START;
-	//if(dhcp_alarm) alarm_set(1000, dhcp_alarm_cb, 0);		// 알람 등록 - 1초 딜레이가지고 시작(테스트)
-
-	//if(dhcp_alarm_start(NULL) != RET_OK) return RET_NOK;
 
 	return RET_OK;
 }
@@ -206,18 +199,18 @@ int8 dhcp_manual(int8 action, uint8 *saved_ip, uint32 *renew, uint32 *rebind)	//
 
 	if(dhcp_alarm == TRUE) return RET_NOK;
 
-	while(curstt != DHCP_STATE_INIT && curstt != DHCP_STATE_BOUND) {	// 어중간한 상황이면 좀 더 돌려준다
+	while(curstt != DHCP_STATE_INIT && curstt != DHCP_STATE_BOUND) {
 		dhcp_run();
 		curstt = dhcp_get_state();
 	}
 
-	if(curstt == DHCP_STATE_INIT) {		// INIT상태이면
+	if(curstt == DHCP_STATE_INIT) {
 		di.action = DHCP_ACT_START;
 		memset(&workinfo, 0, sizeof(workinfo));
 		if(saved_ip) memcpy(workinfo.IP, saved_ip, 4);
 		workinfo.DHCP = NETINFO_DHCP_BUSY;
 		SetNetInfo(&workinfo);
-		do {	// 돌려준다
+		do {
 			dhcp_run();
 			curstt = dhcp_get_state();
 		} while((curstt != DHCP_STATE_INIT || workinfo.DHCP == NETINFO_DHCP_BUSY) 
@@ -243,7 +236,7 @@ int8 dhcp_manual(int8 action, uint8 *saved_ip, uint32 *renew, uint32 *rebind)	//
 			return RET_NOK;
 		}
 		curstt = dhcp_get_state();
-		while(curstt != DHCP_STATE_INIT && curstt != DHCP_STATE_BOUND) {	// 돌려준다
+		while(curstt != DHCP_STATE_INIT && curstt != DHCP_STATE_BOUND) {
 			dhcp_run();
 			curstt = dhcp_get_state();
 		}
@@ -260,7 +253,7 @@ int8 dhcp_get_state(void)
 	return di.state;
 }
 
-int8 dhcp_set_storage(wiz_NetInfo *net)	// MAC수정 시 반드시 업데이트 할 것 (아니면 dhcp시 문제)
+int8 dhcp_set_storage(wiz_NetInfo *net)	// Should be updated when MAC is changed
 {
 	if(net == NULL) {
 		DBG("NULL arg");
@@ -314,9 +307,8 @@ int8 dhcp_static_mode(wiz_NetInfo *net)
 	di.action = DHCP_ACT_NONE;
 	SET_STATE(DHCP_STATE_INIT);
 
-	// 입력된 값을 기존 값에 업데이트 & 빈 값은 기존 값 가져와서 설정하기
 	if(net->IP[0]!=0 || net->IP[1]!=0 || net->IP[2]!=0 || net->IP[3]!=0)
-		memcpy(storage.IP, net->IP, 4);		// dhcp_fail, static에서 사용하는 si를 설정
+		memcpy(storage.IP, net->IP, 4);
 	else memcpy(net->IP, storage.IP, 4);
 	if(net->SN[0]!=0 || net->SN[1]!=0 || net->SN[2]!=0 || net->SN[3]!=0)
 		memcpy(storage.SN, net->SN, 4);
@@ -330,8 +322,8 @@ int8 dhcp_static_mode(wiz_NetInfo *net)
 
 	net->DHCP = NETINFO_STATIC;
 	SetNetInfo(net);
-	if(dhcp_alarm) alarm_del(dhcp_alarm_cb, -1);	// 모든 알람 제거
-	//send_checker_NB();	// 나중에 구현
+	if(dhcp_alarm) alarm_del(dhcp_alarm_cb, -1);
+	//send_checker_NB();
 
 	return RET_OK;
 }
@@ -350,7 +342,7 @@ int8 dhcp_alarm_start(uint8 *saved_ip)
 	if(saved_ip) memcpy(workinfo.IP, saved_ip, 4);
 	workinfo.DHCP = NETINFO_DHCP_BUSY;
 	SetNetInfo(&workinfo);
-	if(dhcp_alarm) alarm_set(10, dhcp_alarm_cb, 0);	// 알람 등록
+	if(dhcp_alarm) alarm_set(10, dhcp_alarm_cb, 0);
 	return RET_OK;
 }
 
@@ -366,7 +358,7 @@ static void dhcp_alarm_cb(int8 arg)	// for alarm mode
 			alarm_set(wizpf_tick_conv(FALSE, di.renew_time), dhcp_alarm_cb, 1);
 			alarm_set(wizpf_tick_conv(FALSE, di.rebind_time), dhcp_alarm_cb, 2);
 		}
-		dhcp_run();	//alarm_set은 dhcp_run 안에서 필요 시 실행되게 수정됨
+		dhcp_run();
 	} else if(arg == 1) {	// renew
 		SET_STATE(DHCP_STATE_SELECTING);
 		di.action = DHCP_ACT_RENEW;
@@ -414,7 +406,7 @@ static void dhcp_run(void)
 	if(di.state == DHCP_STATE_INIT && di.action != DHCP_ACT_START) {
 		DBG("wrong attempt");
 		return;
-	} else if(GetUDPSocketStatus(di.sock) == SOCKSTAT_CLOSED) {	// 소켓이 closed이면 open함
+	} else if(GetUDPSocketStatus(di.sock) == SOCKSTAT_CLOSED) {
 		if(udp_open_fail == TRUE && !IS_TIME_PASSED(dhcp_run_tick, DHCP_RETRY_DELAY)) 
 			goto RET_ALARM;
 		if(UDPOpen(di.sock, DHCP_CLIENT_PORT) == RET_OK) {
@@ -431,11 +423,7 @@ static void dhcp_run(void)
 	}
 
 	switch(di.state) {
-	case DHCP_STATE_INIT:	// init reboot은 담에 필요하면 flash 사용해서 해볼 것 - 일단 무시
-		//if(IS_IP_SET(di.assigned_ip)) {DBG("INIT-REBOOT");		// INIT-REBOOT - Request previous IP
-		//	SET_STATE(DHCP_STATE_REQUESTING);
-		//	dhcp_run_tick = wizpf_get_systick();
-		//} else 
+	case DHCP_STATE_INIT:
 		if(dhcp_run_cnt==0 && !IS_TIME_PASSED(dhcp_run_tick, DHCP_OPEN_DELAY)) 
 			goto RET_ALARM;
 
@@ -445,7 +433,7 @@ static void dhcp_run(void)
 				if(dhcp_async) {
 					DBG("DHCP Discovery Send Async");
 					sockwatch_set(di.sock, WATCH_SOCK_UDP_SEND);
-					return;	// alarm등록은 Async Send완료된 후에 다시 함
+					return;	// alarm set is not needed
 				} else {
 					DBG("DHCP Discovery Sent");
 					SET_STATE(DHCP_STATE_SEARCHING);
@@ -460,8 +448,8 @@ static void dhcp_run(void)
 			dhcp_run_cnt = 0;
 			UDPClose(di.sock);
 			if(dhcp_async) sockwatch_close(di.sock);
-			dhcp_fail();	//dhcp_run_tick = wizpf_get_systick();
-			return; // alarm set 안함
+			dhcp_fail();
+			return; // alarm set is not needed
 		}
 		break;
 	case DHCP_STATE_SEARCHING:
@@ -485,7 +473,7 @@ static void dhcp_run(void)
 				if(dhcp_async) {
 					DBG("DHCP Request Send Async");
 					sockwatch_set(di.sock, WATCH_SOCK_UDP_SEND);
-					return;	// alarm등록은 Async Send완료된 후에 다시 함
+					return;	// alarm set is not needed
 				} else {
 					DBG("DHCP Request Sent");
 					SET_STATE(DHCP_STATE_REQUESTING);
@@ -500,8 +488,8 @@ static void dhcp_run(void)
 			dhcp_run_cnt = 0;
 			UDPClose(di.sock);
 			if(dhcp_async) sockwatch_close(di.sock);
-			dhcp_fail();	//dhcp_run_tick = wizpf_get_systick();
-			return; // alarm set 안함
+			dhcp_fail();
+			return; // alarm set is not needed
 		}
 		break;
 	case DHCP_STATE_REQUESTING:
@@ -510,7 +498,7 @@ static void dhcp_run(void)
 			if(ret == DHCP_MSG_ACK) {	// Recv ACK
 				LOG("DHCP Success");
 				SET_STATE(DHCP_STATE_IP_CHECK);
-				dhcp_run_tick = wizpf_get_systick();		// ??
+				dhcp_run_tick = wizpf_get_systick();
 				dhcp_run_cnt = 0;
 			} else if(ret == DHCP_MSG_NAK) {	// Recv NAK
 				if(di.action == DHCP_ACT_START) {
@@ -531,8 +519,8 @@ static void dhcp_run(void)
 			}
 		}
 		break;
-	case DHCP_STATE_IP_CHECK:	// 나중에 send_checker_NB로 갈아탈 것??, 일단 임시제거
-		//if(send_checker() == RET_OK) {	// IP 체크 이상없음
+	case DHCP_STATE_IP_CHECK:
+		//if(send_checker() == RET_OK) {
 			SET_STATE(DHCP_STATE_BOUND);
 			workinfo.DHCP = NETINFO_DHCP_STABLE;
 			SetNetInfo(&workinfo);
@@ -549,10 +537,10 @@ static void dhcp_run(void)
 		//}
 		break;
 	case DHCP_STATE_BOUND:
-		return; // alarm set 안함
+		return; // alarm set is not needed
 	default:
 		ERRA("wrong state(%d)", di.state);
-		return; // alarm set 안함
+		return; // alarm set is not needed
 	}
 
 RET_ALARM:
@@ -563,15 +551,15 @@ static void dhcp_fail(void)
 {
 	LOG("DHCP Fail - set temp addr");
 	di.action = DHCP_ACT_NONE;
-	SET_STATE(DHCP_STATE_INIT);	//storage.DHCP = 0;	// 오류 방지용
-	memcpy(&workinfo, &storage, sizeof(storage));	// 일단 디폴트(혹은 이전) 값을 설정
-	memset(workinfo.Mac, 0, 6);	// mac설정은 DHCP권한이 아님 (버그 방지)
+	SET_STATE(DHCP_STATE_INIT);
+	memcpy(&workinfo, &storage, sizeof(storage));
+	memset(workinfo.Mac, 0, 6);
 	workinfo.DHCP = NETINFO_DHCP_FAIL;
-	SetNetInfo(&workinfo);	// DHCP 상태를 설정
+	SetNetInfo(&workinfo);
 	network_disp(&workinfo);
 	if(dhcp_alarm) 
-		alarm_set(DHCP_START_RETRY_DELAY, dhcp_alarm_cb, 0);	// 알람 등록
-	//send_checker_NB();	// 나중에 구현
+		alarm_set(DHCP_START_RETRY_DELAY, dhcp_alarm_cb, 0);
+	//send_checker_NB();
 }
 
 static int8 recv_handler(void)
@@ -626,7 +614,6 @@ static int8 recv_handler(void)
 	DBG("DHCP MSG received..");
 	DBGA("yiaddr : %d.%d.%d.%d",workinfo.IP[0],workinfo.IP[1],workinfo.IP[2],workinfo.IP[3]);
 
-	// 길이로 에러 검출
 	msg_type = 0;
 	cur = (uint8 *)(&dm.op);
 	cur = cur + 240;
