@@ -6,7 +6,7 @@
 #define COMPILER_IAR_EWARM
 //#define COMPILER_GCC_ARM
 
-#define PLATFORM_W7200_EVB
+//#define PLATFORM_W7200_EVB  // Defined in Project Option
 //#define PLATFORM_W5200_EVB
 
 #define SYSTEM_LITTLE_ENDIAN	// ( Default )

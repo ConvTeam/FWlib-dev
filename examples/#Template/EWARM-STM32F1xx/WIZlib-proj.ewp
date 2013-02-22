@@ -1300,7 +1300,7 @@
         <option>
           <name>OOCOutputFormat</name>
           <version>2</version>
-          <state>0</state>
+          <state>2</state>
         </option>
         <option>
           <name>OCOutputOverride</name>
@@ -1308,7 +1308,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>WIZlib-proj.srec</state>
+          <state>WIZlib-proj.bin</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -1316,7 +1316,7 @@
         </option>
         <option>
           <name>OOCObjCopyEnable</name>
-          <state>0</state>
+          <state>1</state>
         </option>
       </data>
     </settings>
@@ -1426,7 +1426,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$\stm32f10x_flash_128k.icf</state>
+          <state>$PROJ_DIR$\stm32f10x_flash_64k.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
