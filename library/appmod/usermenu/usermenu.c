@@ -1,3 +1,13 @@
+/**
+ * @file		usermenu.c
+ * @brief		User Menu (Terminal) Module Source File
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *		2013/02/22 - 1.0 Release
+ * @author	Mike Jeong
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
 
 //#define FILE_LOG_SILENCE
 #include "appmod/usermenu/usermenu.h"
@@ -18,6 +28,10 @@ struct menu_info {
 struct menu_item mtree[MAX_MENU_COUNT];
 struct menu_info mi;
 
+
+/**
+ * Initialize Usermenu Module.
+ */
 void menu_init(void)
 {
 	memset(mtree, 0, sizeof(mtree));
@@ -25,6 +39,15 @@ void menu_init(void)
 	mi.cur = 0;
 }
 
+/**
+ * Add Usermenu.
+ * @param desc Brief which will be displayed
+ * @param parent Parent menu index. \n - Root index is 0 
+ *		\n - A return value of this function can be used
+ * @param mfunc The Callback function which will be called when user input enter key
+ * @return @b >0: Registered menu index (this can be used as parent number) 
+ *		\n @b RET_NOK: Error
+ */
 int8 menu_add(int8 *desc, int8 parent, menu_func mfunc)
 {
 	int32 len;
@@ -59,6 +82,11 @@ int8 menu_add(int8 *desc, int8 parent, menu_func mfunc)
 	return mi.total;
 }
 
+/**
+ * Print Current Registered Menu.
+ * 
+ * This is for Debug or Check
+ */
 void menu_print_tree(void)
 {
 	uint8 i;
@@ -73,6 +101,11 @@ void menu_print_tree(void)
 	printf("=========================================\r\n");
 }
 
+/**
+ * Usermenu Handler
+ * 
+ * This function should be run under main loop.
+ */
 void menu_run(void)
 {
 	int8 recv_char;

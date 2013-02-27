@@ -1,3 +1,13 @@
+/**
+ * @file		atcmd.c
+ * @brief		AT Command Module - Interface Part Source File
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *		2013/02/22 - 1.0 Release
+ * @author	Mike Jeong
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
 
 //#define FILE_LOG_SILENCE
 #include "appmod/atcmd/atcmd.h"
@@ -78,6 +88,10 @@ static int16 prevlen = 0;
 struct atc_info atci;
 
 
+/**
+ * Initialize ATCMD Module.
+ * This should be called before @ref atc_run
+ */
 void atc_init(void)
 {
 	int8 i;
@@ -97,6 +111,10 @@ void atc_init(void)
 	sockwatch_open(7, atc_async_cb);
 }
 
+/**
+ * ATCMD Module Handler.
+ * If you use ATCMD Module, this should run in the main loop
+ */
 void atc_run(void)
 {
 	int8 i, ret, recv_char;

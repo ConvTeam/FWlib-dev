@@ -1,10 +1,18 @@
+/**
+ * @file		w5200.h
+ * @brief		W5200 Abstract Layer Header File
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *		2013/02/22 - 1.0 Release
+ * @author	
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
 
 #ifndef	_W5200_H
 #define	_W5200_H
 
 //#include "common/common.h"
-
-//#define __DEF_IINCHIP_DBG__
 
 /**
 @brief	 __DEF_IINCHIP_MAP_xxx__ : define memory map for iinchip 
@@ -13,7 +21,6 @@
 #define __DEF_IINCHIP_MAP_BASE__ 0x0000
 #define __DEF_IINCHIP_MAP_TXBUF__ (WIZ_COMMON_BASE + 0x8000) /* Internal Tx buffer address of the iinchip */
 #define __DEF_IINCHIP_MAP_RXBUF__ (WIZ_COMMON_BASE + 0xC000) /* Internal Rx buffer address of the iinchip */
-//#define __DEF_IINCHIP_PPP
 
 #define IINCHIP_ISR_DISABLE()
 #define IINCHIP_ISR_ENABLE()	

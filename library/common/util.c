@@ -1,3 +1,13 @@
+/**
+ * @file		util.c
+ * @brief		Common Utility Function Set Header File
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *		2013/02/22 - 1.0 Release
+ * @author	Mike Jeong
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
 
 //#define FILE_LOG_SILENCE
 #include "common/common.h"
@@ -46,7 +56,15 @@ static int32 DecodeMimeBase64[256] = {
     -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1   /* F0-FF */
 };
 
-
+/**
+ * Add Alarm event to the waiting queue. 
+ * @param time Delay time in tick. \n Max time is defined in common.h 
+ * 		\n Zero time param is possible
+ * @param cb Callback function in @ref alarm_cbfunc form
+ * @param arg The value which will be returned through callback function
+ 		\n This is for separation in same callback function
+ * @return @b RET_OK: Success \n @b RET_NOK: Error
+ */
 int8 alarm_set(uint32 time, alarm_cbfunc cb, int8 arg)
 {
 	alarm_node *aptr, **adbl;
@@ -76,6 +94,17 @@ int8 alarm_set(uint32 time, alarm_cbfunc cb, int8 arg)
 	return RET_OK;
 }
 
+/**
+ * Delete Alarm event from the waiting queue. 
+ * This function delete every alarm event which have same condition with param\n
+ * - alarm_del(NULL, -1) : Delete all event registered in the queue.
+ *
+ * @param cb Callback function in @ref alarm_cbfunc form
+ *		\n NULL value will be ignored
+ * @param arg The value which was set when alarm event added as arg
+ 		\n -1 value will be ignored
+ * @return @b RET_OK: Success \n @b RET_NOK: Error
+ */
 int8 alarm_del(alarm_cbfunc cb, int8 arg)
 {
 	int8 cnt = 0;
@@ -96,6 +125,17 @@ int8 alarm_del(alarm_cbfunc cb, int8 arg)
 	return cnt;
 }
 
+/**
+ * Count Alarm event which have same condition with param from the waiting queue. 
+ * If there is not alarm event same with param, 0 value will be returned.
+ * - alarm_chk(NULL, -1) : Count all event registered in the queue.
+ *
+ * @param cb Callback function in @ref alarm_cbfunc form
+ *		\n NULL value will be ignored
+ * @param arg The value which was set when alarm event added as arg
+ 		\n -1 value will be ignored
+ * @return @b RET_OK: Success \n @b RET_NOK: Error
+ */
 int8 alarm_chk(alarm_cbfunc cb, int8 arg)
 {
 	int8 cnt = 0;
@@ -114,6 +154,10 @@ int8 alarm_chk(alarm_cbfunc cb, int8 arg)
 	return cnt;
 }
 
+/**
+ * Alarm Module Handler.
+ * If you use alarm, this function should run in the main loop
+ */
 void alarm_run(void)
 {
 	uint32 cur = wizpf_get_systick();	//for DBG: static uint32 prt=999999;if(prt!=alst->time) {DBGA("cur(%d), time(%d)", wizpf_get_systick(), alst->time);prt = alst->time;}
@@ -125,6 +169,13 @@ void alarm_run(void)
 	}
 }
 
+/**
+ * Count digit's letter
+ * Ex) digit_length(12345, 10) : This will return 5.
+ * @param dgt The digit value to count
+ * @param base Digit base like 2, 8, 10, 16
+ * @return @b >0: Counted digit letter \n @b RET_NOK: Error
+ */
 int8 digit_length(int32 dgt, int8 base)
 {
 	int16 i, len = 0;
@@ -143,6 +194,20 @@ int8 digit_length(int32 dgt, int8 base)
 	return RET_NOK;
 }
 
+/**
+ * Check string with standard library method.
+ * Below is the method you can use.
+ * - isalpha, isupper, islower
+ * - isdigit, isxdigit, isalnum
+ * - isspace, ispunct, isprint
+ * - isgraph, iscntrl, isascii
+ *
+ * Ex) str_check(isdigit, "12345") : This will return RET_OK. \n
+ * Ex) str_check(islower, "AbcDe") : This will return RET_NOK.
+ * @param method The method to use for check
+ * @param str The string to check
+ * @return @b RET_OK: Success \n @b RET_NOK: Error
+ */
 int32 str_check(int (*method)(int), int8 *str)
 {
 	if(method == NULL || str == NULL || *str == 0)
@@ -156,6 +221,15 @@ int32 str_check(int (*method)(int), int8 *str)
 	return RET_OK;
 }
 
+/**
+ * Separate string into small peace by delimiter like strtok.
+ * But if the input string contains more than one character from delimiter \n
+ * in a row, strsep returns an empty string for each pair of characters from delimiter.
+ * Ex) strsep("a,b,c,,,f,gh", ",") : When meet ,,, strtok returns 'f' but this returns NULL.
+ * @param stringp String to separate
+ * @param delim Delimiter
+ * @return Next pointer separated by delimiter
+ */
 int8 *strsep(register int8 **stringp, register const int8 *delim)
 {
     register int8 *s;
@@ -182,7 +256,15 @@ int8 *strsep(register int8 **stringp, register const int8 *delim)
     /* NOTREACHED */
 }
 
-int32 base64_decode(int8 *text, uint8 *dst, int32 numBytes )
+/**
+ * Decode string with base64 protocol.
+ * Normally, this is used for SMTP or something.
+ * @param text String to decode
+ * @param dst The buffer in which decoded string will enter
+ * @param numBytes Dst buffer size
+ * @return Decoded string size
+ */
+int32 base64_decode(int8 *text, uint8 *dst, int32 numBytes)
 {
   const int8* cp;
   int32 space_idx = 0, phase;
@@ -226,6 +308,14 @@ int32 base64_decode(int8 *text, uint8 *dst, int32 numBytes )
 
 }
 
+/**
+ * Encode string with base64 protocol.
+ * Normally, this is used for SMTP or something.
+ * @param text String to encode
+ * @param numBytes encodedText buffer size
+ * @param encodedText The buffer in which encoded string will enter
+ * @return always return 0
+ */
 int32 base64_encode(int8 *text, int32 numBytes, int8 *encodedText)
 {
   uint8 input[3]  = {0,0,0};
@@ -260,8 +350,13 @@ int32 base64_encode(int8 *text, int32 numBytes, int8 *encodedText)
     return 0;
 }
 
-
 #ifdef USE_FULL_ASSERT
+/* NOT USE !!!
+ * Asset function which declared at stm32f10x_conf.h file
+ * If USE_FULL_ASSERT is defined this will be active.
+ * @param file File name in which asset occurred.
+ * @param line asserted line number
+ */
 void assert_failed(uint8* file, uint32 line)
 { 
   /* User can add his own implementation to report the file name and line number,

@@ -1,13 +1,13 @@
 
 #include "common/common.h"
 
-#include "protocol/DHCP/dhcp.h"
 #include "protocol/DNS/dns.h"
 //#include "protocol/HTTP/httputil.h"
 #include "protocol/SMTP/smtp.h"
 #include "appmod/atcmd/atcmd.h"
 #include "appmod/loopback/loopback.h"
 #include "appmod/usermenu/usermenu.h"
+
 
 int32 main(void)
 {
@@ -27,14 +27,14 @@ int32 main(void)
 
 	NL1;
 	LOG("-----------------------------------");
-	LOG(" WIZlib Project - Easy Starter     ");
+	LOG(" WIZlib Project - Title            ");
 	LOG("-----------------------------------");
 	NL2;
 
 	Delay_tick(2000);	// prevent first send fail
 	
 	// ToDo: Modules Initialization
-	// ex) dhcp_alarm_start(NULL);
+	// ex) dhcp_auto_start();
 	//     atc_init();
 
 	while(1) {

@@ -1,56 +1,61 @@
+/**
+ * @file		sockutil.c
+ * @brief		The Utility of TCP/IP Chip Device Driver Source File
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *		2013/02/22 - 1.0 Release
+ * @author	modified by Mike Jeong
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
 
 //#define FILE_LOG_SILENCE
 #include "common/common.h"
 //#include "device/sockutil.h"
-
-#if (USE_DHCP == VAL_ENABLE)
-#include "protocol/DHCP/dhcp.h"
-#endif
 
 
 static watch_cbfunc watch_cb[TOTAL_SOCK_NUM] = {0,};
 static uint8 watch_sock[TOTAL_SOCK_NUM] = {0,};
 
 
-int8 network_init(uint8 dhcp_sock, pFunc ip_update, pFunc ip_conflict)
+int8 network_init(uint8 dhcp_sock, void_func ip_update, void_func ip_conflict)
 {
 #define NETINIT_ADDR_SET(name_p) \
 do { \
-	if(ip_check(DEFAULT_IP_ADDR, netinfo.IP) != RET_OK) { \
+	if(ip_check(DEFAULT_IP_ADDR, netinfo.ip) != RET_OK) { \
 		ERR("Default IP Addr set fail"); return RET_NOK; \
 	} else DBGA(name_p" IP Addr(%d.%d.%d.%d)", \
-		netinfo.IP[0], netinfo.IP[1], netinfo.IP[2], netinfo.IP[3]); \
-	if(ip_check(DEFAULT_SN_MASK, netinfo.SN) != RET_OK) { \
+		netinfo.ip[0], netinfo.ip[1], netinfo.ip[2], netinfo.ip[3]); \
+	if(ip_check(DEFAULT_SN_MASK, netinfo.sn) != RET_OK) { \
 		ERR("Default SN Mask set fail"); return RET_NOK; \
 	} else DBGA(name_p" SN Mask(%d.%d.%d.%d)", \
-		netinfo.SN[0], netinfo.SN[1], netinfo.SN[2], netinfo.SN[3]); \
-	if(ip_check(DEFAULT_GW_ADDR, netinfo.GW) != RET_OK) { \
+		netinfo.sn[0], netinfo.sn[1], netinfo.sn[2], netinfo.sn[3]); \
+	if(ip_check(DEFAULT_GW_ADDR, netinfo.gw) != RET_OK) { \
 		ERR("Default GW Addr set fail"); return RET_NOK; \
-	} else DBGA(name_p" GW Addr(%d.%d.%d.%d)", netinfo.GW[0],  \
-		netinfo.GW[1], netinfo.GW[2], netinfo.GW[3]); \
-	if(ip_check(DEFAULT_DNS_ADDR, netinfo.DNS) != RET_OK) { \
+	} else DBGA(name_p" GW Addr(%d.%d.%d.%d)", netinfo.gw[0],  \
+		netinfo.gw[1], netinfo.gw[2], netinfo.gw[3]); \
+	if(ip_check(DEFAULT_DNS_ADDR, netinfo.dns) != RET_OK) { \
 		ERR("Default DNS Addr set fail"); return RET_NOK; \
-	} else DBGA(name_p" DNS Addr(%d.%d.%d.%d)", netinfo.DNS[0],  \
-		netinfo.DNS[1], netinfo.DNS[2], netinfo.DNS[3]); \
+	} else DBGA(name_p" DNS Addr(%d.%d.%d.%d)", netinfo.dns[0],  \
+		netinfo.dns[1], netinfo.dns[2], netinfo.dns[3]); \
 } while(0)
 
 	wiz_NetInfo netinfo;
 
 	memset(&netinfo, 0, sizeof(netinfo));
 
-	if(mac_check(DEFAULT_MAC_ADDR, netinfo.Mac) != RET_OK) {
+	if(mac_check(DEFAULT_MAC_ADDR, netinfo.mac) != RET_OK) {
 		ERR("Default MAC Addr set fail");
 		return RET_NOK;
-	} else DBGA("Default MAC Addr(%02x:%02x:%02x:%02x:%02x:%02x)", netinfo.Mac[0], 
-		netinfo.Mac[1], netinfo.Mac[2], netinfo.Mac[3], netinfo.Mac[4], netinfo.Mac[5]);
+	} else DBGA("Default MAC Addr(%02x:%02x:%02x:%02x:%02x:%02x)", netinfo.mac[0], 
+		netinfo.mac[1], netinfo.mac[2], netinfo.mac[3], netinfo.mac[4], netinfo.mac[5]);
 
 #if (USE_DHCP == VAL_ENABLE)
-	NETINIT_ADDR_SET("Default");	// Set the addresses which would be used when DHCP failed
+	NETINIT_ADDR_SET("Default");	// Set the addresses which will be used when DHCP failed
 	dhcp_init(dhcp_sock, ip_update, ip_conflict, &netinfo);
-	//while(1) {dhcp_run();if(dhcp_get_state() == DHCP_STATE_BOUND) break;}
 #else
 	NETINIT_ADDR_SET("Static");
-	netinfo.DHCP = NETINFO_STATIC;
+	netinfo.dhcp = NETINFO_STATIC;
 	SetNetInfo(&netinfo);
 	network_disp(&netinfo);
 #endif
@@ -62,14 +67,15 @@ void network_disp(wiz_NetInfo *ni)
 {
 	GetNetInfo(ni);
 	LOG("---------------------------------------");
-	LOG("W5200 Network Configuration Information");
+	LOG("Current Network Configuration          ");
 	LOG("---------------------------------------");
 	LOGA("MAC : %02X:%02X:%02X:%02X:%02X:%02X", 
-		ni->Mac[0], ni->Mac[1], ni->Mac[2], ni->Mac[3], ni->Mac[4], ni->Mac[5]);
-	LOGA("IP  : %d.%d.%d.%d", ni->IP[0], ni->IP[1], ni->IP[2], ni->IP[3]);
-	LOGA("SN  : %d.%d.%d.%d", ni->SN[0], ni->SN[1], ni->SN[2], ni->SN[3]);
-	LOGA("GW  : %d.%d.%d.%d", ni->GW[0], ni->GW[1], ni->GW[2], ni->GW[3]);
-	LOGA("DNS : %d.%d.%d.%d", ni->DNS[0], ni->DNS[1], ni->DNS[2], ni->DNS[3]);
+		ni->mac[0], ni->mac[1], ni->mac[2], ni->mac[3], ni->mac[4], ni->mac[5]);
+	LOGA("IP  : %d.%d.%d.%d", ni->ip[0], ni->ip[1], ni->ip[2], ni->ip[3]);
+	LOGA("SN  : %d.%d.%d.%d", ni->sn[0], ni->sn[1], ni->sn[2], ni->sn[3]);
+	LOGA("GW  : %d.%d.%d.%d", ni->gw[0], ni->gw[1], ni->gw[2], ni->gw[3]);
+	LOGA("DNS : %d.%d.%d.%d", ni->dns[0], ni->dns[1], ni->dns[2], ni->dns[3]);
+	LOGA("DHCP: %s", ni->dhcp==NETINFO_STATIC? "Static": "DHCP");
 	LOG("---------------------------------------");
 }
 

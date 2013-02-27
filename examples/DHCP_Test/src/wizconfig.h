@@ -4,11 +4,18 @@
 
 
 //### DHCP Compare Define #####################################################
-#define DHCP_NONE			0
-#define DHCP_ALARM_ASYNC	1
-#define DHCP_ALARM_SYNC		2
-#define DHCP_MANUAL			3
-#define DHCP_MODE DHCP_ALARM_ASYNC	// You can select one of upper
+#define DHCP_NONE			0	// Disable DHCP, If you test this mode, you should exclude dhcp folder from project
+#define DHCP_AUTO_ASYNC		1	// DHCP Auto (Alarm) mode, use non-blocking function
+#define DHCP_AUTO_SYNC		2	// DHCP Auto (Alarm) mode, use blocking function
+#define DHCP_MANUAL			3	// DHCP Manual mode
+//---------------------------------------------------------------------------
+
+	// Select one of upper mode
+	#define DHCP_MODE DHCP_AUTO_ASYNC
+
+	// Uncomment if you want to start DHCP as STATIC mode
+	//#define DHCP_START_AS_STATIC
+
 //###########################################################################
 
 
@@ -31,11 +38,11 @@
 #define USE_DHCP	VAL_ENABLE
 #endif
 
-#if (DHCP_MODE == DHCP_ALARM_ASYNC)
-#define DHCP_ALARM	// if not set, you should handle dhcp manually, if set, need to run 'alarm_run()' funtion in main loop
+#if (DHCP_MODE == DHCP_AUTO_ASYNC) || (DHCP_MODE == DHCP_AUTO_SYNC)
+#define DHCP_AUTO	// if not set, you should handle dhcp manually, if set, need to run 'alarm_run()' funtion in main loop
+#endif
+#if (DHCP_MODE == DHCP_AUTO_ASYNC)
 #define DHCP_ASYNC	// if not set, it works using sync function, if set, need to run 'sockwatch_run()' funtion in main loop
-#elif (DHCP_MODE == DHCP_ALARM_SYNC)
-#define DHCP_ALARM
 #endif
 //###########################################################################
 

@@ -1,3 +1,13 @@
+/**
+ * @file		cmdrun.c
+ * @brief		AT Command Module - Implementation Part Source File
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *		2013/02/22 - 1.0 Release
+ * @author	Mike Jeong
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
 
 //#define FILE_LOG_SILENCE
 #include "appmod/atcmd/cmdrun.h"
@@ -290,30 +300,30 @@ void act_nset_q(int8 num)
 
 	if(num == 1) {
 		GetNetInfo(&ni);
-		if(ni.DHCP > NETINFO_STATIC) 
+		if(ni.dhcp == NETINFO_DHCP) 
 			MAKE_TCMD_CHAR(atci.tcmd.arg1, 'D');
 		else MAKE_TCMD_CHAR(atci.tcmd.arg1, 'S');
 		CMD_RESP_RET(RET_OK, VAL_NONE);
 	} else if(num > 1) {
 		dhcp_get_storage(&ni);
 		switch(num) {
-		case 2: MAKE_TCMD_ADDR(atci.tcmd.arg1, ni.IP[0], ni.IP[1], ni.IP[2], ni.IP[3]); break;
-		case 3: MAKE_TCMD_ADDR(atci.tcmd.arg1, ni.SN[0], ni.SN[1], ni.SN[2], ni.SN[3]); break;
-		case 4: MAKE_TCMD_ADDR(atci.tcmd.arg1, ni.GW[0], ni.GW[1], ni.GW[2], ni.GW[3]); break;
-		case 5: MAKE_TCMD_ADDR(atci.tcmd.arg1, ni.DNS[0], ni.DNS[1], ni.DNS[2], ni.DNS[3]); break;
+		case 2: MAKE_TCMD_ADDR(atci.tcmd.arg1, ni.ip[0], ni.ip[1], ni.ip[2], ni.ip[3]); break;
+		case 3: MAKE_TCMD_ADDR(atci.tcmd.arg1, ni.sn[0], ni.sn[1], ni.sn[2], ni.sn[3]); break;
+		case 4: MAKE_TCMD_ADDR(atci.tcmd.arg1, ni.gw[0], ni.gw[1], ni.gw[2], ni.gw[3]); break;
+		case 5: MAKE_TCMD_ADDR(atci.tcmd.arg1, ni.dns[0], ni.dns[1], ni.dns[2], ni.dns[3]); break;
 		case 6: CMD_RESP_RET(RET_NOT_ALLOWED, VAL_NONE);
 		}
 		CMD_RESP_RET(RET_OK, VAL_NONE);
 	} else {
 		GetNetInfo(&ni);
-		if(ni.DHCP > NETINFO_STATIC) 
+		if(ni.dhcp == NETINFO_DHCP) 
 			MAKE_TCMD_CHAR(atci.tcmd.arg1, 'D');
 		else MAKE_TCMD_CHAR(atci.tcmd.arg1, 'S');
 		dhcp_get_storage(&ni);
-		MAKE_TCMD_ADDR(atci.tcmd.arg2, ni.IP[0], ni.IP[1], ni.IP[2], ni.IP[3]);
-		MAKE_TCMD_ADDR(atci.tcmd.arg3, ni.SN[0], ni.SN[1], ni.SN[2], ni.SN[3]);
-		MAKE_TCMD_ADDR(atci.tcmd.arg4, ni.GW[0], ni.GW[1], ni.GW[2], ni.GW[3]);
-		MAKE_TCMD_ADDR(atci.tcmd.arg5, ni.DNS[0], ni.DNS[1], ni.DNS[2], ni.DNS[3]);
+		MAKE_TCMD_ADDR(atci.tcmd.arg2, ni.ip[0], ni.ip[1], ni.ip[2], ni.ip[3]);
+		MAKE_TCMD_ADDR(atci.tcmd.arg3, ni.sn[0], ni.sn[1], ni.sn[2], ni.sn[3]);
+		MAKE_TCMD_ADDR(atci.tcmd.arg4, ni.gw[0], ni.gw[1], ni.gw[2], ni.gw[3]);
+		MAKE_TCMD_ADDR(atci.tcmd.arg5, ni.dns[0], ni.dns[1], ni.dns[2], ni.dns[3]);
 		CMD_RESP_RET(RET_OK, VAL_NONE);
 	}
 }
@@ -323,10 +333,10 @@ void act_nset_a(int8 mode, uint8 *ip, uint8 *sn,
 {
 	wiz_NetInfo ni = {0,};
 
-	if(ip) memcpy(ni.IP, ip, 4);
-	if(sn) memcpy(ni.SN, sn, 4);
-	if(gw) memcpy(ni.GW, gw, 4);
-	if(dns1) memcpy(ni.DNS, dns1, 4);
+	if(ip) memcpy(ni.ip, ip, 4);
+	if(sn) memcpy(ni.sn, sn, 4);
+	if(gw) memcpy(ni.gw, gw, 4);
+	if(dns1) memcpy(ni.dns, dns1, 4);
 	if(dns2) {
 		MAKE_TCMD_DIGIT(atci.tcmd.arg1, 6);
 		CMD_RESP_RET(RET_NOT_ALLOWED, VAL_NONE);
@@ -339,11 +349,11 @@ void act_nset_a(int8 mode, uint8 *ip, uint8 *sn,
 		}
 	} else if(mode == 'D') {
 		dhcp_set_storage(&ni);
-		dhcp_alarm_start(NULL);
+		dhcp_auto_start();
 	} else {
 		dhcp_set_storage(&ni);
 		GetNetInfo(&ni);
-		if(ni.DHCP == NETINFO_STATIC) SetNetInfo(&ni);
+		if(ni.dhcp == NETINFO_STATIC) SetNetInfo(&ni);
 	}
 	CMD_RESP_RET(RET_OK, VAL_NONE);
 }
@@ -354,27 +364,27 @@ void act_nstat(int8 num)
 
 	GetNetInfo(&ni);
 	if(num == 1) {
-		if(ni.DHCP > NETINFO_STATIC) 
+		if(ni.dhcp == NETINFO_DHCP) 
 			MAKE_TCMD_CHAR(atci.tcmd.arg1, 'D');
 		else MAKE_TCMD_CHAR(atci.tcmd.arg1, 'S');
 		CMD_RESP_RET(RET_OK, VAL_NONE);
 	} else if(num > 1) {
 		switch(num) {
-		case 2: MAKE_TCMD_ADDR(atci.tcmd.arg1, ni.IP[0], ni.IP[1], ni.IP[2], ni.IP[3]); break;
-		case 3: MAKE_TCMD_ADDR(atci.tcmd.arg1, ni.SN[0], ni.SN[1], ni.SN[2], ni.SN[3]); break;
-		case 4: MAKE_TCMD_ADDR(atci.tcmd.arg1, ni.GW[0], ni.GW[1], ni.GW[2], ni.GW[3]); break;
-		case 5: MAKE_TCMD_ADDR(atci.tcmd.arg1, ni.DNS[0], ni.DNS[1], ni.DNS[2], ni.DNS[3]); break;
+		case 2: MAKE_TCMD_ADDR(atci.tcmd.arg1, ni.ip[0], ni.ip[1], ni.ip[2], ni.ip[3]); break;
+		case 3: MAKE_TCMD_ADDR(atci.tcmd.arg1, ni.sn[0], ni.sn[1], ni.sn[2], ni.sn[3]); break;
+		case 4: MAKE_TCMD_ADDR(atci.tcmd.arg1, ni.gw[0], ni.gw[1], ni.gw[2], ni.gw[3]); break;
+		case 5: MAKE_TCMD_ADDR(atci.tcmd.arg1, ni.dns[0], ni.dns[1], ni.dns[2], ni.dns[3]); break;
 		case 6: CMD_RESP_RET(RET_NOT_ALLOWED, VAL_NONE);
 		}
 		CMD_RESP_RET(RET_OK, VAL_NONE);
 	} else {
-		if(ni.DHCP > NETINFO_STATIC) 
+		if(ni.dhcp == NETINFO_DHCP) 
 			MAKE_TCMD_CHAR(atci.tcmd.arg1, 'D');
 		else MAKE_TCMD_CHAR(atci.tcmd.arg1, 'S');
-		MAKE_TCMD_ADDR(atci.tcmd.arg2, ni.IP[0], ni.IP[1], ni.IP[2], ni.IP[3]);
-		MAKE_TCMD_ADDR(atci.tcmd.arg3, ni.SN[0], ni.SN[1], ni.SN[2], ni.SN[3]);
-		MAKE_TCMD_ADDR(atci.tcmd.arg4, ni.GW[0], ni.GW[1], ni.GW[2], ni.GW[3]);
-		MAKE_TCMD_ADDR(atci.tcmd.arg5, ni.DNS[0], ni.DNS[1], ni.DNS[2], ni.DNS[3]);
+		MAKE_TCMD_ADDR(atci.tcmd.arg2, ni.ip[0], ni.ip[1], ni.ip[2], ni.ip[3]);
+		MAKE_TCMD_ADDR(atci.tcmd.arg3, ni.sn[0], ni.sn[1], ni.sn[2], ni.sn[3]);
+		MAKE_TCMD_ADDR(atci.tcmd.arg4, ni.gw[0], ni.gw[1], ni.gw[2], ni.gw[3]);
+		MAKE_TCMD_ADDR(atci.tcmd.arg5, ni.dns[0], ni.dns[1], ni.dns[2], ni.dns[3]);
 		CMD_RESP_RET(RET_OK, VAL_NONE);
 	}
 }
@@ -385,7 +395,7 @@ void act_nmac_q(void)
 
 	GetNetInfo(&ni);
 	sprintf((char*)atci.tcmd.arg1, "%d:%d:%d:%d:%d:%d", 
-		ni.Mac[0], ni.Mac[1], ni.Mac[2], ni.Mac[3], ni.Mac[4], ni.Mac[5]);
+		ni.mac[0], ni.mac[1], ni.mac[2], ni.mac[3], ni.mac[4], ni.mac[5]);
 	CMD_RESP_RET(RET_OK, VAL_NONE);
 }
 
@@ -394,7 +404,7 @@ void act_nmac_a(uint8 *mac)
 #if 1 // Enable MAC change
 	wiz_NetInfo ni = {0,};
 
-	memcpy(ni.Mac, mac, 6);
+	memcpy(ni.mac, mac, 6);
 	SetNetInfo(&ni);
 	CMD_RESP_RET(RET_OK, VAL_NONE);
 #else

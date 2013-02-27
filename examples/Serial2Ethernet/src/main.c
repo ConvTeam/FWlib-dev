@@ -2,7 +2,6 @@
 #include "common/common.h"
 
 #include "protocol/DNS/dns.h"
-#include "protocol/DHCP/dhcp.h"
 #include "appmod/atcmd/atcmd.h"
 
 #define ASSIST_SOCK		0
@@ -33,7 +32,7 @@ int32 main(void)
 	NL2;
 
 	Delay_tick(2000);	// prevent first send fail
-	dhcp_alarm_start(NULL);
+	dhcp_auto_start();
 	atc_init();
 
 	while(1) {

@@ -2,7 +2,6 @@
 #include "common/common.h"
 
 #include "protocol/DNS/dns.h"
-#include "protocol/DHCP/dhcp.h"
 #include "protocol/SMTP/smtp.h"
 #include "appmod/loopback/loopback.h"
 #include "appmod/usermenu/usermenu.h"
@@ -69,22 +68,22 @@ do {uint8 _tmp[4], _next[4]; \
 	GetNetInfo(&netinfo);
 
 	if(mctrl == MC_START) {
-		NEXT_GUIDE("IP Address", netinfo.IP);
+		NEXT_GUIDE("IP Address", netinfo.ip);
 	} else if(mctrl == MC_END) {
 		stage = 0;
 	} else if(mctrl == MC_DATA) {
 		switch(stage) {
 		case 0:
-			SET_STAGE("IP Address", "SN mask", netinfo.IP, netinfo.SN);
+			SET_STAGE("IP Address", "SN mask", netinfo.ip, netinfo.sn);
 			break;
 		case 1:
-			SET_STAGE("SN mask", "GW Address", netinfo.SN, netinfo.GW);
+			SET_STAGE("SN mask", "GW Address", netinfo.sn, netinfo.gw);
 			break;
 		case 2:
-			SET_STAGE("GW Address", "DNS Address", netinfo.GW, netinfo.DNS);
+			SET_STAGE("GW Address", "DNS Address", netinfo.gw, netinfo.dns);
 			break;
 		case 3:
-			SET_STAGE("DNS Address", "", netinfo.DNS, NULL);
+			SET_STAGE("DNS Address", "", netinfo.dns, NULL);
 			if(stage > 3) return RET_OK;
 			break;
 		}
@@ -322,7 +321,7 @@ int32 main(void)
 	menu_add("eMail", root, mn_email);
 	menu_print_tree();
 
-	dhcp_alarm_start(NULL);
+	dhcp_auto_start();
 
 	while(1) {
 

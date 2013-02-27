@@ -6,93 +6,27 @@
   <configuration>
     <name>WIZ_W5200</name>
     <outputs>
-      <file>$PROJ_DIR$\..\..\..\library\appmod\usermenu\usermenu.c</file>
       <file>$PROJ_DIR$\..\..\..\library\appmod\loopback\loopback.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_bkp.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\common\util.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\device\w5200\socket.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\device\sockutil.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\device\w5200\w5200.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\CoreSupport\core_cm3.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\misc.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\startup\iar\startup_stm32f10x_md.s</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_exti.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_flash.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_gpio.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_rcc.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_spi.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_tim.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_usart.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\wizspi.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\protocol\DHCP\dhcp.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h</file>
+      <file>$PROJ_DIR$\WIZ_W5200\Obj\stm32f10x_flash.pbi</file>
       <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rtc.h</file>
       <file>$TOOLKIT_DIR$\inc\ysizet.h</file>
       <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h</file>
       <file>$TOOLKIT_DIR$\inc\xlocale.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_can.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_cec.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_crc.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dac.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_flash.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_fsmc.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_gpio.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_i2c.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_iwdg.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_pwr.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\misc.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_sdio.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_spi.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_tim.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_usart.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_wwdg.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\wizspi.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\device\w5200\w5200.h</file>
-      <file>$TOOLKIT_DIR$\inc\stdlib.h</file>
-      <file>$TOOLKIT_DIR$\inc\wchar.h</file>
-      <file>$TOOLKIT_DIR$\inc\stdint.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\common\util.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\device\socket.h</file>
-      <file>$TOOLKIT_DIR$\inc\ycheck.h</file>
-      <file>$TOOLKIT_DIR$\inc\yvals.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\device\sockutil.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\wizplatform.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\appmod\loopback\loopback.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\appmod\usermenu\usermenu.c</file>
       <file>$PROJ_DIR$\..\..\..\library\appmod\usermenu\usermenu.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\CoreSupport\core_cm3.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.h</file>
-      <file>$PROJ_DIR$\port\stm32f10x_conf.h</file>
-      <file>$TOOLKIT_DIR$\inc\xlocaleuse.h</file>
-      <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
-      <file>$TOOLKIT_DIR$\inc\DLib_Defaults.h</file>
-      <file>$TOOLKIT_DIR$\inc\DLib_Product.h</file>
-      <file>$TOOLKIT_DIR$\inc\xencoding_limits.h</file>
-      <file>$TOOLKIT_DIR$\inc\DLib_Threads.h</file>
-      <file>$TOOLKIT_DIR$\inc\stdio.h</file>
-      <file>$TOOLKIT_DIR$\inc\DLib_Product_string.h</file>
-      <file>$TOOLKIT_DIR$\inc\string.h</file>
-      <file>$TOOLKIT_DIR$\inc\ctype.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\protocol\HTTP\httputil.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\protocol\DNS\dns.h</file>
-      <file>$PROJ_DIR$\..\src\webpage.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\protocol\DHCP\dhcp.h</file>
-      <file>$PROJ_DIR$\..\src\romfile.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\protocol\HTTP\httpd.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W5200\wizplatform.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W5200\w5200_evb.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W5200\system_stm32f10x.c</file>
-      <file>$PROJ_DIR$\WIZ_W5200\Obj\socket.pbi</file>
-      <file>$PROJ_DIR$\WIZ_W5200\Obj\sockutil.pbi</file>
-      <file>$PROJ_DIR$\WIZ_W5200\Obj\w5200.pbi</file>
-      <file>$PROJ_DIR$\WIZ_W5200\Obj\core_cm3.pbi</file>
-      <file>$PROJ_DIR$\WIZ_W5200\Obj\misc.pbi</file>
-      <file>$PROJ_DIR$\WIZ_W5200\Obj\stm32f10x_bkp.pbi</file>
-      <file>$PROJ_DIR$\WIZ_W5200\Obj\stm32f10x_exti.pbi</file>
-      <file>$PROJ_DIR$\WIZ_W5200\Obj\stm32f10x_flash.pbi</file>
+      <file>$PROJ_DIR$\..\..\..\library\common\common.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\common\types.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\common\util.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\common\util.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\device\w5200\socket.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\device\w5200\w5200.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\device\w5200\w5200.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\device\socket.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\device\sockutil.c</file>
       <file>$PROJ_DIR$\WIZ_W5200\Obj\stm32f10x_gpio.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\xtls.h</file>
       <file>$PROJ_DIR$\WIZ_W5200\Obj\stm32f10x_rcc.pbi</file>
       <file>$PROJ_DIR$\WIZ_W5200\Obj\stm32f10x_spi.pbi</file>
       <file>$PROJ_DIR$\WIZ_W5200\Obj\stm32f10x_tim.pbi</file>
@@ -115,20 +49,9 @@
       <file>$PROJ_DIR$\WIZ_W5200\Obj\loopback.pbi</file>
       <file>$PROJ_DIR$\WIZ_W5200\Obj\usermenu.pbi</file>
       <file>$PROJ_DIR$\WIZ_W5200\Obj\util.pbi</file>
-      <file>$PROJ_DIR$\..\..\..\library\protocol\DNS\dns.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\protocol\HTTP\httputil.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\protocol\HTTP\httpd.c</file>
-      <file>$PROJ_DIR$\port\stm32f10x_it.c</file>
-      <file>$PROJ_DIR$\..\src\main.c</file>
-      <file>$PROJ_DIR$\..\src\romfile.c</file>
-      <file>$TOOLKIT_DIR$\inc\xtls.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h</file>
       <file>$TOOLKIT_DIR$\inc\xmtx.h</file>
       <file>$TOOLKIT_DIR$\inc\xlocale_c.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\common\common.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\appmod\loopback\loopback.h</file>
-      <file>$PROJ_DIR$\..\src\wizconfig.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\common\types.h</file>
       <file>$PROJ_DIR$\WIZ_W5200\Obj\httpd.o</file>
       <file>$PROJ_DIR$\WIZ_W5200\Obj\httputil.o</file>
       <file>$PROJ_DIR$\WIZ_W5200\Obj\system_stm32f10x.o</file>
@@ -154,555 +77,11 @@
       <file>$PROJ_DIR$\WIZ_W5200\Obj\dhcp.o</file>
       <file>$PROJ_DIR$\WIZ_W5200\Obj\stm32f10x_it.o</file>
       <file>$PROJ_DIR$\WIZ_W5200\Obj\wizplatform.o</file>
-    </outputs>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\appmod\usermenu\usermenu.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 107</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 140</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 55 119 121 122 76 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 19 39 40 41 42 43 38 44 45 65 20 46 67 66 68 22 115 116 59 117 47 49 50 53 54</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\appmod\loopback\loopback.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 106</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 142</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 120 119 121 122 76 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 19 39 40 41 42 43 38 44 45 65 20 46 67 66 68 22 115 116 59 117 47 49 50 53 54</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_bkp.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 83</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 133</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 23 118 56 48 51 52 61 62 63 64 60 57 58 21 24 25 26 27 28 29 30 31 32 33 34 35 36 37 19 39 40 41 42 43 38</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\common\util.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 108</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 139</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 119 121 122 76 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 19 39 40 41 42 43 38 44 45 65 20 46 67 66 68 22 115 116 59 117 47 49 50 53 54</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\device\w5200\socket.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 78</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 141</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 119 121 122 76 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 19 39 40 41 42 43 38 44 45 65 20 46 67 66 68 22 115 116 59 117 47 49 50 53 54</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\device\sockutil.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 79</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 136</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 119 121 122 76 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 19 39 40 41 42 43 38 44 45 65 20 46 67 66 68 22 115 116 59 117 47 49 50 53 54</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\device\w5200\w5200.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 80</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 135</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 119 121 122 76 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 19 39 40 41 42 43 38 44 45 65 20 46 67 66 68 22 115 116 59 117 47 49 50 53 54</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\CoreSupport\core_cm3.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 81</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 138</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 48 51 52 61 62 63 64</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\misc.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 82</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 137</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 38 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 19 39 40 41 42 43</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\startup\iar\startup_stm32f10x_md.s</name>
-      <outputs>
-        <tool>
-          <name>AARM</name>
-          <file> 143</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_exti.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 84</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 132</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 30 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 31 32 33 34 35 36 37 19 39 40 41 42 43 38</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_flash.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 85</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 131</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 31 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 30 32 33 34 35 36 37 19 39 40 41 42 43 38</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_gpio.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 86</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 130</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 33 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 30 31 32 34 35 36 37 19 39 40 41 42 43 38</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_rcc.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 87</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 129</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 37 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 30 31 32 33 34 35 36 19 39 40 41 42 43 38</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_spi.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 88</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 128</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 40 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 19 39 41 42 43 38</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_tim.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 89</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 127</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 41 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 19 39 40 42 43 38</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_usart.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 90</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 126</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 42 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 19 39 40 41 43 38</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\wizspi.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 93</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 134</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 44 119 121 122 76 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 19 39 40 41 42 43 38 45 65 20 46 67 66 68 22 115 116 59 117 47 49 50 53 54</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\protocol\DHCP\dhcp.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 94</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 145</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 72 119 121 122 76 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 19 39 40 41 42 43 38 44 45 65 20 46 67 66 68 22 115 116 59 117 47 49 50 53 54</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>[ROOT_NODE]</name>
-      <outputs>
-        <tool>
-          <name>ILINK</name>
-          <file> 101</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W5200\wizplatform.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 92</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 147</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 119 121 122 76 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 19 39 40 41 42 43 38 44 45 65 20 46 67 66 68 22 115 116 59 117 47 49 50 53 54</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W5200\system_stm32f10x.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 91</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 125</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 19 39 40 41 42 43 38</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\WIZ_W5200\Exe\WebIO.out</name>
-      <outputs>
-        <tool>
-          <name>OBJCOPY</name>
-          <file> 103</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\WIZ_W5200\Obj\WebIO.pbd</name>
-      <inputs>
-        <tool>
-          <name>BILINK</name>
-          <file> 81 94 95 96 97 106 99 82 100 78 79 83 84 85 86 98 87 88 89 90 91 107 108 80 92 93</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\protocol\DNS\dns.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 95</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 144</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 70 119 121 122 76 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 19 39 40 41 42 43 38 44 45 65 20 46 67 66 68 22 115 116 59 117 47 49 50 53 54</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\protocol\HTTP\httputil.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 97</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 124</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 69 74 119 121 122 76 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 19 39 40 41 42 43 38 44 45 65 20 46 67 66 68 22 115 116 59 117 47 49 50 53 54 73 71</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\protocol\HTTP\httpd.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 96</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 123</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 119 121 122 76 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 19 39 40 41 42 43 38 44 45 65 20 46 67 66 68 22 115 116 59 117 47 49 50 53 54 74 73</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\port\stm32f10x_it.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 98</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 146</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 119 121 122 76 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 19 39 40 41 42 43 38 44 45 65 20 46 67 66 68 22 115 116 59 117 47 49 50 53 54</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\src\main.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 99</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 104</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 119 121 122 76 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 19 39 40 41 42 43 38 44 45 65 20 46 67 66 68 22 115 116 59 117 47 49 50 53 54 70 72 69 74 73 120 55</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\src\romfile.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 100</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 105</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 73 119 121 122 76 118 56 48 51 52 61 62 63 64 60 57 58 21 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 19 39 40 41 42 43 38 44 45 65 20 46 67 66 68 22 115 116 59 117 47 49 50 53 54</file>
-        </tool>
-      </inputs>
-    </file>
-  </configuration>
-  <configuration>
-    <name>WIZ_W7200</name>
-    <outputs>
-      <file>$PROJ_DIR$\WIZ_W7200\Obj\romfile.o</file>
-      <file>$PROJ_DIR$\..\..\..\library\appmod\usermenu\usermenu.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\appmod\loopback\loopback.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W7200\w7200_evb.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\device\sockutil.h</file>
       <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_bkp.c</file>
-      <file>$PROJ_DIR$\WIZ_W7200\Obj\wizplatform.o</file>
-      <file>$PROJ_DIR$\WIZ_W7200\Obj\romfile.pbi</file>
-      <file>$PROJ_DIR$\WIZ_W7200\Obj\loopback.pbi</file>
-      <file>$PROJ_DIR$\..\..\..\library\common\util.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\device\w5200\socket.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\device\sockutil.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\device\w5200\w5200.c</file>
       <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\CoreSupport\core_cm3.c</file>
       <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\misc.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\protocol\HTTP\httputil.c</file>
       <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\startup\iar\startup_stm32f10x_md.s</file>
       <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_exti.c</file>
       <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_flash.c</file>
@@ -711,16 +90,29 @@
       <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_spi.c</file>
       <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_tim.c</file>
       <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_usart.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W7200\system_stm32f10x.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W7200\wizplatform.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W5200\system_stm32f10x.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W5200\w5200_evb.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W5200\wizplatform.c</file>
       <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\wizspi.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\wizplatform.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\wizspi.h</file>
       <file>$PROJ_DIR$\..\..\..\library\protocol\DHCP\dhcp.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rtc.h</file>
-      <file>$TOOLKIT_DIR$\inc\ysizet.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h</file>
-      <file>$TOOLKIT_DIR$\inc\xlocale.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\protocol\DHCP\dhcp.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\protocol\DNS\dns.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\protocol\DNS\dns.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\protocol\HTTP\httpd.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\protocol\HTTP\httpd.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\protocol\HTTP\httputil.h</file>
+      <file>$PROJ_DIR$\WIZ_W5200\Obj\stm32f10x_bkp.pbi</file>
+      <file>$PROJ_DIR$\port\stm32f10x_conf.h</file>
+      <file>$PROJ_DIR$\port\stm32f10x_it.c</file>
+      <file>$PROJ_DIR$\..\src\main.c</file>
+      <file>$PROJ_DIR$\..\src\romfile.c</file>
+      <file>$PROJ_DIR$\..\src\romfile.h</file>
       <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_can.h</file>
+      <file>$PROJ_DIR$\..\src\webpage.h</file>
+      <file>$PROJ_DIR$\..\src\wizconfig.h</file>
+      <file>$PROJ_DIR$\WIZ_W5200\Obj\socket.pbi</file>
       <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_cec.h</file>
       <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_crc.h</file>
       <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dac.h</file>
@@ -740,27 +132,13 @@
       <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_tim.h</file>
       <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_usart.h</file>
       <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_wwdg.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\wizspi.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\device\w5200\w5200.h</file>
       <file>$TOOLKIT_DIR$\inc\stdlib.h</file>
-      <file>$PROJ_DIR$\WIZ_W7200\Obj\WebIO.pbd</file>
       <file>$TOOLKIT_DIR$\inc\wchar.h</file>
-      <file>$PROJ_DIR$\WIZ_W7200\Exe\WebIO.bin</file>
-      <file>$PROJ_DIR$\WIZ_W7200\Obj\main.o</file>
-      <file>$PROJ_DIR$\WIZ_W7200\Obj\dhcp.o</file>
       <file>$TOOLKIT_DIR$\inc\stdint.h</file>
-      <file>$PROJ_DIR$\WIZ_W7200\Obj\dns.o</file>
-      <file>$PROJ_DIR$\WIZ_W7200\Obj\httpd.o</file>
-      <file>$PROJ_DIR$\..\..\..\library\common\util.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\device\socket.h</file>
       <file>$TOOLKIT_DIR$\inc\ycheck.h</file>
       <file>$TOOLKIT_DIR$\inc\yvals.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\device\sockutil.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\wizplatform.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\appmod\usermenu\usermenu.h</file>
       <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\CoreSupport\core_cm3.h</file>
       <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.h</file>
-      <file>$PROJ_DIR$\port\stm32f10x_conf.h</file>
       <file>$TOOLKIT_DIR$\inc\xlocaleuse.h</file>
       <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
       <file>$TOOLKIT_DIR$\inc\DLib_Defaults.h</file>
@@ -771,16 +149,571 @@
       <file>$TOOLKIT_DIR$\inc\DLib_Product_string.h</file>
       <file>$TOOLKIT_DIR$\inc\string.h</file>
       <file>$TOOLKIT_DIR$\inc\ctype.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\protocol\HTTP\httputil.h</file>
+      <file>$PROJ_DIR$\WIZ_W5200\Obj\stm32f10x_exti.pbi</file>
+      <file>$PROJ_DIR$\WIZ_W5200\Obj\sockutil.pbi</file>
+      <file>$PROJ_DIR$\WIZ_W5200\Obj\w5200.pbi</file>
+      <file>$PROJ_DIR$\WIZ_W5200\Obj\core_cm3.pbi</file>
+      <file>$PROJ_DIR$\WIZ_W5200\Obj\misc.pbi</file>
+    </outputs>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\appmod\loopback\loopback.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 40</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 65</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 7 10 105 11 85 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 112 113 114 115 116 117 118 119 3 121 122 123 124 125 120 89 16 139 4 126 141 140 142 6 20 44 133 45 127 13 17 71 88</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\appmod\usermenu\usermenu.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 41</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 63</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 9 10 105 11 85 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 112 113 114 115 116 117 118 119 3 121 122 123 124 125 120 89 16 139 4 126 141 140 142 6 20 44 133 45 127 13 17 71 88</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\common\util.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 42</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 62</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 10 105 11 85 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 112 113 114 115 116 117 118 119 3 121 122 123 124 125 120 89 16 139 4 126 141 140 142 6 20 44 133 45 127 13 17 71 88</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\device\w5200\socket.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 106</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 64</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 10 105 11 85 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 112 113 114 115 116 117 118 119 3 121 122 123 124 125 120 89 16 139 4 126 141 140 142 6 20 44 133 45 127 13 17 71 88</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\device\w5200\w5200.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 145</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 58</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 10 105 11 85 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 112 113 114 115 116 117 118 119 3 121 122 123 124 125 120 89 16 139 4 126 141 140 142 6 20 44 133 45 127 13 17 71 88</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\device\sockutil.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 144</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 59</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 10 105 11 85 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 112 113 114 115 116 117 118 119 3 121 122 123 124 125 120 89 16 139 4 126 141 140 142 6 20 44 133 45 127 13 17 71 88</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 35</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\WIZ_W5200\Exe\WebIO.out</name>
+      <outputs>
+        <tool>
+          <name>OBJCOPY</name>
+          <file> 37</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\WIZ_W5200\Obj\WebIO.pbd</name>
+      <inputs>
+        <tool>
+          <name>BILINK</name>
+          <file> 146 28 29 30 31 40 33 147 34 106 144 97 143 2 19 32 21 22 23 24 25 41 42 145 26 27</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_bkp.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 97</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 56</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 1 43 131 128 129 130 135 136 137 138 134 132 98 5 103 107 108 109 110 111 112 113 114 115 116 117 118 119 3 121 122 123 124 125 120</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\CoreSupport\core_cm3.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 146</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 61</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 128 129 130 135 136 137 138</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\misc.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 147</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 60</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 120 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 112 113 114 115 116 117 118 119 3 121 122 123 124 125</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\protocol\HTTP\httputil.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 31</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 47</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 96 95 10 105 11 85 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 112 113 114 115 116 117 118 119 3 121 122 123 124 125 120 89 16 139 4 126 141 140 142 6 20 44 133 45 127 13 17 71 88 102 104</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\startup\iar\startup_stm32f10x_md.s</name>
+      <outputs>
+        <tool>
+          <name>AARM</name>
+          <file> 66</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_exti.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 143</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 55</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 112 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 113 114 115 116 117 118 119 3 121 122 123 124 125 120</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_flash.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 2</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 54</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 113 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 112 114 115 116 117 118 119 3 121 122 123 124 125 120</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_gpio.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 19</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 53</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 115 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 112 113 114 116 117 118 119 3 121 122 123 124 125 120</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_rcc.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 21</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 52</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 119 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 112 113 114 115 116 117 118 3 121 122 123 124 125 120</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_spi.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 22</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 51</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 122 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 112 113 114 115 116 117 118 119 3 121 123 124 125 120</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_tim.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 23</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 50</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 123 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 112 113 114 115 116 117 118 119 3 121 122 124 125 120</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_usart.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 24</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 49</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 124 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 112 113 114 115 116 117 118 119 3 121 122 123 125 120</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W5200\system_stm32f10x.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 25</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 48</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 112 113 114 115 116 117 118 119 3 121 122 123 124 125 120</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W5200\wizplatform.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 26</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 70</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 10 105 11 85 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 112 113 114 115 116 117 118 119 3 121 122 123 124 125 120 89 16 139 4 126 141 140 142 6 20 44 133 45 127 13 17 71 88</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\wizspi.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 27</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 57</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 89 10 105 11 85 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 112 113 114 115 116 117 118 119 3 121 122 123 124 125 120 16 139 4 126 141 140 142 6 20 44 133 45 127 13 17 71 88</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\protocol\DHCP\dhcp.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 28</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 68</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 91 10 105 11 85 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 112 113 114 115 116 117 118 119 3 121 122 123 124 125 120 89 16 139 4 126 141 140 142 6 20 44 133 45 127 13 17 71 88</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\protocol\DNS\dns.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 29</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 67</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 93 10 105 11 85 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 112 113 114 115 116 117 118 119 3 121 122 123 124 125 120 89 16 139 4 126 141 140 142 6 20 44 133 45 127 13 17 71 88</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\protocol\HTTP\httpd.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 30</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 46</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 10 105 11 85 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 112 113 114 115 116 117 118 119 3 121 122 123 124 125 120 89 16 139 4 126 141 140 142 6 20 44 133 45 127 13 17 71 88 95 102</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\port\stm32f10x_it.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 32</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 69</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 10 105 11 85 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 112 113 114 115 116 117 118 119 3 121 122 123 124 125 120 89 16 139 4 126 141 140 142 6 20 44 133 45 127 13 17 71 88</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\src\main.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 33</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 38</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 10 105 11 85 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 112 113 114 115 116 117 118 119 3 121 122 123 124 125 120 89 16 139 4 126 141 140 142 6 20 44 133 45 127 13 17 71 88 93 91 96 95 102 7 9</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\src\romfile.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 34</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 39</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 102 10 105 11 85 43 131 128 129 130 135 136 137 138 134 132 98 5 1 103 107 108 109 110 111 112 113 114 115 116 117 118 119 3 121 122 123 124 125 120 89 16 139 4 126 141 140 142 6 20 44 133 45 127 13 17 71 88</file>
+        </tool>
+      </inputs>
+    </file>
+  </configuration>
+  <configuration>
+    <name>WIZ_W7200</name>
+    <outputs>
+      <file>$PROJ_DIR$\..\..\..\library\appmod\loopback\loopback.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h</file>
+      <file>$PROJ_DIR$\WIZ_W7200\Obj\main.o</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rtc.h</file>
+      <file>$TOOLKIT_DIR$\inc\ysizet.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h</file>
+      <file>$TOOLKIT_DIR$\inc\xlocale.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\appmod\loopback\loopback.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\appmod\usermenu\usermenu.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\appmod\usermenu\usermenu.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\common\common.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\common\types.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\common\util.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\common\util.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\device\w5200\socket.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\device\w5200\w5200.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\device\w5200\w5200.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\device\socket.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\device\sockutil.c</file>
+      <file>$PROJ_DIR$\WIZ_W7200\Obj\dns.o</file>
       <file>$PROJ_DIR$\WIZ_W7200\Obj\usermenu.o</file>
+      <file>$PROJ_DIR$\WIZ_W7200\Obj\httpd.o</file>
       <file>$PROJ_DIR$\WIZ_W7200\Obj\util.o</file>
-      <file>$PROJ_DIR$\..\..\..\library\protocol\DNS\dns.h</file>
       <file>$PROJ_DIR$\WIZ_W7200\Obj\core_cm3.o</file>
       <file>$PROJ_DIR$\WIZ_W7200\Obj\loopback.o</file>
-      <file>$PROJ_DIR$\..\src\webpage.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\protocol\DHCP\dhcp.h</file>
-      <file>$PROJ_DIR$\..\src\romfile.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\protocol\HTTP\httpd.h</file>
       <file>$PROJ_DIR$\WIZ_W7200\Obj\sockutil.o</file>
       <file>$PROJ_DIR$\WIZ_W7200\Obj\wizspi.o</file>
       <file>$PROJ_DIR$\WIZ_W7200\Obj\socket.o</file>
@@ -796,24 +729,10 @@
       <file>$PROJ_DIR$\WIZ_W7200\Obj\stm32f10x_tim.o</file>
       <file>$PROJ_DIR$\WIZ_W7200\Obj\stm32f10x_usart.o</file>
       <file>$PROJ_DIR$\WIZ_W7200\Obj\system_stm32f10x.o</file>
-      <file>$PROJ_DIR$\..\..\..\library\protocol\DNS\dns.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\protocol\HTTP\httputil.c</file>
-      <file>$PROJ_DIR$\..\..\..\library\protocol\HTTP\httpd.c</file>
-      <file>$PROJ_DIR$\port\stm32f10x_it.c</file>
-      <file>$PROJ_DIR$\..\src\main.c</file>
-      <file>$PROJ_DIR$\..\src\romfile.c</file>
       <file>$PROJ_DIR$\WIZ_W7200\Obj\usermenu.pbi</file>
       <file>$PROJ_DIR$\WIZ_W7200\Obj\stm32f10x_it.o</file>
-      <file>$TOOLKIT_DIR$\inc\xtls.h</file>
-      <file>$TOOLKIT_DIR$\inc\xmtx.h</file>
-      <file>$TOOLKIT_DIR$\inc\xlocale_c.h</file>
-      <file>$PROJ_DIR$\WIZ_W7200\Exe\WebIO.out</file>
       <file>$PROJ_DIR$\WIZ_W7200\Obj\startup_stm32f10x_md.o</file>
-      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\common\common.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\appmod\loopback\loopback.h</file>
-      <file>$PROJ_DIR$\..\src\wizconfig.h</file>
-      <file>$PROJ_DIR$\..\..\..\library\common\types.h</file>
+      <file>$PROJ_DIR$\WIZ_W7200\Exe\WebIO.out</file>
       <file>$PROJ_DIR$\WIZ_W7200\Obj\util.pbi</file>
       <file>$PROJ_DIR$\WIZ_W7200\Obj\sockutil.pbi</file>
       <file>$PROJ_DIR$\WIZ_W7200\Obj\socket.pbi</file>
@@ -837,61 +756,123 @@
       <file>$PROJ_DIR$\WIZ_W7200\Obj\httputil.pbi</file>
       <file>$PROJ_DIR$\WIZ_W7200\Obj\stm32f10x_it.pbi</file>
       <file>$PROJ_DIR$\WIZ_W7200\Obj\main.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\xtls.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h</file>
+      <file>$TOOLKIT_DIR$\inc\xmtx.h</file>
+      <file>$TOOLKIT_DIR$\inc\xlocale_c.h</file>
+      <file>$PROJ_DIR$\WIZ_W7200\Obj\romfile.o</file>
+      <file>$PROJ_DIR$\WIZ_W7200\Obj\WebIO.pbd</file>
+      <file>$PROJ_DIR$\WIZ_W7200\Obj\wizplatform.o</file>
+      <file>$PROJ_DIR$\WIZ_W7200\Obj\romfile.pbi</file>
+      <file>$PROJ_DIR$\WIZ_W7200\Obj\loopback.pbi</file>
+      <file>$PROJ_DIR$\WIZ_W7200\Exe\WebIO.bin</file>
+      <file>$PROJ_DIR$\WIZ_W7200\Obj\dhcp.o</file>
+      <file>$PROJ_DIR$\..\..\..\library\device\sockutil.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_bkp.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\CoreSupport\core_cm3.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\misc.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\protocol\HTTP\httputil.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\startup\iar\startup_stm32f10x_md.s</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_exti.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_flash.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_gpio.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_rcc.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_spi.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_tim.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_usart.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W7200\system_stm32f10x.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W7200\w7200_evb.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W7200\wizplatform.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\wizspi.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\wizplatform.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\wizspi.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\protocol\DHCP\dhcp.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\protocol\DHCP\dhcp.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\protocol\DNS\dns.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\protocol\DNS\dns.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\protocol\HTTP\httpd.c</file>
+      <file>$PROJ_DIR$\..\..\..\library\protocol\HTTP\httpd.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\protocol\HTTP\httputil.h</file>
+      <file>$PROJ_DIR$\port\stm32f10x_conf.h</file>
+      <file>$PROJ_DIR$\port\stm32f10x_it.c</file>
+      <file>$PROJ_DIR$\..\src\main.c</file>
+      <file>$PROJ_DIR$\..\src\romfile.c</file>
+      <file>$PROJ_DIR$\..\src\romfile.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_can.h</file>
+      <file>$PROJ_DIR$\..\src\webpage.h</file>
+      <file>$PROJ_DIR$\..\src\wizconfig.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_cec.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_crc.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dac.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_flash.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_fsmc.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_gpio.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_i2c.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_iwdg.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_pwr.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\misc.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_sdio.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_spi.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_tim.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_usart.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_wwdg.h</file>
+      <file>$TOOLKIT_DIR$\inc\stdlib.h</file>
+      <file>$TOOLKIT_DIR$\inc\wchar.h</file>
+      <file>$TOOLKIT_DIR$\inc\stdint.h</file>
+      <file>$TOOLKIT_DIR$\inc\ycheck.h</file>
+      <file>$TOOLKIT_DIR$\inc\yvals.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\CoreSupport\core_cm3.h</file>
+      <file>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.h</file>
+      <file>$TOOLKIT_DIR$\inc\xlocaleuse.h</file>
+      <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
+      <file>$TOOLKIT_DIR$\inc\DLib_Defaults.h</file>
+      <file>$TOOLKIT_DIR$\inc\DLib_Product.h</file>
+      <file>$TOOLKIT_DIR$\inc\xencoding_limits.h</file>
+      <file>$TOOLKIT_DIR$\inc\DLib_Threads.h</file>
+      <file>$TOOLKIT_DIR$\inc\stdio.h</file>
+      <file>$TOOLKIT_DIR$\inc\DLib_Product_string.h</file>
+      <file>$TOOLKIT_DIR$\inc\string.h</file>
+      <file>$TOOLKIT_DIR$\inc\ctype.h</file>
     </outputs>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\appmod\usermenu\usermenu.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 113</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 83</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 68 121 123 124 3 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 26 46 47 48 49 50 45 51 52 78 27 53 80 79 81 29 115 116 72 117 55 62 63 66 67</file>
-        </tool>
-      </inputs>
-    </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\library\appmod\loopback\loopback.c</name>
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 7</file>
+          <file> 75</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 87</file>
+          <file> 24</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 122 121 123 124 3 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 26 46 47 48 49 50 45 51 52 78 27 53 80 79 81 29 115 116 72 117 55 62 63 66 67</file>
+          <file> 7 10 111 11 92 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 117 118 119 120 121 122 123 124 3 126 127 128 129 130 125 96 16 144 4 131 146 145 147 6 67 69 138 70 132 13 17 78 95</file>
         </tool>
       </inputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_bkp.c</name>
+      <name>$PROJ_DIR$\..\..\..\library\appmod\usermenu\usermenu.c</name>
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 131</file>
+          <file> 40</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 97</file>
+          <file> 20</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 30 120 69 59 64 65 74 75 76 77 73 70 71 28 31 32 33 34 35 36 37 38 39 40 41 42 43 44 26 46 47 48 49 50 45</file>
+          <file> 9 10 111 11 92 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 117 118 119 120 121 122 123 124 3 126 127 128 129 130 125 96 16 144 4 131 146 145 147 6 67 69 138 70 132 13 17 78 95</file>
         </tool>
       </inputs>
     </file>
@@ -900,17 +881,17 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 125</file>
+          <file> 44</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 84</file>
+          <file> 22</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 121 123 124 3 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 26 46 47 48 49 50 45 51 52 78 27 53 80 79 81 29 115 116 72 117 55 62 63 66 67</file>
+          <file> 10 111 11 92 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 117 118 119 120 121 122 123 124 3 126 127 128 129 130 125 96 16 144 4 131 146 145 147 6 67 69 138 70 132 13 17 78 95</file>
         </tool>
       </inputs>
     </file>
@@ -919,36 +900,17 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 127</file>
+          <file> 46</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 94</file>
+          <file> 27</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 121 123 124 3 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 26 46 47 48 49 50 45 51 52 78 27 53 80 79 81 29 115 116 72 117 55 62 63 66 67</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\device\sockutil.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 126</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 92</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 121 123 124 3 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 26 46 47 48 49 50 45 51 52 78 27 53 80 79 81 29 115 116 72 117 55 62 63 66 67</file>
+          <file> 10 111 11 92 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 117 118 119 120 121 122 123 124 3 126 127 128 129 130 125 96 16 144 4 131 146 145 147 6 67 69 138 70 132 13 17 78 95</file>
         </tool>
       </inputs>
     </file>
@@ -957,273 +919,36 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 128</file>
+          <file> 47</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 98</file>
+          <file> 31</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 121 123 124 3 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 26 46 47 48 49 50 45 51 52 78 27 53 80 79 81 29 115 116 72 117 55 62 63 66 67</file>
+          <file> 10 111 11 92 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 117 118 119 120 121 122 123 124 3 126 127 128 129 130 125 96 16 144 4 131 146 145 147 6 67 69 138 70 132 13 17 78 95</file>
         </tool>
       </inputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\CoreSupport\core_cm3.c</name>
+      <name>$PROJ_DIR$\..\..\..\library\device\sockutil.c</name>
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 129</file>
+          <file> 45</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 86</file>
+          <file> 25</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 59 64 65 74 75 76 77</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\misc.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 130</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 95</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 45 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 26 46 47 48 49 50</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\startup\iar\startup_stm32f10x_md.s</name>
-      <outputs>
-        <tool>
-          <name>AARM</name>
-          <file> 119</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_exti.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 132</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 99</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 37 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 38 39 40 41 42 43 44 26 46 47 48 49 50 45</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_flash.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 133</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 100</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 38 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 37 39 40 41 42 43 44 26 46 47 48 49 50 45</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_gpio.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 134</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 101</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 40 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 37 38 39 41 42 43 44 26 46 47 48 49 50 45</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_rcc.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 135</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 102</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 44 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 37 38 39 40 41 42 43 26 46 47 48 49 50 45</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_spi.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 136</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 103</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 47 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 26 46 48 49 50 45</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_tim.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 137</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 104</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 48 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 26 46 47 49 50 45</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_usart.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 138</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 105</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 49 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 26 46 47 48 50 45</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W7200\system_stm32f10x.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 139</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 106</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 26 46 47 48 49 50 45</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W7200\wizplatform.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 140</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 5</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 121 123 124 3 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 26 46 47 48 49 50 45 51 52 78 27 53 80 79 81 29 115 116 72 117 55 62 63 66 67</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\wizspi.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 141</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 93</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 51 121 123 124 3 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 26 46 47 48 49 50 45 52 78 27 53 80 79 81 29 115 116 72 117 55 62 63 66 67</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\library\protocol\DHCP\dhcp.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 142</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 58</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 89 121 123 124 3 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 26 46 47 48 49 50 45 51 52 78 27 53 80 79 81 29 115 116 72 117 55 62 63 66 67</file>
+          <file> 10 111 11 92 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 117 118 119 120 121 122 123 124 3 126 127 128 129 130 125 96 16 144 4 131 146 145 147 6 67 69 138 70 132 13 17 78 95</file>
         </tool>
       </inputs>
     </file>
@@ -1232,7 +957,16 @@
       <outputs>
         <tool>
           <name>ILINK</name>
-          <file> 118</file>
+          <file> 43</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\WIZ_W7200\Exe\WebIO.out</name>
+      <outputs>
+        <tool>
+          <name>OBJCOPY</name>
+          <file> 76</file>
         </tool>
       </outputs>
     </file>
@@ -1241,26 +975,64 @@
       <inputs>
         <tool>
           <name>BILINK</name>
-          <file> 129 142 143 144 145 7 147 130 6 127 126 131 132 133 134 146 135 136 137 138 139 113 125 128 140 141</file>
+          <file> 48 61 62 63 64 75 66 49 74 46 45 50 51 52 53 65 54 55 56 57 58 40 44 47 59 60</file>
         </tool>
       </inputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\library\protocol\DNS\dns.c</name>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_bkp.c</name>
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 143</file>
+          <file> 50</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 60</file>
+          <file> 30</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 85 121 123 124 3 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 26 46 47 48 49 50 45 51 52 78 27 53 80 79 81 29 115 116 72 117 55 62 63 66 67</file>
+          <file> 1 68 136 133 134 135 140 141 142 143 139 137 104 5 109 112 113 114 115 116 117 118 119 120 121 122 123 124 3 126 127 128 129 130 125</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\CoreSupport\core_cm3.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 48</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 23</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 133 134 135 140 141 142 143</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\misc.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 49</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 28</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 125 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 117 118 119 120 121 122 123 124 3 126 127 128 129 130</file>
         </tool>
       </inputs>
     </file>
@@ -1269,17 +1041,254 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 145</file>
+          <file> 64</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 96</file>
+          <file> 29</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 82 91 121 123 124 3 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 26 46 47 48 49 50 45 51 52 78 27 53 80 79 81 29 115 116 72 117 55 62 63 66 67 90 88</file>
+          <file> 103 102 10 111 11 92 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 117 118 119 120 121 122 123 124 3 126 127 128 129 130 125 96 16 144 4 131 146 145 147 6 67 69 138 70 132 13 17 78 95 108 110</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\startup\iar\startup_stm32f10x_md.s</name>
+      <outputs>
+        <tool>
+          <name>AARM</name>
+          <file> 42</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_exti.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 51</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 32</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 117 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 118 119 120 121 122 123 124 3 126 127 128 129 130 125</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_flash.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 52</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 33</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 118 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 117 119 120 121 122 123 124 3 126 127 128 129 130 125</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_gpio.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 53</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 34</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 120 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 117 118 119 121 122 123 124 3 126 127 128 129 130 125</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_rcc.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 54</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 35</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 124 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 117 118 119 120 121 122 123 3 126 127 128 129 130 125</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_spi.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 55</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 36</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 127 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 117 118 119 120 121 122 123 124 3 126 128 129 130 125</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_tim.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 56</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 37</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 128 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 117 118 119 120 121 122 123 124 3 126 127 129 130 125</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_usart.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 57</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 38</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 129 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 117 118 119 120 121 122 123 124 3 126 127 128 130 125</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W7200\system_stm32f10x.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 58</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 39</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 117 118 119 120 121 122 123 124 3 126 127 128 129 130 125</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W7200\wizplatform.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 59</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 73</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 10 111 11 92 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 117 118 119 120 121 122 123 124 3 126 127 128 129 130 125 96 16 144 4 131 146 145 147 6 67 69 138 70 132 13 17 78 95</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\wizspi.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 60</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 26</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 96 10 111 11 92 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 117 118 119 120 121 122 123 124 3 126 127 128 129 130 125 16 144 4 131 146 145 147 6 67 69 138 70 132 13 17 78 95</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\protocol\DHCP\dhcp.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 61</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 77</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 98 10 111 11 92 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 117 118 119 120 121 122 123 124 3 126 127 128 129 130 125 96 16 144 4 131 146 145 147 6 67 69 138 70 132 13 17 78 95</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\library\protocol\DNS\dns.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 62</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 19</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 100 10 111 11 92 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 117 118 119 120 121 122 123 124 3 126 127 128 129 130 125 96 16 144 4 131 146 145 147 6 67 69 138 70 132 13 17 78 95</file>
         </tool>
       </inputs>
     </file>
@@ -1288,17 +1297,17 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 144</file>
+          <file> 63</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 61</file>
+          <file> 21</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 121 123 124 3 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 26 46 47 48 49 50 45 51 52 78 27 53 80 79 81 29 115 116 72 117 55 62 63 66 67 91 90</file>
+          <file> 10 111 11 92 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 117 118 119 120 121 122 123 124 3 126 127 128 129 130 125 96 16 144 4 131 146 145 147 6 67 69 138 70 132 13 17 78 95 102 108</file>
         </tool>
       </inputs>
     </file>
@@ -1307,17 +1316,17 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 146</file>
+          <file> 65</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 114</file>
+          <file> 41</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 121 123 124 3 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 26 46 47 48 49 50 45 51 52 78 27 53 80 79 81 29 115 116 72 117 55 62 63 66 67</file>
+          <file> 10 111 11 92 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 117 118 119 120 121 122 123 124 3 126 127 128 129 130 125 96 16 144 4 131 146 145 147 6 67 69 138 70 132 13 17 78 95</file>
         </tool>
       </inputs>
     </file>
@@ -1326,17 +1335,17 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 147</file>
+          <file> 66</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 57</file>
+          <file> 2</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 121 123 124 3 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 26 46 47 48 49 50 45 51 52 78 27 53 80 79 81 29 115 116 72 117 55 62 63 66 67 85 89 82 91 90 122 68</file>
+          <file> 10 111 11 92 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 117 118 119 120 121 122 123 124 3 126 127 128 129 130 125 96 16 144 4 131 146 145 147 6 67 69 138 70 132 13 17 78 95 100 98 103 102 108 7 9</file>
         </tool>
       </inputs>
     </file>
@@ -1345,28 +1354,19 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 6</file>
+          <file> 74</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 0</file>
+          <file> 71</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 90 121 123 124 3 120 69 59 64 65 74 75 76 77 73 70 71 28 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 26 46 47 48 49 50 45 51 52 78 27 53 80 79 81 29 115 116 72 117 55 62 63 66 67</file>
+          <file> 108 10 111 11 92 68 136 133 134 135 140 141 142 143 139 137 104 5 1 109 112 113 114 115 116 117 118 119 120 121 122 123 124 3 126 127 128 129 130 125 96 16 144 4 131 146 145 147 6 67 69 138 70 132 13 17 78 95</file>
         </tool>
       </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\WIZ_W7200\Exe\WebIO.out</name>
-      <outputs>
-        <tool>
-          <name>OBJCOPY</name>
-          <file> 56</file>
-        </tool>
-      </outputs>
     </file>
   </configuration>
 </project>
