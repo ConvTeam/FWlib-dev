@@ -1597,19 +1597,40 @@
     <group>
       <name>common</name>
       <file>
+        <name>$PROJ_DIR$\..\..\..\library\common\common.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\..\..\library\common\util.c</name>
       </file>
     </group>
     <group>
       <name>device</name>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\library\device\w5200\socket.c</name>
-      </file>
+      <group>
+        <name>W5200</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\library\device\w5200\socket.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\library\device\w5200\w5200.c</name>
+        </file>
+      </group>
+      <group>
+        <name>W5500</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\library\device\w5500\socket.c</name>
+          <excluded>
+            <configuration>Debug</configuration>
+          </excluded>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\library\device\w5500\w5500.c</name>
+          <excluded>
+            <configuration>Debug</configuration>
+          </excluded>
+        </file>
+      </group>
       <file>
         <name>$PROJ_DIR$\..\..\..\library\device\sockutil.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\library\device\w5200\w5200.c</name>
       </file>
     </group>
     <group>
@@ -1671,6 +1692,9 @@
     </group>
     <file>
       <name>$PROJ_DIR$\..\src\main.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\src\wizconfig.h</name>
     </file>
   </group>
 </project>

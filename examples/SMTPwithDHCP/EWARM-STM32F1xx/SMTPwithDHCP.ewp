@@ -70,20 +70,20 @@
         <option>
           <name>GRuntimeLibSelect</name>
           <version>0</version>
-          <state>1</state>
+          <state>2</state>
         </option>
         <option>
           <name>GRuntimeLibSelectSlave</name>
           <version>0</version>
-          <state>1</state>
+          <state>2</state>
         </option>
         <option>
           <name>RTDescription</name>
-          <state>Use the normal configuration of the C/C++ runtime library. No locale interface, C locale, no file descriptor support, no multibytes in printf and scanf, and no hex floats in strtod.</state>
+          <state>Use the full configuration of the C/C++ runtime library. Full locale interface, C locale, file descriptor support, multibytes in printf and scanf, and hex floats in strtod.</state>
         </option>
         <option>
           <name>RTConfigPath</name>
-          <state>$TOOLKIT_DIR$\INC\DLib_Config_Normal.h</state>
+          <state>$TOOLKIT_DIR$\INC\DLib_Config_Full.h</state>
         </option>
         <option>
           <name>OGProductVersion</name>
@@ -633,7 +633,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>E:\_user\Desktop\FW&#xB77C;&#xC774;&#xBe0C;&#xB7eC;&#xB9AC;\WIZLib-work\examples\SMTPwithDHCP\EWARM-STM32F1xx\stm32f10x_flash_128k.icf</state>
+          <state>C:\GitHub\FWlib-dev\examples\SMTPwithDHCP\EWARM-STM32F1xx\stm32f10x_flash_128k.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -1597,19 +1597,40 @@
     <group>
       <name>common</name>
       <file>
+        <name>$PROJ_DIR$\..\..\..\library\common\common.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\..\..\library\common\util.c</name>
       </file>
     </group>
     <group>
       <name>device</name>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\library\device\w5200\socket.c</name>
-      </file>
+      <group>
+        <name>W5200</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\library\device\w5200\socket.c</name>
+          <excluded>
+            <configuration>Debug</configuration>
+          </excluded>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\library\device\w5200\w5200.c</name>
+          <excluded>
+            <configuration>Debug</configuration>
+          </excluded>
+        </file>
+      </group>
+      <group>
+        <name>W5500</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\library\device\w5500\socket.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\library\device\w5500\w5500.c</name>
+        </file>
+      </group>
       <file>
         <name>$PROJ_DIR$\..\..\..\library\device\sockutil.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\library\device\w5200\w5200.c</name>
       </file>
     </group>
     <group>
@@ -1650,11 +1671,17 @@
           <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_usart.c</name>
         </file>
       </group>
+      <group>
+        <name>W5500_EVB</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W5500\w5500_evb.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W5500\wizplatform.c</name>
+        </file>
+      </group>
       <file>
         <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W7200\system_stm32f10x.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W7200\wizplatform.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\wizspi.c</name>
@@ -1683,6 +1710,9 @@
     </group>
     <file>
       <name>$PROJ_DIR$\..\src\main.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\src\wizconfig.h</name>
     </file>
   </group>
 </project>

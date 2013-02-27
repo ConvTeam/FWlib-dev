@@ -277,13 +277,13 @@ void setGAR(uint8 * addr); // set gateway address
 void setSUBR(uint8 * addr); // set subnet mask address
 void setSHAR(uint8 * addr); // set local MAC address
 void setSIPR(uint8 * addr); // set local IP address
+void clearSIPR(void);       // clear local IP address (0.0.0.0, for DHCP)
 void getGAR(uint8 * addr);
 void getSUBR(uint8 * addr);
 void getSHAR(uint8 * addr);
 void getSIPR(uint8 * addr);
 void getDIPR(uint8 s, uint8 *addr);
 void getDPORT(uint8 s, uint16 *port);
-void clearSIPR(void);       // clear local IP address (0.0.0.0, for DHCP)
 
 uint8 incr_windowfull_retry_cnt(uint8 s);
 void init_windowfull_retry_cnt(uint8 s);

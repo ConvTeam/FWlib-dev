@@ -292,7 +292,7 @@ int32 main(void)
 
 	int8 ret, root;
 	uint32 dhcp_renew, dhcp_rebind, dhcp_time;
-	uint32 dhcp_tick, led_tick;
+	uint32 dhcp_tick, led_tick;       
 
 	ret = platform_init();
 	if(ret != RET_OK) {
@@ -306,17 +306,19 @@ int32 main(void)
 	}
 
 	printf("\r\n-----------------------------------\r\n");
-	printf("SMTP Client using W5200\r\n");
-	printf("-----------------------------------\r\n\r\n");
-
-	Delay_tick(2000);
+	//printf("SMTP Client using W5200\r\n");
+        printf("SMTP Client using W5500\r\n");
+	printf("-----------------------------------\r\n\r\n");      
+        
+        
+	Delay_tick(2000);        
 	do {
 		ret = dhcp_manual(DHCP_ACT_START, NULL, &dhcp_renew, &dhcp_rebind);
 	} while(ret != RET_OK);
 	dhcp_renew = wizpf_tick_conv(FALSE, dhcp_renew);
 	dhcp_rebind = wizpf_tick_conv(FALSE, dhcp_rebind);
 	dhcp_time = dhcp_renew;
-
+        
 	menu_init();
 	root = menu_add("Network setting", 0, NULL);
 	menu_add("Show", root, mn_show_network);

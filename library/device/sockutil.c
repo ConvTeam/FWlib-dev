@@ -45,7 +45,7 @@ do { \
 		netinfo.Mac[1], netinfo.Mac[2], netinfo.Mac[3], netinfo.Mac[4], netinfo.Mac[5]);
 
 #if (USE_DHCP == VAL_ENABLE)
-	NETINIT_ADDR_SET("Default");	// DHCP실패 시 사용할 디폴트 값을 입력
+        NETINIT_ADDR_SET("Default");	// DHCP실패 시 사용할 디폴트 값을 입력
 	dhcp_init(dhcp_sock, ip_update, ip_conflict, &netinfo);
 	//while(1) {dhcp_run();if(dhcp_get_state() == DHCP_STATE_BOUND) break;}
 #else

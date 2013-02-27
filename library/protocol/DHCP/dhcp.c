@@ -185,11 +185,14 @@ int8 dhcp_init(uint8 sock, pFunc ip_update_hook, pFunc ip_conflict_hook, wiz_Net
 	di.sock = sock;
 	if(ip_update_hook) di.ip_update = ip_update_hook;
 	if(ip_conflict_hook) di.ip_conflict = ip_conflict_hook;
-	IINCHIP_WRITE(WIZC_SIPR0, 0);
-	IINCHIP_WRITE(WIZC_SIPR1, 0);
-	IINCHIP_WRITE(WIZC_SIPR2, 0);
-	IINCHIP_WRITE(WIZC_SIPR3, 0);
-	//workinfo.DHCP = NETINFO_DHCP_BUSY;
+	
+        clearSIPR();
+        //IINCHIP_WRITE(WIZC_SIPR0, 0);
+	//IINCHIP_WRITE(WIZC_SIPR1, 0);
+	//IINCHIP_WRITE(WIZC_SIPR2, 0);
+	//IINCHIP_WRITE(WIZC_SIPR3, 0);
+	
+        //workinfo.DHCP = NETINFO_DHCP_BUSY;
 	//SetNetInfo(&workinfo);
 	//SET_STATE(DHCP_STATE_INIT);
 	//di.action = DHCP_ACT_START;
