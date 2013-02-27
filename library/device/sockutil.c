@@ -52,7 +52,8 @@ do { \
 
 #if (USE_DHCP == VAL_ENABLE)
 	NETINIT_ADDR_SET("Default");	// Set the addresses which will be used when DHCP failed
-	dhcp_init(dhcp_sock, ip_update, ip_conflict, &netinfo);
+	if(dhcp_init(dhcp_sock, ip_update, ip_conflict, &netinfo) != RET_OK)
+		return RET_NOK;
 #else
 	NETINIT_ADDR_SET("Static");
 	netinfo.dhcp = NETINFO_STATIC;

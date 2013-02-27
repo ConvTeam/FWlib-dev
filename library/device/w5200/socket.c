@@ -14,6 +14,7 @@
 //#include "device/socket.h"
 
 
+extern uint8 I_STATUS[TOTAL_SOCK_NUM];
 extern uint16 SMASK[TOTAL_SOCK_NUM]; //  Variable for Tx buffer MASK in each channel
 extern uint16 RMASK[TOTAL_SOCK_NUM]; //  Variable for Rx buffer MASK in each channel
 extern uint16 SSIZE[TOTAL_SOCK_NUM]; //  Max Tx buffer size by each channel
@@ -47,7 +48,7 @@ void device_init(uint8 *tx_size, uint8 *rx_size)
  */ 
 void device_SW_reset(void)
 { 
-	setMR( MR_RST );
+	setMR(MR_RST);
 	DBGA("MR value is %02x", IINCHIP_READ(WIZC_MR));
 }
 
@@ -148,7 +149,6 @@ void device_mem_init(uint8 *tx_size, uint8 *rx_size)
 
 /**
 @brief	This function set the network information.
-@return 	None.
 */  
 void SetNetInfo(wiz_NetInfo *ni)
 {
@@ -171,10 +171,37 @@ void SetNetInfo(wiz_NetInfo *ni)
 	if(ni->dhcp != 0) DHCP = ni->dhcp;
 }
 
+/**
+ * Clear specific device address to all zero.
+ * @param member the member variable of @ref netinfo_member which means each of @ref wiz_NetInfo struct member.
+ */ 
+void ClsNetInfo(netinfo_member member)
+{
+	uint8 zero[6] = {0,};
+
+	switch(member) {
+	//case NI_MAC_ADDR:	// If need, uncomment
+	//	setSHAR(zero);
+	//	break;
+	case NI_IP_ADDR:
+		setSIPR(zero);
+		break;
+	case NI_SN_MASK:
+		setSUBR(zero);
+		break;
+	case NI_GW_ADDR:
+		setGAR(zero);
+		break;
+	case NI_DNS_ADDR:
+		DNS[0] = DNS[1] = DNS[2] = DNS[3] = 0;
+		break;
+	default:
+		ERRA("wrong member value (%d)", member);
+	}
+}
 
 /**
 @brief	This function get the network information.
-@return 	None.
 */  
 void GetNetInfo(wiz_NetInfo *netinfo)
 {
@@ -228,24 +255,23 @@ int8 GetTCPSocketStatus(uint8 s)
 	}
 
 	switch(getSn_SR(s)){
-	case SOCK_CLOSED: return SOCKSTAT_CLOSED; 	// closed
-	case SOCK_INIT: return SOCKSTAT_INIT; 		// init state
-	case SOCK_LISTEN: return SOCKSTAT_LISTEN; 	// listen state
-	case SOCK_SYNSENT: return SOCKSTAT_SYNSENT; // connection state
-	case SOCK_SYNRECV: return SOCKSTAT_SYNRECV; // connection state
-	case SOCK_ESTABLISHED: return SOCKSTAT_ESTABLISHED; // success to connect
-	case SOCK_FIN_WAIT: return SOCKSTAT_FIN_WAIT; 	// closing state
-	case SOCK_CLOSING: return SOCKSTAT_CLOSING; 	// closing state
-	case SOCK_TIME_WAIT: return SOCKSTAT_TIME_WAIT; // closing state
-	case SOCK_CLOSE_WAIT: return SOCKSTAT_CLOSE_WAIT; 	// closing state
-	case SOCK_LAST_ACK: return SOCKSTAT_LAST_ACK; 	// closing state
+	case SOCK_CLOSED: return SOCKSTAT_CLOSED;             // closed
+	case SOCK_INIT: return SOCKSTAT_INIT;                 // init state
+	case SOCK_LISTEN: return SOCKSTAT_LISTEN;             // listen state
+	case SOCK_SYNSENT: return SOCKSTAT_SYNSENT;           // connection state
+	case SOCK_SYNRECV: return SOCKSTAT_SYNRECV;           // connection state
+	case SOCK_ESTABLISHED: return SOCKSTAT_ESTABLISHED;   // success to connect
+	case SOCK_FIN_WAIT: return SOCKSTAT_FIN_WAIT;         // closing state
+	case SOCK_CLOSING: return SOCKSTAT_CLOSING;           // closing state
+	case SOCK_TIME_WAIT: return SOCKSTAT_TIME_WAIT;       // closing state
+	case SOCK_CLOSE_WAIT: return SOCKSTAT_CLOSE_WAIT;     // closing state
+	case SOCK_LAST_ACK: return SOCKSTAT_LAST_ACK;         // closing state
 	default:
 		if((IINCHIP_READ(Sn_MR(Sn_MR_TCP))&0x0F) != Sn_MR_TCP)
-			return SOCKERR_NOT_UDP;
+			return SOCKERR_NOT_TCP;
 		else return SOCKERR_WRONG_STATUS;
 	}
 }
-
 
 /**
 @brief	This function get the UDP socket status.
@@ -260,8 +286,8 @@ int8 GetUDPSocketStatus(uint8 s)
 
 	switch(getSn_SR(s)){
 	case SOCK_CLOSED: return SOCKSTAT_CLOSED; //  closed
-	case SOCK_UDP: return SOCKSTAT_UDP; //  udp socket
-#if 0
+	case SOCK_UDP: return SOCKSTAT_UDP;       //  udp socket
+#if 0	
 	case SOCK_IPRAW: return 11;		//  ip raw mode socket
 	case SOCK_MACRAW: return 12;	//  mac raw mode socket
 	case SOCK_PPPOE: return 13;		//  pppoe socket
@@ -273,7 +299,6 @@ int8 GetUDPSocketStatus(uint8 s)
 	}
 }
 
-
 /**
 @brief	This Socket function get the TX free buffer size.
 @return 	size of TX free buffer size.
@@ -283,7 +308,6 @@ uint16 GetSocketTxFreeBufferSize(uint8 s)
 	return getSn_TX_FSR(s); // get socket TX free buf size
 }
 
-
 /**
 @brief	This Socket function get the RX recv buffer size.
 @return 	size of RX recv buffer size.
@@ -292,7 +316,6 @@ uint16 GetSocketRxRecvBufferSize(uint8 s)
 {
 	return getSn_RX_RSR(s); // get socket RX recv buf size
 }
-
 
 /**
 @brief	This Socket function open TCP server socket.
@@ -330,11 +353,10 @@ int8 TCPServerOpen(uint8 s, uint16 port)
 	return RET_OK;
 }
 
-
 /**
 @brief	This Socket function open TCP client socket.
 @return 	1 - success, 0 - fail.
-*/  
+*/
 int8 TCPClientOpen(uint8 s, uint16 sport, uint8 *dip, uint16 dport)
 {
 	int8 ret;
@@ -378,6 +400,7 @@ int8 TCPCltOpenNB(uint8 s, uint16 sport, uint8 *dip, uint16 dport)
 
 	getSIPR(srcip);
 	getSUBR(snmask);
+        
 	if(	((dip[0] == 0xFF) && (dip[1] == 0xFF) && 
 		 (dip[2] == 0xFF) && (dip[3] == 0xFF)) ||
 	 	((dip[0] == 0x00) && (dip[1] == 0x00) && 
@@ -389,7 +412,7 @@ int8 TCPCltOpenNB(uint8 s, uint16 sport, uint8 *dip, uint16 dport)
 		return SOCKERR_WRONG_ARG;
 	}
 	else if( (srcip[0]==0 && srcip[1]==0 && srcip[2]==0 && srcip[3]==0) && 
-		(snmask[0]!=0 || snmask[1]!=0 || snmask[2]!=0 || snmask[3]!=0) ) //Mikej : Errata
+		(snmask[0]!=0 || snmask[1]!=0 || snmask[2]!=0 || snmask[3]!=0) ) //Mikej : ARP Errata
 	{
 		DBG("Source IP is NULL while SN Mask is Not NULL");
 		return SOCKERR_NULL_SRC_IP;
@@ -428,7 +451,6 @@ int8 TCPConnChk(uint8 s)
 
 	return SOCKERR_BUSY;
 }
-
 
 /**
 @brief	This Socket function open UDP socket.
@@ -722,7 +744,6 @@ int32 TCPRecv(uint8 s, int8 *buf, uint16 len)
 	return RSR_len;
 }
 
-
 /**
 @brief	This function is an application I/F function which is used to send the data for other then TCP mode. 
 		Unlike TCP transmission, The peer's destination address and the port is needed.
@@ -766,6 +787,7 @@ int32 UDPSendNB(uint8 s, const int8 *buf, uint16 len, uint8 *addr, uint16 port)
 
 	getSIPR(srcip);
 	getSUBR(snmask);
+
 	if((addr[0]==0x00 && addr[1]==0x00 && addr[2]==0x00 && 
 		addr[3]==0x00) || (port==0x00))
 	{
@@ -775,7 +797,7 @@ int32 UDPSendNB(uint8 s, const int8 *buf, uint16 len, uint8 *addr, uint16 port)
 		return SOCKERR_WRONG_ARG;
 	}
 	else if( (srcip[0]==0 && srcip[1]==0 && srcip[2]==0 && srcip[3]==0) && 
-		(snmask[0]!=0 || snmask[1]!=0 || snmask[2]!=0 || snmask[3]!=0) ) //Mikej : Errata
+		(snmask[0]!=0 || snmask[1]!=0 || snmask[2]!=0 || snmask[3]!=0) ) //Mikej : ARP Errata
 	{
 		DBG("Source IP is NULL while SN Mask is Not NULL");
 		return SOCKERR_NULL_SRC_IP;

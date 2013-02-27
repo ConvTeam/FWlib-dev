@@ -306,8 +306,6 @@ void getDIPR(uint8 s, uint8 *addr);   // get destination IP address
 void getDPORT(uint8 s, uint16 *port); // get destination Port number
 
 void clearIR(uint8 mask);   // clear interrupt
-void clearSIPR(void);       // clear local IP address (0.0.0.0, for DHCP)
-//void clearSUBR(void);                                    
 
 void send_data_processing(uint8 s, uint8 *wizdata, uint16 len);
 void recv_data_processing(uint8 s, uint8 *wizdata, uint16 len);

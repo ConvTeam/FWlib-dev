@@ -130,7 +130,7 @@ int32 main(void)
 		menu_run();	// to use usermenu to test DHCP mode
 
 		if(wizpf_tick_elapse(tick) > 1000) {	// running check
-			wizpf_led_set(WIZ_LED3, VAL_TOG);
+			wizpf_led_set(WIZ_LED1, VAL_TOG);
 			tick = wizpf_get_systick();
 		}
 	}

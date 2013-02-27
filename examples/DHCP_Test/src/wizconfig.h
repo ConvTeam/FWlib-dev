@@ -2,6 +2,8 @@
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
 
+#include "common/types.h"
+
 
 //### DHCP Compare Define #####################################################
 #define DHCP_NONE			0	// Disable DHCP, If you test this mode, you should exclude dhcp folder from project
@@ -10,11 +12,11 @@
 #define DHCP_MANUAL			3	// DHCP Manual mode
 //---------------------------------------------------------------------------
 
-	// Select one of upper mode
-	#define DHCP_MODE DHCP_AUTO_ASYNC
+  /* Select one of upper mode */
+  #define DHCP_MODE DHCP_AUTO_ASYNC
 
-	// Uncomment if you want to start DHCP as STATIC mode
-	//#define DHCP_START_AS_STATIC
+  /* Uncomment if you want to start DHCP as STATIC mode */
+  //#define DHCP_START_AS_STATIC
 
 //###########################################################################
 
@@ -32,9 +34,7 @@
 //------------------------------ Network Setting ------------------------------
 
 //###########################################################################
-#if (DHCP_MODE == DHCP_NONE)
-#define USE_DHCP	VAL_DISABLE
-#else
+#if (DHCP_MODE != DHCP_NONE)
 #define USE_DHCP	VAL_ENABLE
 #endif
 

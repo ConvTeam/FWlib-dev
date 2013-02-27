@@ -27,7 +27,7 @@ int32 main(void)
 
 	NL1;
 	LOG("-----------------------------------");
-	LOG("Serial to Ethernet using W5200");
+	LOG("Serial to Ethernet Using AT Command");
 	LOG("-----------------------------------");
 	NL2;
 
@@ -41,7 +41,7 @@ int32 main(void)
 		sockwatch_run();
 
 		if(wizpf_tick_elapse(tick) > 1000) {	// running check
-			wizpf_led_set(WIZ_LED3, VAL_TOG);
+			wizpf_led_set(WIZ_LED1, VAL_TOG);
 			tick = wizpf_get_systick();
 		}
 	}

@@ -15,7 +15,6 @@
 
 
 #include "wizconfig.h"
-#include "common/types.h"
 
 
 //-------------------------------------- Compiler Definition --------------------------------------
@@ -201,9 +200,9 @@
 #if (USE_DHCP == VAL_ENABLE)
 #include "protocol/DHCP/dhcp.h"
 #else
-#define dhcp_init(sock, ip_update_hook, ip_conflict_hook, def)
-#define dhcp_manual(action, renew, rebind)
-#define dhcp_get_state()
+#define dhcp_init(sock, ip_update_hook, ip_conflict_hook, def) RET_NOK
+#define dhcp_manual(action, renew, rebind) RET_OK
+#define dhcp_get_state() DHCP_STATE_INIT
 #define dhcp_set_storage(net)
 #define dhcp_get_storage(net)
 #define dhcp_static_mode(net)

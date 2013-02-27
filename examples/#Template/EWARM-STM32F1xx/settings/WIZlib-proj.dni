@@ -8,6 +8,16 @@ UseTrigger=1
 TriggerName=main
 LimitSize=0
 ByteLimit=50
+[StackPlugin]
+Enabled=1
+OverflowWarningsEnabled=1
+WarningThreshold=90
+SpWarningsEnabled=1
+WarnHow=0
+UseTrigger=1
+TriggerName=main
+LimitSize=0
+ByteLimit=50
 [InterruptLog]
 LogEnabled=0
 SumEnabled=0
@@ -20,16 +30,6 @@ Count=0
 [Trace1]
 Enabled=0
 ShowSource=1
-[StackPlugin]
-Enabled=1
-OverflowWarningsEnabled=1
-WarningThreshold=90
-SpWarningsEnabled=1
-WarnHow=0
-UseTrigger=1
-TriggerName=main
-LimitSize=0
-ByteLimit=50
 [Disassemble mode]
 mode=0
 [Breakpoints]
