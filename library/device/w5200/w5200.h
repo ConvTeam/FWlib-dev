@@ -249,7 +249,7 @@
 #define WINDOWFULL_WAIT_TIME		1000
 
 /*********************************************************
-* iinchip access function
+* iinchip access functions
 *********************************************************/
 uint8 IINCHIP_READ(uint16 addr); 
 uint8 IINCHIP_WRITE(uint16 addr,uint8 data);
