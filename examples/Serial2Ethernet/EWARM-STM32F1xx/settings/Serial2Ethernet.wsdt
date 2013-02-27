@@ -3,7 +3,7 @@
 <Workspace>
   <ConfigDictionary>
     
-  <CurrentConfigs><Project>Serial2Ethernet/Debug</Project></CurrentConfigs></ConfigDictionary>
+  <CurrentConfigs><Project>Serial2Ethernet/WIZ_W7200</Project></CurrentConfigs></ConfigDictionary>
   <Desktop>
     <Static>
       <Workspace>
@@ -12,7 +12,7 @@
           
           
           
-        <Column0>292</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+        <Column0>286</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
       </Workspace>
       <Build>
         
@@ -20,7 +20,7 @@
         
         
       <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>665</ColumnWidth1><ColumnWidth2>177</ColumnWidth2><ColumnWidth3>44</ColumnWidth3></Build>
-    <Find-in-Files><ColumnWidth0>664</ColumnWidth0><ColumnWidth1>94</ColumnWidth1><ColumnWidth2>1138</ColumnWidth2></Find-in-Files></Static>
+    </Static>
     <Windows>
       
       
@@ -32,7 +32,7 @@
             <Factory>Workspace</Factory>
             <Session>
               
-            <NodeDict><ExpandedNode>Serial2Ethernet</ExpandedNode><ExpandedNode>Serial2Ethernet/Library</ExpandedNode><ExpandedNode>Serial2Ethernet/Library/appmod</ExpandedNode><ExpandedNode>Serial2Ethernet/Library/common</ExpandedNode><ExpandedNode>Serial2Ethernet/Library/device</ExpandedNode><ExpandedNode>Serial2Ethernet/Library/device/W5200</ExpandedNode><ExpandedNode>Serial2Ethernet/Library/device/W5500</ExpandedNode><ExpandedNode>Serial2Ethernet/Library/host</ExpandedNode><ExpandedNode>Serial2Ethernet/Library/protocol</ExpandedNode><ExpandedNode>Serial2Ethernet/User</ExpandedNode></NodeDict></Session>
+            <NodeDict><ExpandedNode>Serial2Ethernet</ExpandedNode><ExpandedNode>Serial2Ethernet/Library</ExpandedNode><ExpandedNode>Serial2Ethernet/User</ExpandedNode></NodeDict></Session>
           </Tab>
         </Tabs>
         
@@ -44,7 +44,7 @@
             <Factory>Build</Factory>
             <Session/>
           </Tab>
-        <Tab><Identity>TabID-28185-27767</Identity><TabName>Find in Files</TabName><Factory>Find-in-Files</Factory><Session/></Tab></Tabs>
+        </Tabs>
         
       <SelectedTab>0</SelectedTab></Wnd3></Windows>
     <Editor>
@@ -52,14 +52,14 @@
       
       
       
-    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\device\sockutil.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>90</SelStart><SelEnd>90</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\protocol\DNS\dns.c</Filename><XPos>0</XPos><YPos>365</YPos><SelStart>7714</SelStart><SelEnd>7721</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\common\types.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>47</SelStart><SelEnd>47</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\device\w5200\w5200.c</Filename><XPos>0</XPos><YPos>183</YPos><SelStart>5242</SelStart><SelEnd>5242</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\device\w5200\w5200.h</Filename><XPos>0</XPos><YPos>257</YPos><SelStart>12219</SelStart><SelEnd>12224</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\device\w5200\socket.c</Filename><XPos>0</XPos><YPos>666</YPos><SelStart>17703</SelStart><SelEnd>17703</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\src\main.c</Filename><XPos>0</XPos><YPos>5</YPos><SelStart>835</SelStart><SelEnd>835</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\host\STM32F10x\WIZ_W7200\wizplatform.c</Filename><XPos>0</XPos><YPos>390</YPos><SelStart>10127</SelStart><SelEnd>10127</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\port\stm32f10x_conf.h</Filename><XPos>0</XPos><YPos>30</YPos><SelStart>1788</SelStart><SelEnd>1788</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\appmod\atcmd\atcmd.c</Filename><XPos>0</XPos><YPos>788</YPos><SelStart>25643</SelStart><SelEnd>25643</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\device\sockutil.c</Filename><XPos>0</XPos><YPos>84</YPos><SelStart>3292</SelStart><SelEnd>3292</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\device\socket.h</Filename><XPos>0</XPos><YPos>12</YPos><SelStart>419</SelStart><SelEnd>419</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\protocol\DHCP\dhcp.c</Filename><XPos>0</XPos><YPos>174</YPos><SelStart>7422</SelStart><SelEnd>7422</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\common\util.c</Filename><XPos>0</XPos><YPos>46</YPos><SelStart>1894</SelStart><SelEnd>1894</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\appmod\atcmd\cmdrun.c</Filename><XPos>0</XPos><YPos>181</YPos><SelStart>5683</SelStart><SelEnd>5683</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\common\common.h</Filename><XPos>0</XPos><YPos>117</YPos><SelStart>2209</SelStart><SelEnd>2209</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\src\wizconfig.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>263</SelStart><SelEnd>263</SelEnd></Tab><ActiveTab>16</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\device\w5500\w5500.c</Filename><XPos>0</XPos><YPos>358</YPos><SelStart>11793</SelStart><SelEnd>11793</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\device\w5500\w5500.h</Filename><XPos>0</XPos><YPos>415</YPos><SelStart>14657</SelStart><SelEnd>14657</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\device\w5500\socket.c</Filename><XPos>0</XPos><YPos>36</YPos><SelStart>1762</SelStart><SelEnd>1762</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\src\main.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>164</SelStart><SelEnd>164</SelEnd></Tab><ActiveTab>0</ActiveTab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
     <Positions>
       
       
       
       
       
-    <Top><Row0><Sizes><Toolbar-0124cab0><key>iaridepm.enu1</key></Toolbar-0124cab0></Sizes></Row0></Top><Left><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>590</Bottom><Right>383</Right><x>-2</x><y>-2</y><xscreen>406</xscreen><yscreen>345</yscreen><sizeHorzCX>211458</sizeHorzCX><sizeHorzCY>342262</sizeHorzCY><sizeVertCX>200521</sizeVertCX><sizeVertCY>587302</sizeVertCY></Rect></Wnd2></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>373</Bottom><Right>1922</Right><x>-2</x><y>-2</y><xscreen>1924</xscreen><yscreen>375</yscreen><sizeHorzCX>1002083</sizeHorzCX><sizeHorzCY>372024</sizeHorzCY><sizeVertCX>211458</sizeVertCX><sizeVertCY>342262</sizeVertCY></Rect></Wnd3></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+    <Top><Row0><Sizes><Toolbar-014722e8><key>iaridepm.enu1</key></Toolbar-014722e8></Sizes></Row0></Top><Left><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>546</Bottom><Right>360</Right><x>-2</x><y>-2</y><xscreen>217</xscreen><yscreen>268</yscreen><sizeHorzCX>211914</sizeHorzCX><sizeHorzCY>342273</sizeHorzCY><sizeVertCX>353516</sizeVertCX><sizeVertCY>699872</sizeVertCY></Rect></Wnd2></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>192</Bottom><Right>1026</Right><x>-2</x><y>-2</y><xscreen>1028</xscreen><yscreen>194</yscreen><sizeHorzCX>1003906</sizeHorzCX><sizeHorzCY>247765</sizeHorzCY><sizeVertCX>211914</sizeVertCX><sizeVertCY>342273</sizeVertCY></Rect></Wnd3></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
   </Desktop>
 </Workspace>
 

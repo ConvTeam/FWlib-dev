@@ -3,7 +3,7 @@
 <project>
   <fileVersion>2</fileVersion>
   <configuration>
-    <name>Debug</name>
+    <name>WIZ_W7200</name>
     <toolchain>
       <name>ARM</name>
     </toolchain>
@@ -17,15 +17,15 @@
         <debug>1</debug>
         <option>
           <name>ExePath</name>
-          <state>Debug\Exe</state>
+          <state>WIZ_W7200\Exe</state>
         </option>
         <option>
           <name>ObjPath</name>
-          <state>Debug\Obj</state>
+          <state>WIZ_W7200\Obj</state>
         </option>
         <option>
           <name>ListPath</name>
-          <state>Debug\List</state>
+          <state>WIZ_W7200\List</state>
         </option>
         <option>
           <name>Variant</name>
@@ -146,7 +146,7 @@
         <debug>1</debug>
         <option>
           <name>CCDefines</name>
-          <state></state>
+          <state>PLATFORM_W7200_EVB</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -633,7 +633,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>E:\_user\Desktop\FW&#xB77C;&#xC774;&#xBe0C;&#xB7eC;&#xB9AC;\WIZLib-work\examples\Serial2Ethernet\EWARM-STM32F1xx\stm32f10x_flash_128k_S2E.icf</state>
+          <state>$PROJ_DIR$\stm32f10x_flash_128k_S2E.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -796,34 +796,34 @@
     </settings>
   </configuration>
   <configuration>
-    <name>Release</name>
+    <name>WIZ_W5200</name>
     <toolchain>
       <name>ARM</name>
     </toolchain>
-    <debug>0</debug>
+    <debug>1</debug>
     <settings>
       <name>General</name>
       <archiveVersion>3</archiveVersion>
       <data>
         <version>17</version>
         <wantNonLocal>1</wantNonLocal>
-        <debug>0</debug>
+        <debug>1</debug>
         <option>
           <name>ExePath</name>
-          <state>Release\Exe</state>
+          <state>WIZ_W5200\Exe</state>
         </option>
         <option>
           <name>ObjPath</name>
-          <state>Release\Obj</state>
+          <state>WIZ_W5200\Obj</state>
         </option>
         <option>
           <name>ListPath</name>
-          <state>Release\List</state>
+          <state>WIZ_W5200\List</state>
         </option>
         <option>
           <name>Variant</name>
           <version>13</version>
-          <state>0</state>
+          <state>36</state>
         </option>
         <option>
           <name>GEndianMode</name>
@@ -836,7 +836,7 @@
         </option>
         <option>
           <name>Input description</name>
-          <state></state>
+          <state>Full formatting.</state>
         </option>
         <option>
           <name>Output variant</name>
@@ -845,7 +845,7 @@
         </option>
         <option>
           <name>Output description</name>
-          <state></state>
+          <state>Full formatting.</state>
         </option>
         <option>
           <name>GOutputBinary</name>
@@ -872,11 +872,11 @@
         </option>
         <option>
           <name>RTDescription</name>
-          <state></state>
+          <state>Use the normal configuration of the C/C++ runtime library. No locale interface, C locale, no file descriptor support, no multibytes in printf and scanf, and no hex floats in strtod.</state>
         </option>
         <option>
           <name>RTConfigPath</name>
-          <state>dl-stnl0.a</state>
+          <state>$TOOLKIT_DIR$\INC\DLib_Config_Normal.h</state>
         </option>
         <option>
           <name>OGProductVersion</name>
@@ -884,7 +884,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state></state>
+          <state>5.41.0.51757</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -896,15 +896,15 @@
         </option>
         <option>
           <name>OGChipSelectEditMenu</name>
-          <state></state>
+          <state>Default	None</state>
         </option>
         <option>
           <name>GenLowLevelInterface</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>GEndianModeBE</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>OGBufferedTerminalOutput</name>
@@ -936,10 +936,10 @@
       <data>
         <version>21</version>
         <wantNonLocal>1</wantNonLocal>
-        <debug>0</debug>
+        <debug>1</debug>
         <option>
           <name>CCDefines</name>
-          <state>NDEBUG</state>
+          <state>PLATFORM_W5200_EVB</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -1000,11 +1000,11 @@
         <option>
           <name>CCAllowList</name>
           <version>1</version>
-          <state>1111111</state>
+          <state>0000000</state>
         </option>
         <option>
           <name>CCDebugInfo</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IEndianMode</name>
@@ -1052,7 +1052,7 @@
         </option>
         <option>
           <name>OutputFile</name>
-          <state></state>
+          <state>$FILE_BNAME$.o</state>
         </option>
         <option>
           <name>CCLangSelect</name>
@@ -1072,7 +1072,12 @@
         </option>
         <option>
           <name>CCIncludePath2</name>
-          <state></state>
+          <state>$PROJ_DIR$\..\..\..\library</state>
+          <state>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\CoreSupport</state>
+          <state>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x</state>
+          <state>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc</state>
+          <state>$PROJ_DIR$\..\src</state>
+          <state>$PROJ_DIR$\port</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1080,7 +1085,7 @@
         </option>
         <option>
           <name>CCStdIncludePath</name>
-          <state>###Uninitialized###</state>
+          <state>$TOOLKIT_DIR$\INC\</state>
         </option>
         <option>
           <name>CCCodeSection</name>
@@ -1096,7 +1101,7 @@
         </option>
         <option>
           <name>CCOptLevel</name>
-          <state>3</state>
+          <state>1</state>
         </option>
         <option>
           <name>CCOptStrategy</name>
@@ -1125,7 +1130,7 @@
       <data>
         <version>7</version>
         <wantNonLocal>1</wantNonLocal>
-        <debug>0</debug>
+        <debug>1</debug>
         <option>
           <name>AObjPrefix</name>
           <state>1</state>
@@ -1165,7 +1170,7 @@
         </option>
         <option>
           <name>ADebug</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>AltRegisterNames</name>
@@ -1249,7 +1254,7 @@
         </option>
         <option>
           <name>AOutputFile</name>
-          <state></state>
+          <state>$FILE_BNAME$.o</state>
         </option>
         <option>
           <name>AMultibyteSupport</name>
@@ -1291,11 +1296,11 @@
       <data>
         <version>1</version>
         <wantNonLocal>1</wantNonLocal>
-        <debug>0</debug>
+        <debug>1</debug>
         <option>
           <name>OOCOutputFormat</name>
           <version>2</version>
-          <state>0</state>
+          <state>2</state>
         </option>
         <option>
           <name>OCOutputOverride</name>
@@ -1303,7 +1308,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state></state>
+          <state>Serial2Ethernet.bin</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -1311,7 +1316,7 @@
         </option>
         <option>
           <name>OOCObjCopyEnable</name>
-          <state>0</state>
+          <state>1</state>
         </option>
       </data>
     </settings>
@@ -1342,7 +1347,7 @@
       <data>
         <version>8</version>
         <wantNonLocal>1</wantNonLocal>
-        <debug>0</debug>
+        <debug>1</debug>
         <option>
           <name>IlinkLibIOConfig</name>
           <state>1</state>
@@ -1357,7 +1362,7 @@
         </option>
         <option>
           <name>IlinkOutputFile</name>
-          <state>###Unitialized###</state>
+          <state>Serial2Ethernet.out</state>
         </option>
         <option>
           <name>IlinkDebugInfoEnable</name>
@@ -1393,35 +1398,35 @@
         </option>
         <option>
           <name>IlinkMapFile</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkLogFile</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkLogInitialization</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkLogModule</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkLogSection</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkLogVeneer</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkIcfOverride</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>lnk0t.icf</state>
+          <state>$PROJ_DIR$\stm32f10x_flash_64k_S2E.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -1481,7 +1486,7 @@
         </option>
         <option>
           <name>IlinkProgramEntryLabel</name>
-          <state></state>
+          <state>__iar_program_start</state>
         </option>
         <option>
           <name>DoFill</name>
@@ -1562,7 +1567,7 @@
       <data>
         <version>0</version>
         <wantNonLocal>1</wantNonLocal>
-        <debug>0</debug>
+        <debug>1</debug>
         <option>
           <name>IarchiveInputs</name>
           <state></state>
@@ -1591,7 +1596,13 @@
         <name>$PROJ_DIR$\..\..\..\library\appmod\atcmd\atcmd.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\..\..\library\appmod\atcmd\atcmd.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\..\..\library\appmod\atcmd\cmdrun.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\appmod\atcmd\cmdrun.h</name>
       </file>
     </group>
     <group>
@@ -1600,76 +1611,148 @@
         <name>$PROJ_DIR$\..\..\..\library\common\common.h</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\..\..\library\common\types.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\..\..\library\common\util.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\common\util.h</name>
       </file>
     </group>
     <group>
       <name>device</name>
       <group>
-        <name>W5200</name>
+        <name>w5200</name>
         <file>
           <name>$PROJ_DIR$\..\..\..\library\device\w5200\socket.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\library\device\w5200\w5200.c</name>
         </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\library\device\w5200\w5200.h</name>
+        </file>
       </group>
       <group>
-        <name>W5500</name>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\device\w5500\socket.c</name>
-          <excluded>
-            <configuration>Debug</configuration>
-          </excluded>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\device\w5500\w5500.c</name>
-          <excluded>
-            <configuration>Debug</configuration>
-          </excluded>
-        </file>
+        <name>w5500</name>
+        <excluded>
+          <configuration>WIZ_W7200</configuration>
+          <configuration>WIZ_W5200</configuration>
+        </excluded>
       </group>
       <file>
+        <name>$PROJ_DIR$\..\..\..\library\device\socket.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\..\..\library\device\sockutil.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\device\sockutil.h</name>
       </file>
     </group>
     <group>
       <name>host</name>
       <group>
-        <name>stmlib</name>
+        <name>STM32F10x</name>
+        <group>
+          <name>stmlib</name>
+          <mfc>
+            <configuration>WIZ_W7200</configuration>
+            <configuration>WIZ_W5200</configuration>
+          </mfc>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\CoreSupport\core_cm3.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\CoreSupport\core_cm3.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\misc.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\misc.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\startup\iar\startup_stm32f10x_md.s</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_flash.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_flash.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_gpio.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_gpio.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_rcc.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_spi.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_spi.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_usart.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_usart.h</name>
+          </file>
+        </group>
+        <group>
+          <name>WIZ_W5200</name>
+          <excluded>
+            <configuration>WIZ_W7200</configuration>
+          </excluded>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W5200\system_stm32f10x.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W5200\w5200_evb.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W5200\wizplatform.c</name>
+          </file>
+        </group>
+        <group>
+          <name>WIZ_W5500</name>
+          <excluded>
+            <configuration>WIZ_W7200</configuration>
+            <configuration>WIZ_W5200</configuration>
+          </excluded>
+        </group>
+        <group>
+          <name>WIZ_W7200</name>
+          <excluded>
+            <configuration>WIZ_W5200</configuration>
+          </excluded>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W7200\system_stm32f10x.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W7200\w7200_evb.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W7200\wizplatform.c</name>
+          </file>
+        </group>
         <file>
-          <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\CoreSupport\core_cm3.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\misc.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x\startup\iar\startup_stm32f10x_md.s</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_flash.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_gpio.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_rcc.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_spi.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\src\stm32f10x_usart.c</name>
+          <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\wizspi.c</name>
         </file>
       </group>
       <file>
-        <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W7200\system_stm32f10x.c</name>
+        <name>$PROJ_DIR$\..\..\..\library\host\wizplatform.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W7200\wizplatform.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\wizspi.c</name>
+        <name>$PROJ_DIR$\..\..\..\library\host\wizspi.h</name>
       </file>
     </group>
     <group>
@@ -1678,7 +1761,13 @@
         <name>$PROJ_DIR$\..\..\..\library\protocol\DHCP\dhcp.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\..\..\library\protocol\DHCP\dhcp.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\..\..\library\protocol\DNS\dns.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\protocol\DNS\dns.h</name>
       </file>
     </group>
   </group>
@@ -1687,7 +1776,13 @@
     <group>
       <name>port</name>
       <file>
+        <name>$PROJ_DIR$\port\stm32f10x_conf.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\port\stm32f10x_it.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\port\stm32f10x_it.h</name>
       </file>
     </group>
     <file>

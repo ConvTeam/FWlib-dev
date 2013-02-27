@@ -2,7 +2,6 @@
 #include "common/common.h"
 
 #include "protocol/DNS/dns.h"
-#include "protocol/DHCP/dhcp.h"
 #include "protocol/SMTP/smtp.h"
 #include "appmod/loopback/loopback.h"
 #include "appmod/usermenu/usermenu.h"
@@ -69,22 +68,22 @@ do {uint8 _tmp[4], _next[4]; \
 	GetNetInfo(&netinfo);
 
 	if(mctrl == MC_START) {
-		NEXT_GUIDE("IP Address", netinfo.IP);
+		NEXT_GUIDE("IP Address", netinfo.ip);
 	} else if(mctrl == MC_END) {
 		stage = 0;
 	} else if(mctrl == MC_DATA) {
 		switch(stage) {
 		case 0:
-			SET_STAGE("IP Address", "SN mask", netinfo.IP, netinfo.SN);
+			SET_STAGE("IP Address", "SN mask", netinfo.ip, netinfo.sn);
 			break;
 		case 1:
-			SET_STAGE("SN mask", "GW Address", netinfo.SN, netinfo.GW);
+			SET_STAGE("SN mask", "GW Address", netinfo.sn, netinfo.gw);
 			break;
 		case 2:
-			SET_STAGE("GW Address", "DNS Address", netinfo.GW, netinfo.DNS);
+			SET_STAGE("GW Address", "DNS Address", netinfo.gw, netinfo.dns);
 			break;
 		case 3:
-			SET_STAGE("DNS Address", "", netinfo.DNS, NULL);
+			SET_STAGE("DNS Address", "", netinfo.dns, NULL);
 			if(stage > 3) return RET_OK;
 			break;
 		}
@@ -291,8 +290,7 @@ int32 main(void)
 #define UDP_LISTEN_PORT	5000
 
 	int8 ret, root;
-	uint32 dhcp_renew, dhcp_rebind, dhcp_time;
-	uint32 dhcp_tick, led_tick;       
+	uint32 tick = 0;
 
 	ret = platform_init();
 	if(ret != RET_OK) {
@@ -306,19 +304,11 @@ int32 main(void)
 	}
 
 	printf("\r\n-----------------------------------\r\n");
-	//printf("SMTP Client using W5200\r\n");
-        printf("SMTP Client using W5500\r\n");
-	printf("-----------------------------------\r\n\r\n");      
-        
-        
-	Delay_tick(2000);        
-	do {
-		ret = dhcp_manual(DHCP_ACT_START, NULL, &dhcp_renew, &dhcp_rebind);
-	} while(ret != RET_OK);
-	dhcp_renew = wizpf_tick_conv(FALSE, dhcp_renew);
-	dhcp_rebind = wizpf_tick_conv(FALSE, dhcp_rebind);
-	dhcp_time = dhcp_renew;
-        
+	printf("SMTP Client\r\n");
+	printf("-----------------------------------\r\n\r\n");
+
+	Delay_tick(2000);
+
 	menu_init();
 	root = menu_add("Network setting", 0, NULL);
 	menu_add("Show", root, mn_show_network);
@@ -329,32 +319,21 @@ int32 main(void)
 	menu_add("DNS", root, mn_dns);
 	menu_add("BASE64", root, mn_base64);
 	menu_add("eMail", root, mn_email);
-
 	menu_print_tree();
 
-	dhcp_tick = led_tick = wizpf_get_systick();
+	dhcp_auto_start();
 
 	while(1) {
-		if(wizpf_tick_elapse(dhcp_tick) > dhcp_time) {
-			if(dhcp_time==dhcp_renew) DBG("start renew"); else DBG("start rebind");
-			ret = dhcp_manual(dhcp_time==dhcp_renew? DHCP_ACT_RENEW: DHCP_ACT_REBIND, 
-				NULL, &dhcp_renew, &dhcp_rebind);
-			dhcp_tick = wizpf_get_systick();
-			if(ret == RET_OK) {	// renew success
-				dhcp_renew = wizpf_tick_conv(FALSE, dhcp_renew);
-				dhcp_rebind = wizpf_tick_conv(FALSE, dhcp_rebind);
-				dhcp_time = dhcp_renew;
-			} else {
-				if(dhcp_time == dhcp_renew) dhcp_time = dhcp_rebind; // renew fail, so try rebind
-				else dhcp_time = 60000; // retry after 1 min
-			}
-		}
+
+		alarm_run();
 		menu_run();
+
 		if(lb_tcp) loopback_tcps(7, (uint16)TCP_LISTEN_PORT);
 		if(lb_udp) loopback_udp(7, (uint16)UDP_LISTEN_PORT);
-		if(wizpf_tick_elapse(led_tick) > 1000) {
+
+		if(wizpf_tick_elapse(tick) > 1000) {	// running check
 			wizpf_led_set(WIZ_LED3, VAL_TOG);
-			led_tick = wizpf_get_systick();
+			tick = wizpf_get_systick();
 		}
 	}
 
