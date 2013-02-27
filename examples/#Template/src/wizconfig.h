@@ -2,6 +2,8 @@
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
 
+#include "common/types.h"
+
 //------------------------------ Environment Setting ------------------------------
 #define COMPILER_IAR_EWARM
 //#define COMPILER_GCC_ARM
@@ -13,7 +15,7 @@
 //#define SYSTEM_BIG_ENDIAN
 
 //------------------------------ Network Setting ------------------------------
-#define USE_DHCP	VAL_DISABLE
+//#define USE_DHCP	VAL_ENABLE
 //#define DHCP_AUTO	// if not set, you should handle dhcp manually, if set, need to run 'alarm_run()' funtion in main loop
 //#define DHCP_ASYNC	// if not set, it works using sync function, if set, need to run 'sockwatch_run()' funtion in main loop
 

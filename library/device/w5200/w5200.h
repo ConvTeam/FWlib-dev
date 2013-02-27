@@ -290,7 +290,6 @@ void getSHAR(uint8 * addr);
 void getSIPR(uint8 * addr);
 void getDIPR(uint8 s, uint8 *addr);
 void getDPORT(uint8 s, uint16 *port);
-void clearSIPR(void);       // clear local IP address (0.0.0.0, for DHCP)
 
 uint8 incr_windowfull_retry_cnt(uint8 s);
 void init_windowfull_retry_cnt(uint8 s);

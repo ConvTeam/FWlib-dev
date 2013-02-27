@@ -343,10 +343,9 @@ void act_nset_a(int8 mode, uint8 *ip, uint8 *sn,
 	}
 
 	if(mode == 'S') {
-		if(dhcp_static_mode(&ni) != RET_OK) {
-			dhcp_set_storage(&ni);
-			SetNetInfo(&ni);
-		}
+		dhcp_static_mode(&ni);
+		dhcp_set_storage(&ni);
+		SetNetInfo(&ni);
 	} else if(mode == 'D') {
 		dhcp_set_storage(&ni);
 		dhcp_auto_start();

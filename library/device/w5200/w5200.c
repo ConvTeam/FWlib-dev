@@ -13,7 +13,7 @@
 #include "common/common.h"
 //#include "device/w5200/w5200.h"
 
-static uint8 I_STATUS[TOTAL_SOCK_NUM];
+//static uint8 I_STATUS[TOTAL_SOCK_NUM];
 uint16 SMASK[TOTAL_SOCK_NUM]; /**< Variable for Tx buffer MASK in each channel */
 uint16 RMASK[TOTAL_SOCK_NUM]; /**< Variable for Rx buffer MASK in each channel */
 uint16 SSIZE[TOTAL_SOCK_NUM]; /**< Max Tx buffer size by each channel */
@@ -33,16 +33,14 @@ void init_windowfull_retry_cnt(uint8 s)
 	windowfull_retry_cnt[s] = 0;
 }
 
-//uint16 pre_sent_ptr, sent_ptr;
-
-uint8 getISR(uint8 s)
-{
-	return I_STATUS[s];
-}
-void putISR(uint8 s, uint8 val)
-{
-	I_STATUS[s] = val;
-}
+//uint8 getISR(uint8 s)
+//{
+//	return I_STATUS[s];
+//}
+//void putISR(uint8 s, uint8 val)
+//{
+//	I_STATUS[s] = val;
+//}
 uint16 getIINCHIP_RxMAX(uint8 s)
 {
 	return RSIZE[s];
@@ -69,15 +67,15 @@ uint16 getIINCHIP_TxBASE(uint8 s)
 }
 void IINCHIP_CSoff(void)
 {
-	wizspi_cs(VAL_LOW);
+	wizspi_cs(WIZ_SPI1, VAL_LOW);
 }
 void IINCHIP_CSon(void)
 {
-	wizspi_cs(VAL_HIGH);
+	wizspi_cs(WIZ_SPI1, VAL_HIGH);
 }
 uint8  IINCHIP_SpiSendData(uint8 dat)
 {
-	return(wizspi_byte(dat));
+	return(wizspi_byte(WIZ_SPI1, dat));
 }
 
 
@@ -188,10 +186,9 @@ uint16 IINCHIP_READ_BLOCK(uint16 addr, uint8* buf,uint16 len)
 
 /**
 @brief  This function sets up gateway IP address.
+@param addr a pointer to a 4 -byte array responsible to set the GW address.
 */ 
-void setGAR(
-  uint8 * addr  /**< a pointer to a 4 -byte array responsible to set the GW address. */
-  )
+void setGAR(uint8 *addr)
 {
   IINCHIP_WRITE((WIZC_GAR0),addr[0]);
   IINCHIP_WRITE((WIZC_GAR1),addr[1]);
@@ -211,10 +208,9 @@ void getGWIP(uint8 * addr)
 
 /**
 @brief  It sets up SubnetMask address
+@param addr a pointer to a 4 -byte array responsible to set the SubnetMask address
 */ 
-void setSUBR(
-  uint8 * addr  /**< a pointer to a 4 -byte array responsible to set the SubnetMask address */
-  )
+void setSUBR(uint8 *addr)
 {
   IINCHIP_WRITE((WIZC_SUBR0),addr[0]);
   IINCHIP_WRITE((WIZC_SUBR1),addr[1]);
@@ -225,10 +221,9 @@ void setSUBR(
 
 /**
 @brief  This function sets up MAC address.
+@param addr a pointer to a 6 -byte array responsible to set the MAC address. 
 */ 
-void setSHAR(
-  uint8 * addr  /**< a pointer to a 6 -byte array responsible to set the MAC address. */
-  )
+void setSHAR(uint8 *addr)
 {
   IINCHIP_WRITE((WIZC_SHAR0),addr[0]);
   IINCHIP_WRITE((WIZC_SHAR1),addr[1]);
@@ -240,26 +235,14 @@ void setSHAR(
 
 /**
 @brief  This function sets up Source IP address.
+@param addr a pointer to a 4 -byte array responsible to set the Source IP address.
 */
-void setSIPR(
-  uint8 * addr  /**< a pointer to a 4 -byte array responsible to set the Source IP address. */
-  )
+void setSIPR(uint8 *addr)
 {
   IINCHIP_WRITE((WIZC_SIPR0),addr[0]);
   IINCHIP_WRITE((WIZC_SIPR1),addr[1]);
   IINCHIP_WRITE((WIZC_SIPR2),addr[2]);
   IINCHIP_WRITE((WIZC_SIPR3),addr[3]);
-}
-
-/**
-@brief  This function clear Source IP address.
-*/
-void clearSIPR(void)
-{
-  IINCHIP_WRITE(WIZC_SIPR0, 0);
-  IINCHIP_WRITE(WIZC_SIPR1, 0);
-  IINCHIP_WRITE(WIZC_SIPR2, 0);
-  IINCHIP_WRITE(WIZC_SIPR3, 0);
 }
 
 /**
