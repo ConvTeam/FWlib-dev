@@ -24,17 +24,25 @@
 
 
 typedef enum {
-	WIZ_USART1 = 0, 
-	WIZ_USART2 = 1, 
-	WIZ_USART3 = 2
+	WIZ_USART1, 
+	WIZ_USART2, 
+	WIZ_USART3
 } wizpf_usart;
 
 typedef enum {
-	//LED1 = 0, 
-	//LED2 = 1,
-	WIZ_LED3 = 2,
-	WIZ_LED4 = 3
+	WIZ_LED1, 
+	WIZ_LED2,
+	WIZ_LED3,
+	WIZ_LED4
 } wizpf_led;
+
+typedef enum {
+	WIZ_GPIO_IN_FLOAT,
+	WIZ_GPIO_IN_PULLUP,
+	WIZ_GPIO_IN_PULLDOWN,
+	WIZ_GPIO_OUT_PUSHPULL,
+	WIZ_GPIO_OUT_OPENDRAIN,
+} wizpf_gpio_mode;
 
 #define DEVICE_INIT_WITH_MEMCHK(tx_size_v, rx_size_v) \
 { \
@@ -60,10 +68,12 @@ typedef enum {
 
 int8 platform_init(void);
 int8 wizpf_uart_init(wizpf_usart usart);
+int8 wizpf_gpio_init(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin, wizpf_gpio_mode mode);
+int8 wizpf_timer_init(void);
 uint32 wizpf_get_systick(void);
 uint32 wizpf_tick_conv(bool istick2sec, uint32 tickorsec);
 int32 wizpf_tick_elapse(uint32 tick);
-void wizpf_led_set(wizpf_led led, uint8 action);
+int8 wizpf_led_set(wizpf_led led, uint8 action);
 int8 wizpf_led_get(wizpf_led led);
 void wizpf_led_trap(uint8 repeat);
 void device_HW_reset(void);

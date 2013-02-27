@@ -136,12 +136,12 @@ static int8 mn_set_led(menu_ctrl mctrl, int8 *mbuf)
 		if(str_check(isdigit, mbuf) == RET_OK) {
 			uint8 input = atoi((char*)mbuf);
 			if(input == 1) {
-				wizpf_led_set(WIZ_LED3, VAL_ON);
-				wizpf_led_set(WIZ_LED4, VAL_ON);
+				wizpf_led_set(WIZ_LED1, VAL_ON);
+				wizpf_led_set(WIZ_LED2, VAL_ON);
 				printf("LED On\r\n");
 			} else if(input == 2) {
-				wizpf_led_set(WIZ_LED3, VAL_OFF);
-				wizpf_led_set(WIZ_LED4, VAL_OFF);
+				wizpf_led_set(WIZ_LED1, VAL_OFF);
+				wizpf_led_set(WIZ_LED2, VAL_OFF);
 				printf("LED Off\r\n");
 			} else {
 				printf("wrong number(%d) - try again\r\n", input);
@@ -332,7 +332,7 @@ int32 main(void)
 		if(lb_udp) loopback_udp(7, (uint16)UDP_LISTEN_PORT);
 
 		if(wizpf_tick_elapse(tick) > 1000) {	// running check
-			wizpf_led_set(WIZ_LED3, VAL_TOG);
+			wizpf_led_set(WIZ_LED1, VAL_TOG);
 			tick = wizpf_get_systick();
 		}
 	}

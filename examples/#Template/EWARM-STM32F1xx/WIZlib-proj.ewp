@@ -2457,6 +2457,15 @@
           <configuration>W7200_EVB</configuration>
           <configuration>W5200_EVB</configuration>
         </excluded>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\library\device\w5500\socket.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\library\device\w5500\w5500.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\library\device\w5500\w5500.h</name>
+        </file>
       </group>
       <file>
         <name>$PROJ_DIR$\..\..\..\library\device\socket.h</name>
@@ -2582,6 +2591,15 @@
             <configuration>W7200_EVB</configuration>
             <configuration>W5200_EVB</configuration>
           </excluded>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W5500\system_stm32f10x.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W5500\w5500_evb.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\host\STM32F10x\WIZ_W5500\wizplatform.c</name>
+          </file>
         </group>
         <group>
           <name>WIZ_W7200</name>
@@ -2635,6 +2653,7 @@
         <excluded>
           <configuration>W7200_EVB</configuration>
           <configuration>W5200_EVB</configuration>
+          <configuration>W5500_EVB</configuration>
         </excluded>
         <file>
           <name>$PROJ_DIR$\..\..\..\library\protocol\HTTP\httpd.c</name>

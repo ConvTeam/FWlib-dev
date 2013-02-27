@@ -12,52 +12,84 @@
 #ifndef _W5200_EVB
 #define _W5200_EVB
 
-// Port A
-#define LED3				GPIO_Pin_0	// out
-#define LED4				GPIO_Pin_1	// out
-#define PA2					GPIO_Pin_2	// 
-#define PA3					GPIO_Pin_3	// 
-#define USART2_TX			GPIO_Pin_2	// out
-#define USART2_RX			GPIO_Pin_3	// in 
-#define WIZ_SCS				GPIO_Pin_4	// out
-#define WIZ_SCLK			GPIO_Pin_5	// out
-#define WIZ_MISO			GPIO_Pin_6	// in
-#define WIZ_MOSI			GPIO_Pin_7	// out
-#define PA8					GPIO_Pin_8	// 
-#define USART1_TX			GPIO_Pin_9	// out
-#define USART1_RX			GPIO_Pin_10	// in 
-#define PA11				GPIO_Pin_11	// 
-#define PA12				GPIO_Pin_12	// 
-#define PA13				GPIO_Pin_13	// 
-#define PA14				GPIO_Pin_14	// 
-#define PA15				GPIO_Pin_15	// 
+// GPIO PIN Definition - Common
 
-// Port B
-#define WIZ_INT				GPIO_Pin_0	// in
-#define PB1					GPIO_Pin_1	// 
-#define PB2					GPIO_Pin_2	// 
-#define PB3					GPIO_Pin_3	// 
-#define PB4					GPIO_Pin_4	// 
-#define PB5					GPIO_Pin_5	// 
-#define PB6					GPIO_Pin_6	// 
-#define PB7					GPIO_Pin_7	// 
-#define WIZ_RESET			GPIO_Pin_8	// out
-#define WIZ_PWDN			GPIO_Pin_9	// out
-#define PB10				GPIO_Pin_10	// 
-#define PB11				GPIO_Pin_11	// 
-#define PB12				GPIO_Pin_12	// 
-#define PB13				GPIO_Pin_13	// 
-#define PB14				GPIO_Pin_14	// 
-#define PB15				GPIO_Pin_15	// 
+// Port
+#define PORTA				GPIOA
+#define PORTB				GPIOB
+#define PORTC				GPIOC
+// Pin
+#define PIN0				GPIO_Pin_0
+#define PIN1				GPIO_Pin_1
+#define PIN2				GPIO_Pin_2
+#define PIN3				GPIO_Pin_3
+#define PIN4				GPIO_Pin_4
+#define PIN5				GPIO_Pin_5
+#define PIN6				GPIO_Pin_6
+#define PIN7				GPIO_Pin_7
+#define PIN8				GPIO_Pin_8
+#define PIN9				GPIO_Pin_9
+#define PIN10				GPIO_Pin_10
+#define PIN11				GPIO_Pin_11
+#define PIN12				GPIO_Pin_12
+#define PIN13				GPIO_Pin_13
+#define PIN14				GPIO_Pin_14
+#define PIN15				GPIO_Pin_15
 
-// Port C
-#define PC13				GPIO_Pin_13	//
-#define PC14				GPIO_Pin_14	//
-#define PC15				GPIO_Pin_15	//
+// GPIO PIN Definition - Platform Specific
 
-#define STM32F10X_MD
+#define LED1_PORT			GPIOA
+#define LED1_PIN			GPIO_Pin_0
+#define LED2_PORT			GPIOA
+#define LED2_PIN			GPIO_Pin_1
+//#define LED3_PORT			
+//#define LED3_PIN			
+//#define LED4_PORT			
+//#define LED5_PIN			
+
+#define USART1_TX_PORT		GPIOA
+#define USART1_TX_PIN		GPIO_Pin_9
+#define USART1_RX_PORT		GPIOA
+#define USART1_RX_PIN		GPIO_Pin_10
+//#define USART1_CTS_PORT		GPIOA
+//#define USART1_CTS_PIN		GPIO_Pin_11
+//#define USART1_RTS_PORT		GPIOA
+//#define USART1_RTS_PIN		GPIO_Pin_12
+
+#define USART2_TX_PORT		GPIOA
+#define USART2_TX_PIN		GPIO_Pin_2
+#define USART2_RX_PORT		GPIOA
+#define USART2_RX_PIN		GPIO_Pin_3
+//#define USART2_CTS_PORT		GPIOA
+//#define USART2_CTS_PIN		GPIO_Pin_0
+//#define USART2_RTS_PORT		GPIOA
+//#define USART2_RTS_PIN		GPIO_Pin_1
+
+#define SPI1_SCS_PORT		GPIOA
+#define SPI1_SCS_PIN		GPIO_Pin_4
+#define SPI1_SCLK_PORT		GPIOA
+#define SPI1_SCLK_PIN		GPIO_Pin_5
+#define SPI1_MISO_PORT		GPIOA
+#define SPI1_MISO_PIN		GPIO_Pin_6
+#define SPI1_MOSI_PORT		GPIOA
+#define SPI1_MOSI_PIN		GPIO_Pin_7
+
+#define SPI2_SCS_PORT		GPIOB
+#define SPI2_SCS_PIN		GPIO_Pin_12
+#define SPI2_SCLK_PORT		GPIOB
+#define SPI2_SCLK_PIN		GPIO_Pin_13
+#define SPI2_MISO_PORT		GPIOB
+#define SPI2_MISO_PIN		GPIO_Pin_14
+#define SPI2_MOSI_PORT		GPIOB
+#define SPI2_MOSI_PIN		GPIO_Pin_15
+
+#define WIZ_INT_PORT		GPIOB
+#define WIZ_INT_PIN			GPIO_Pin_0
+#define WIZ_RESET_PORT		GPIOB
+#define WIZ_RESET_PIN		GPIO_Pin_8
+#define WIZ_PWDN_PORT		GPIOB
+#define WIZ_PWDN_PIN		GPIO_Pin_9
 
 #endif //_W5200_EVB
-
 
 
