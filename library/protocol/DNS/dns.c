@@ -1,3 +1,13 @@
+/**
+ * @file		dns.c
+ * @brief		DNS Protocol Module Source File
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *		2013/02/22 - 1.0 Release
+ * @author	modified by Mike Jeong
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
 
 //#define FILE_LOG_SILENCE
 #include "protocol/DNS/dns.h"
@@ -61,7 +71,7 @@ struct dhdr
 	uint16 arcount;	/* Additional record count */
 };
 
-uint8 * put16(uint8 *s, uint16 i)
+static uint8 * put16(uint8 *s, uint16 i)
 {
 	*s++ = i >> 8;
 	*s++ = i;
@@ -69,7 +79,7 @@ uint8 * put16(uint8 *s, uint16 i)
 	return s;
 }
 
-uint16 get16(uint8 *s)
+static uint16 get16(uint8 *s)
 {
 	uint16 i;
 
@@ -79,7 +89,7 @@ uint16 get16(uint8 *s)
 	return i;
 }
 
-int16 dns_makequery(uint16 op, int8 *name, uint8 *buf, uint16 len)
+static int16 dns_makequery(uint16 op, int8 *name, uint8 *buf, uint16 len)
 {
 	uint8 *cp;
 	int8 *cp1;
@@ -132,7 +142,7 @@ int16 dns_makequery(uint16 op, int8 *name, uint8 *buf, uint16 len)
 	return ((int16)(cp - buf));
 }
 
-int32 parse_name(uint8 *msg, uint8 *compressed, int8 *buf, int16 len)
+static int32 parse_name(uint8 *msg, uint8 *compressed, int8 *buf, int16 len)
 {
 	uint16 slen;		/* Length of current segment */
 	uint8 * cp;
@@ -185,7 +195,7 @@ int32 parse_name(uint8 *msg, uint8 *compressed, int8 *buf, int16 len)
 	return clen;	/* Length of compressed message */
 }
 
-uint8 * dns_question(uint8 *msg, uint8 *cp)
+static uint8 * dns_question(uint8 *msg, uint8 *cp)
 {
 	int32 len;
 	int8 name[MAX_DNS_BUF_SIZE];
@@ -203,7 +213,7 @@ uint8 * dns_question(uint8 *msg, uint8 *cp)
 	return cp;
 }
 
-uint8 * dns_answer(uint8 *msg, uint8 *cp, uint8 *pSip)
+static uint8 * dns_answer(uint8 *msg, uint8 *cp, uint8 *pSip)
 {
 	int32 len, type;
 	int8 name[MAX_DNS_BUF_SIZE];
@@ -297,7 +307,7 @@ uint8 * dns_answer(uint8 *msg, uint8 *cp, uint8 *pSip)
 	return cp;
 }
 
-int8 parseMSG(struct dhdr *pdhdr, uint8 *pbuf, uint8 *pSip)
+static int8 parseMSG(struct dhdr *pdhdr, uint8 *pbuf, uint8 *pSip)
 {
 	uint16 tmp;
 	uint16 i;
@@ -360,6 +370,13 @@ int8 parseMSG(struct dhdr *pdhdr, uint8 *pbuf, uint8 *pSip)
 	else return RET_NOK;
 }
 
+/**
+ * @brief Perform DNS Query 
+ * @param sock Socket number to use
+ * @param domain Domain name string to resolve
+ * @param ip The variable in which resolved IP address will be returned
+ * @return @b RET_OK: Success \n @b RET_NOK: Error
+ */
 int8 dns_query(uint8 sock, uint8 *domain, uint8 *ip)
 {
 	struct dhdr dhp;
@@ -382,7 +399,7 @@ int8 dns_query(uint8 sock, uint8 *domain, uint8 *ip)
 	i = 0;
 	GetNetInfo(&netinfo);
 	len = dns_makequery(0, (int8 *)domain, dns_buf, MAX_DNS_BUF_SIZE);
-	while((cnt = UDPSend(sock, (int8*)dns_buf, len, netinfo.DNS, IPPORT_DOMAIN)) < 0) {
+	while((cnt = UDPSend(sock, (int8*)dns_buf, len, netinfo.dns, IPPORT_DOMAIN)) < 0) {
 		if(i++ > 3) {
 			DBGA("UDPSend fail (%d)times", i);
 			return RET_NOK;

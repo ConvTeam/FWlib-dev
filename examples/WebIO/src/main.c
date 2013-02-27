@@ -2,7 +2,6 @@
 #include "common/common.h"
 
 #include "protocol/DNS/dns.h"
-#include "protocol/DHCP/dhcp.h"
 #include "protocol/HTTP/httputil.h"
 #include "appmod/loopback/loopback.h"
 #include "appmod/usermenu/usermenu.h"
@@ -69,22 +68,22 @@ do {uint8 _tmp[4], _next[4]; \
 	GetNetInfo(&netinfo);
 
 	if(mctrl == MC_START) {
-		NEXT_GUIDE("IP Address", netinfo.IP);
+		NEXT_GUIDE("IP Address", netinfo.ip);
 	} else if(mctrl == MC_END) {
 		stage = 0;
 	} else if(mctrl == MC_DATA) {
 		switch(stage) {
 		case 0:
-			SET_STAGE("IP Address", "Subnet mask", netinfo.IP, netinfo.SN);
+			SET_STAGE("IP Address", "Subnet mask", netinfo.ip, netinfo.sn);
 			break;
 		case 1:
-			SET_STAGE("Subnet mask", "Gateway Address", netinfo.SN, netinfo.GW);
+			SET_STAGE("Subnet mask", "Gateway Address", netinfo.sn, netinfo.gw);
 			break;
 		case 2:
-			SET_STAGE("Gateway Address", "DNS Address", netinfo.GW, netinfo.DNS);
+			SET_STAGE("Gateway Address", "DNS Address", netinfo.gw, netinfo.dns);
 			break;
 		case 3:
-			SET_STAGE("DNS Address", "", netinfo.DNS, NULL);
+			SET_STAGE("DNS Address", "", netinfo.dns, NULL);
 			if(stage > 3) return RET_OK;
 			break;
 		}
@@ -246,13 +245,13 @@ void IP_get_func(char *buf, uint16 *len)
 {
 	wiz_NetInfo netinfo;
 	GetNetInfo(&netinfo);
-	*len = sprintf(buf, "%d.%d.%d.%d", netinfo.IP[0], netinfo.IP[1], netinfo.IP[2], netinfo.IP[3]);
+	*len = sprintf(buf, "%d.%d.%d.%d", netinfo.ip[0], netinfo.ip[1], netinfo.ip[2], netinfo.ip[3]);
 }
 void IP_set_func(char *buf, uint16 *len)
 {
 	wiz_NetInfo netinfo;
 	GetNetInfo(&netinfo);
-	inet_addr_((uint8*)buf, netinfo.IP);
+	inet_addr_((uint8*)buf, netinfo.ip);
 	SetNetInfo(&netinfo);
 }
 
@@ -260,13 +259,13 @@ void GW_get_func(char *buf, uint16 *len)
 {
 	wiz_NetInfo netinfo;
 	GetNetInfo(&netinfo);
-	*len = sprintf(buf, "%d.%d.%d.%d", netinfo.GW[0], netinfo.GW[1], netinfo.GW[2], netinfo.GW[3]);
+	*len = sprintf(buf, "%d.%d.%d.%d", netinfo.gw[0], netinfo.gw[1], netinfo.gw[2], netinfo.gw[3]);
 }
 void GW_set_func(char *buf, uint16 *len)
 {
 	wiz_NetInfo netinfo;
 	GetNetInfo(&netinfo);
-	inet_addr_((uint8*)buf, netinfo.GW);
+	inet_addr_((uint8*)buf, netinfo.gw);
 	SetNetInfo(&netinfo);
 }
 
@@ -274,13 +273,13 @@ void SUB_get_func(char *buf, uint16 *len)
 {
 	wiz_NetInfo netinfo;
 	GetNetInfo(&netinfo);
-	*len = sprintf(buf, "%d.%d.%d.%d", netinfo.SN[0], netinfo.SN[1], netinfo.SN[2], netinfo.SN[3]);
+	*len = sprintf(buf, "%d.%d.%d.%d", netinfo.sn[0], netinfo.sn[1], netinfo.sn[2], netinfo.sn[3]);
 }
 void SUB_set_func(char *buf, uint16 *len)
 {
 	wiz_NetInfo netinfo;
 	GetNetInfo(&netinfo);
-	inet_addr_((uint8*)buf, netinfo.SN);
+	inet_addr_((uint8*)buf, netinfo.sn);
 	SetNetInfo(&netinfo);
 }
 
@@ -288,13 +287,13 @@ void DNS_get_func(char *buf, uint16 *len)
 {
 	wiz_NetInfo netinfo;
 	GetNetInfo(&netinfo);
-	*len = sprintf(buf, "%d.%d.%d.%d", netinfo.DNS[0], netinfo.DNS[1], netinfo.DNS[2], netinfo.DNS[3]);
+	*len = sprintf(buf, "%d.%d.%d.%d", netinfo.dns[0], netinfo.dns[1], netinfo.dns[2], netinfo.dns[3]);
 }
 void DNS_set_func(char *buf, uint16 *len)
 {
 	wiz_NetInfo netinfo;
 	GetNetInfo(&netinfo);
-	inet_addr_((uint8*)buf, netinfo.DNS);
+	inet_addr_((uint8*)buf, netinfo.dns);
 	SetNetInfo(&netinfo);
 }
 
@@ -302,7 +301,7 @@ void MAC_get_func(char *buf, uint16 *len)
 {
 	wiz_NetInfo netinfo;
 	GetNetInfo(&netinfo);
-	*len = sprintf(buf, "%.2X:%.2X:%.2X:%.2X:%.2X:%.2X", netinfo.Mac[0], netinfo.Mac[1], netinfo.Mac[2], netinfo.Mac[3], netinfo.Mac[4], netinfo.Mac[5]);
+	*len = sprintf(buf, "%.2X:%.2X:%.2X:%.2X:%.2X:%.2X", netinfo.mac[0], netinfo.mac[1], netinfo.mac[2], netinfo.mac[3], netinfo.mac[4], netinfo.mac[5]);
 }
 
 void LED1_get_func(char *buf, uint16 *len)
@@ -385,9 +384,7 @@ int main(void)
 	cgi_callback_add("LED2", LED2_get_func, LED2_set_func);
 
 	Delay_tick(2000);	// prevent first send fail
-#if (USE_DHCP == VAL_ENABLE)
-	dhcp_alarm_start(NULL);
-#endif
+	dhcp_auto_start();
 
 	while(1) {
 		alarm_run();

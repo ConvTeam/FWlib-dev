@@ -1,3 +1,13 @@
+/**
+ * @file		WIZ_W5200/wizplatform.c
+ * @brief		Platform Specific Function Source File - For W5200 Evaluation Board
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *		2013/02/22 - 1.0 Release
+ * @author	Mike Jeong
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
 
 //#define FILE_LOG_SILENCE
 #include "common/common.h"

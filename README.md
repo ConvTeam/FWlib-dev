@@ -29,11 +29,9 @@ please contact <support@wiznet.co.kr>
 ## Creators
 
 [Mike Jeoung](http://github.com/MikeJeoung)
-<br> [@MikeJeoung](https://twitter.com/MikeJeoung)
-<br> email : 
+<br> email : jeonggw@wiznet.co.kr
 
 [RaphaelKwon](http://github.com/RaphaelKwon)
-<br> [@RaphaelKwon](https://twitter.com/RaphaelKwon)
 <br> email : 
 
 ## License

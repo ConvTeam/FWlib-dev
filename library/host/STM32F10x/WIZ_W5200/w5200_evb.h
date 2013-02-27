@@ -1,3 +1,13 @@
+/**
+ * @file		w5200_evb.h
+ * @brief		W5200 Evaluation Board Header File
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *		2013/02/22 - 1.0 Release
+ * @author	Mike Jeong
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
 
 #ifndef _W5200_EVB
 #define _W5200_EVB

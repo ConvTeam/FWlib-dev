@@ -1,3 +1,13 @@
+/**
+ * @file		smtp.h
+ * @brief		SMTP (Simple Mail Transfer Protocol) Module Header File
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *		2013/02/22 - 1.0 Release
+ * @author	
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
 
 #ifndef	_SMTP_H
 #define	_SMTP_H

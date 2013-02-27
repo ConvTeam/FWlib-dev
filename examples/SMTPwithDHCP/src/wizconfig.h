@@ -14,7 +14,7 @@
 
 //------------------------------ Network Setting ------------------------------
 #define USE_DHCP	VAL_ENABLE
-#define DHCP_ALARM	// if not set, you should handle dhcp manually, if set, need to run 'alarm_run()' funtion in main loop
+#define DHCP_AUTO	// if not set, you should handle dhcp manually, if set, need to run 'alarm_run()' funtion in main loop
 //#define DHCP_ASYNC	// if not set, it works using sync function, if set, need to run 'sockwatch_run()' funtion in main loop
 
 #define DEFAULT_MAC_ADDR	"00:08:DC:11:22:33"
