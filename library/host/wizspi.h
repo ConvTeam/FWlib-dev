@@ -24,6 +24,7 @@ typedef enum {
 
 int8 wizspi_init(wizpf_spi spi);
 void wizspi_cs(uint8 val);
+void wizspi_cs2(uint8 val);
 uint8 wizspi_byte(uint8 byte);
 
 #endif //_SPI_H

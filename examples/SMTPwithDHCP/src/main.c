@@ -304,7 +304,7 @@ int32 main(void)
 	}
 
 	printf("\r\n-----------------------------------\r\n");
-	printf("SMTP Client using W5200\r\n");
+	printf("SMTP Client\r\n");
 	printf("-----------------------------------\r\n\r\n");
 
 	Delay_tick(2000);
