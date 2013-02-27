@@ -23,9 +23,9 @@ int8 wizspi_init(wizpf_spi spi)
 	case WIZ_SPI1:
 		wizspix = SPI1;
 		break;
-	//case WIZ_SPI2:
-	//	wizspix = ;
-	//	break;
+	case WIZ_SPI2:
+		wizspix = SPI2;
+		break;
 	//case WIZ_SPI3:
 	//	wizspix = ;
 	//	break;
@@ -67,8 +67,22 @@ void wizspi_cs(uint8 val)
 	}
 }
 
+void wizspi_cs2(uint8 val)
+{        
+	if(wizspix != SPI2) {
+		ERRA("### Currently, Only SPI2 is allowed - wizspix(%p), SPI2(%p)", wizspix, SPI2);
+		return ;
+	}
+
+	if (val == VAL_LOW) {
+   		GPIO_ResetBits(GPIOB, WIZ_SCS2); 
+	}else if (val == VAL_HIGH){
+   		GPIO_SetBits(GPIOB, WIZ_SCS2); 
+	}
+}
+
 uint8 wizspi_byte(uint8 byte)
-{
+{               
 	while (SPI_I2S_GetFlagStatus(wizspix, SPI_I2S_FLAG_TXE) == RESET);         
 	SPI_I2S_SendData(wizspix, byte);          
 	while (SPI_I2S_GetFlagStatus(wizspix, SPI_I2S_FLAG_RXNE) == RESET);          

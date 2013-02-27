@@ -252,6 +252,17 @@ void setSIPR(
 }
 
 /**
+@brief  This function clear Source IP address.
+*/
+void clearSIPR(void)
+{
+  IINCHIP_WRITE(WIZC_SIPR0, 0);
+  IINCHIP_WRITE(WIZC_SIPR1, 0);
+  IINCHIP_WRITE(WIZC_SIPR2, 0);
+  IINCHIP_WRITE(WIZC_SIPR3, 0);
+}
+
+/**
 @brief  This function sets up Source IP address.
 */
 void getGAR(uint8 *addr)

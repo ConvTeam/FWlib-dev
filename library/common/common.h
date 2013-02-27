@@ -70,6 +70,20 @@
 
 #endif
 
+//------------------------------------------
+#ifdef PLATFORM_W5500_EVB
+#ifndef PLATFORM_DEF_DONE
+#define PLATFORM_DEF_DONE
+#else
+#error Duplicate definition of PLATFORM
+#endif
+
+	#define HOST_STM32F10X
+	#define DEVICE_W5500
+	#include "host/STM32F10x/WIZ_W5500/w5500_evb.h"
+
+#endif
+
 //-------------------------------------- Host Definition --------------------------------------
 #ifdef HOST_8051
 #ifndef HOST_DEF_DONE
@@ -142,7 +156,9 @@
 #error Duplicate definition of DEVICE
 #endif
 
-	//Todo
+	#define	TOTAL_SOCK_NUM	8	// Maxmium number of socket 
+	#define TOTAL_SOCK_MEM	32	// Total Tx/Rx Buffer Memory (KB)
+	#include "device/w5500/w5500.h"
 
 #endif
 

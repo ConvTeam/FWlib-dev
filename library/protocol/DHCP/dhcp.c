@@ -204,10 +204,12 @@ int8 dhcp_init(uint8 sock, void_func ip_update_hook, void_func ip_conflict_hook,
 	di.sock = sock;
 	if(ip_update_hook) di.ip_update = ip_update_hook;
 	if(ip_conflict_hook) di.ip_conflict = ip_conflict_hook;
-	IINCHIP_WRITE(WIZC_SIPR0, 0);
-	IINCHIP_WRITE(WIZC_SIPR1, 0);
-	IINCHIP_WRITE(WIZC_SIPR2, 0);
-	IINCHIP_WRITE(WIZC_SIPR3, 0);
+	
+	clearSIPR();
+	//IINCHIP_WRITE(WIZC_SIPR0, 0);
+	//IINCHIP_WRITE(WIZC_SIPR1, 0);
+	//IINCHIP_WRITE(WIZC_SIPR2, 0);
+	//IINCHIP_WRITE(WIZC_SIPR3, 0);
 
 	// ToDo: Remove setting zero IP & SN (set at start func)
 
