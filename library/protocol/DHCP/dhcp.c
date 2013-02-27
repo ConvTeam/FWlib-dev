@@ -186,19 +186,13 @@ int8 dhcp_init(uint8 sock, pFunc ip_update_hook, pFunc ip_conflict_hook, wiz_Net
 	if(ip_update_hook) di.ip_update = ip_update_hook;
 	if(ip_conflict_hook) di.ip_conflict = ip_conflict_hook;
 	
-        clearSIPR();
-        //IINCHIP_WRITE(WIZC_SIPR0, 0);
+	clearSIPR();
+	//IINCHIP_WRITE(WIZC_SIPR0, 0);
 	//IINCHIP_WRITE(WIZC_SIPR1, 0);
 	//IINCHIP_WRITE(WIZC_SIPR2, 0);
 	//IINCHIP_WRITE(WIZC_SIPR3, 0);
-	
-        //workinfo.DHCP = NETINFO_DHCP_BUSY;
-	//SetNetInfo(&workinfo);
-	//SET_STATE(DHCP_STATE_INIT);
-	//di.action = DHCP_ACT_START;
-	//if(dhcp_alarm) alarm_set(1000, dhcp_alarm_cb, 0);		// 알람 등록 - 1초 딜레이가지고 시작(테스트)
 
-	//if(dhcp_alarm_start(NULL) != RET_OK) return RET_NOK;
+	// ToDo: Remove setting zero IP & SN (set at start func)
 
 	return RET_OK;
 }

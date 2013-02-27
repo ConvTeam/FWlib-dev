@@ -26,21 +26,20 @@ int8 wizspi_init(wizpf_spi spi)
 		ERR("### Currently, Only \"WIZ_SPI1\" is allowed");
 		return RET_NOK;
 	}
-        
-        // SPI Config -------------------------------------------------------------
-        SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
-        SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
-        SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
-        SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
-        SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
-        SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
-        SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4;
-        SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
-        SPI_InitStructure.SPI_CRCPolynomial = 7;
-        
-        SPI_Init(wizspix, &SPI_InitStructure);
-        SPI_Cmd(wizspix, ENABLE);		// Enable SPI
-      
+
+	// SPI Config -------------------------------------------------------------
+	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
+	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
+	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
+	SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
+	SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
+	SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
+	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4;
+	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
+	SPI_InitStructure.SPI_CRCPolynomial = 7;
+	SPI_Init(wizspix, &SPI_InitStructure);
+	SPI_Cmd(wizspix, ENABLE);		// Enable SPI
+
 	return RET_OK;
 }
 

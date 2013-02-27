@@ -58,23 +58,15 @@ int8 platform_init(void)
 	ret8 = wizpf_uart_init(WIZ_USART1);
 	if(ret8 != RET_OK) return RET_NOK;
 
-        ret8 = wizspi_init(WIZ_SPI2); // for W5500 but error occurred! => RCC_Configuration!
-        //ret8 = wizspi_init(WIZ_SPI1);
-/*  
-#ifdef PLATFORM_W5500_EVB
-        ret8 = wizspi_init(WIZ_SPI2);
-#else
-        ret8 = wizspi_init(WIZ_SPI1);
-#endif
-*/        
+	ret8 = wizspi_init(WIZ_SPI1);
 	if(ret8 != RET_OK) {
 		ERR("wizspi_init fail");
 		return RET_NOK;
 	}
-        
-	device_HW_reset();        
+
+	device_HW_reset();
 	DEVICE_INIT_WITH_MEMCHK(tx_size, rx_size);
-        
+
 	wizpf_led_set(WIZ_LED3, VAL_ON);	// LED3 and LED4 On by default
 	wizpf_led_set(WIZ_LED4, VAL_ON);
 
@@ -209,17 +201,10 @@ void wizpf_led_trap(uint8 repeat)
 
 void device_HW_reset(void)
 {
-	// for W5500
-        GPIO_ResetBits(GPIOB, WIZ_RESET2);
+	GPIO_ResetBits(GPIOB, WIZ_RESET);
 	Delay_us(8); // 
-	GPIO_SetBits(GPIOB, WIZ_RESET2);
+	GPIO_SetBits(GPIOB, WIZ_RESET);
 	Delay_ms(50); // 
-        
-        //GPIO_ResetBits(GPIOB, WIZ_RESET);
-	//Delay_us(8); // 
-	//GPIO_SetBits(GPIOB, WIZ_RESET);
-	//Delay_ms(50); // 
-        
 }
 
 void GPIO_Configuration(void)
@@ -333,8 +318,7 @@ void RCC_Configuration(void)
 	}
 
 	/* TIM2 clock enable */
-	//RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2 | RCC_APB1Periph_USART2, ENABLE);
-        RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2 | RCC_APB1Periph_USART2 | RCC_APB1Periph_SPI2, ENABLE);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2 | RCC_APB1Periph_USART2, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_SPI1 | RCC_APB2Periph_GPIOB |RCC_APB2Periph_GPIOC
 				|RCC_APB2Periph_AFIO  | RCC_APB2Periph_USART1, ENABLE);
 
