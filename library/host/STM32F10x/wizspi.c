@@ -13,31 +13,52 @@
 #include "host/wizspi.h"
 
 
-static SPI_TypeDef *wizspix = NULL;
-
 int8 wizspi_init(wizpf_spi spi)
 {
+	SPI_TypeDef *SPIx;
 	SPI_InitTypeDef SPI_InitStructure;
+	GPIO_InitTypeDef GPIO_InitStructure;
 
 	switch(spi) {
 	case WIZ_SPI1:
-		wizspix = SPI1;
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
+		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+		GPIO_InitStructure.GPIO_Pin = SPI1_SCS_PIN;
+		GPIO_Init(SPI1_SCS_PORT, &GPIO_InitStructure);
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+		GPIO_InitStructure.GPIO_Pin = SPI1_SCLK_PIN;
+		GPIO_Init(SPI1_SCLK_PORT, &GPIO_InitStructure);
+		GPIO_InitStructure.GPIO_Pin = SPI1_MISO_PIN;
+		GPIO_Init(SPI1_MISO_PORT, &GPIO_InitStructure);
+		GPIO_InitStructure.GPIO_Pin = SPI1_MOSI_PIN;
+		GPIO_Init(SPI1_MOSI_PORT, &GPIO_InitStructure);
+		GPIO_SetBits(SPI1_SCS_PORT, SPI1_SCS_PIN);
+		SPIx = SPI1;
 		break;
 	case WIZ_SPI2:
-		wizspix = SPI2;
+		RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
+		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+		GPIO_InitStructure.GPIO_Pin = SPI2_SCS_PIN;
+		GPIO_Init(SPI2_SCS_PORT, &GPIO_InitStructure);
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+		GPIO_InitStructure.GPIO_Pin = SPI2_SCLK_PIN;
+		GPIO_Init(SPI2_SCLK_PORT, &GPIO_InitStructure);
+		GPIO_InitStructure.GPIO_Pin = SPI2_MISO_PIN;
+		GPIO_Init(SPI2_MISO_PORT, &GPIO_InitStructure);
+		GPIO_InitStructure.GPIO_Pin = SPI2_MOSI_PIN;
+		GPIO_Init(SPI2_MOSI_PORT, &GPIO_InitStructure);
+		GPIO_SetBits(SPI2_SCS_PORT, SPI2_SCS_PIN);
+		SPIx = SPI2;
 		break;
 	//case WIZ_SPI3:
-	//	wizspix = ;
-	//	break;
-	//case WIZ_SPI4:
-	//	wizspix = ;
 	//	break;
 	default:
-		ERR("### Currently, Only \"WIZ_SPI1\" is allowed");
+		ERRA("SPI(%d) is not allowed", spi);
 		return RET_NOK;
 	}
 
-	// SPI Config -------------------------------------------------------------
 	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
 	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
 	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
@@ -47,46 +68,62 @@ int8 wizspi_init(wizpf_spi spi)
 	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4;
 	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
 	SPI_InitStructure.SPI_CRCPolynomial = 7;
-	SPI_Init(wizspix, &SPI_InitStructure);
-	SPI_Cmd(wizspix, ENABLE);		// Enable SPI
+	SPI_Init(SPIx, &SPI_InitStructure);
+	SPI_Cmd(SPIx, ENABLE);
 
 	return RET_OK;
 }
 
-void wizspi_cs(uint8 val)
+void wizspi_cs(wizpf_spi spi, uint8 val)
 {
-	if(wizspix != SPI1) {
-		ERRA("### Currently, Only SPI1 is allowed - wizspix(%p), SPI1(%p)", wizspix, SPI1);
-		return ;
+	GPIO_TypeDef* GPIOx;
+	uint16 GPIO_Pin;
+
+	switch(spi) {
+	case WIZ_SPI1:
+		GPIOx = SPI1_SCS_PORT;
+		GPIO_Pin = SPI1_SCS_PIN;
+		break;
+	case WIZ_SPI2:
+		GPIOx = SPI2_SCS_PORT;
+		GPIO_Pin = SPI2_SCS_PIN;
+		break;
+	//case WIZ_SPI3:
+	//	break;
+	default:
+		ERRA("SPI(%d) is not allowed", spi);
+		return;
 	}
 
 	if (val == VAL_LOW) {
-   		GPIO_ResetBits(GPIOA, WIZ_SCS); 
+   		GPIO_ResetBits(GPIOx, GPIO_Pin);
 	}else if (val == VAL_HIGH){
-   		GPIO_SetBits(GPIOA, WIZ_SCS); 
+   		GPIO_SetBits(GPIOx, GPIO_Pin); 
 	}
 }
 
-void wizspi_cs2(uint8 val)
-{        
-	if(wizspix != SPI2) {
-		ERRA("### Currently, Only SPI2 is allowed - wizspix(%p), SPI2(%p)", wizspix, SPI2);
-		return ;
+uint8 wizspi_byte(wizpf_spi spi, uint8 byte)
+{
+	SPI_TypeDef *SPIx;
+
+	switch(spi) {
+	case WIZ_SPI1:
+		SPIx = SPI1;
+		break;
+	case WIZ_SPI2:
+		SPIx = SPI2;
+		break;
+	//case WIZ_SPI3:
+	//	break;
+	default:
+		ERRA("SPI(%d) is not allowed", spi);
+		return 0;
 	}
 
-	if (val == VAL_LOW) {
-   		GPIO_ResetBits(GPIOB, WIZ_SCS2); 
-	}else if (val == VAL_HIGH){
-   		GPIO_SetBits(GPIOB, WIZ_SCS2); 
-	}
-}
-
-uint8 wizspi_byte(uint8 byte)
-{               
-	while (SPI_I2S_GetFlagStatus(wizspix, SPI_I2S_FLAG_TXE) == RESET);         
-	SPI_I2S_SendData(wizspix, byte);          
-	while (SPI_I2S_GetFlagStatus(wizspix, SPI_I2S_FLAG_RXNE) == RESET);          
-	return SPI_I2S_ReceiveData(wizspix);
+	while (SPI_I2S_GetFlagStatus(SPIx, SPI_I2S_FLAG_TXE) == RESET);         
+	SPI_I2S_SendData(SPIx, byte);          
+	while (SPI_I2S_GetFlagStatus(SPIx, SPI_I2S_FLAG_RXNE) == RESET);          
+	return (uint8)SPI_I2S_ReceiveData(SPIx);
 }
 
 

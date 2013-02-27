@@ -9,10 +9,13 @@
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
 
+#include "wizconfig.h"
+
 //#define FILE_LOG_SILENCE
 #include "common/common.h"
-//#include "protocol/DHCP/dhcp.h"
-
+#if (USE_DHCP == VAL_DISABLE)
+#include "protocol/DHCP/dhcp.h"
+#endif
 
 #define	DHCP_SERVER_PORT		67	// from server to client
 #define DHCP_CLIENT_PORT		68	// from client to server
@@ -205,11 +208,10 @@ int8 dhcp_init(uint8 sock, void_func ip_update_hook, void_func ip_conflict_hook,
 	if(ip_update_hook) di.ip_update = ip_update_hook;
 	if(ip_conflict_hook) di.ip_conflict = ip_conflict_hook;
 	
-	clearSIPR();
-	//IINCHIP_WRITE(WIZC_SIPR0, 0);
-	//IINCHIP_WRITE(WIZC_SIPR1, 0);
-	//IINCHIP_WRITE(WIZC_SIPR2, 0);
-	//IINCHIP_WRITE(WIZC_SIPR3, 0);
+	ClsNetInfo(NI_IP_ADDR);
+	ClsNetInfo(NI_SN_MASK);
+	ClsNetInfo(NI_GW_ADDR);
+	ClsNetInfo(NI_DNS_ADDR);
 
 	// ToDo: Remove setting zero IP & SN (set at start func)
 
@@ -305,16 +307,15 @@ dhcp_state dhcp_get_state(void)
  *	- All zero address (like 0.0.0.0 or 0:0:0:0:0:0) will be ignored \n 
  *		and be returned with address set formerly in it for reference
  *	- Member variable DHCP is not used (just ignored)
- * @return @b RET_OK: Success \n @b RET_NOK: Error
  * @see @ref wiz_NetInfo, @ref dhcp_get_storage
  * @warning You should update MAC address when chip MAC address is changed.
  *		\n If not, DHCP send packet will have wrong MAC address.
  */
-int8 dhcp_set_storage(wiz_NetInfo *net)	// Should be updated when MAC is changed
+void dhcp_set_storage(wiz_NetInfo *net)	// Should be updated when MAC is changed
 {
 	if(net == NULL) {
 		DBG("NULL arg");
-		return RET_NOK;
+		return;
 	}
 
 	if(net->mac[0]!=0 || net->mac[1]!=0 || net->mac[2]!=0 || net->mac[3]!=0 || 
@@ -327,8 +328,6 @@ int8 dhcp_set_storage(wiz_NetInfo *net)	// Should be updated when MAC is changed
 		memcpy(storage.gw, net->gw, 4);
 	if(net->dns[0]!=0 || net->dns[1]!=0 || net->dns[2]!=0 || net->dns[3]!=0)
 		memcpy(storage.dns, net->dns, 4);
-
-	return RET_OK;
 }
 
 /**
@@ -338,13 +337,12 @@ int8 dhcp_set_storage(wiz_NetInfo *net)	// Should be updated when MAC is changed
  * - The others are used when Static mode or DHCP failed
  *
  * @param net The struct variable in which storage addresses will be returned
- * @return @b RET_OK: Success \n @b RET_NOK: Error
  */
-int8 dhcp_get_storage(wiz_NetInfo *net)
+void dhcp_get_storage(wiz_NetInfo *net)
 {
 	if(net == NULL) {
 		DBG("NULL arg");
-		return RET_NOK;
+		return;
 	}
 
 	memcpy(net->mac, storage.mac, 6);
@@ -352,8 +350,6 @@ int8 dhcp_get_storage(wiz_NetInfo *net)
 	memcpy(net->sn, storage.sn, 4);
 	memcpy(net->gw, storage.gw, 4);
 	memcpy(net->dns, storage.dns, 4);
-
-	return RET_OK;
 }
 
 /**
@@ -363,9 +359,8 @@ int8 dhcp_get_storage(wiz_NetInfo *net)
  * @param net The addresses you want to set as static addresses
  *	- NULL parameter or NULL member variable will be ignored and internal storage addresses will be used
  *		\n and these address will be returned in this net parameter (if not NULL)
- * @return @b RET_OK: Success \n @b RET_NOK: Error
  */
-int8 dhcp_static_mode(wiz_NetInfo *net)
+void dhcp_static_mode(wiz_NetInfo *net)
 {
 	di.action = DHCP_ACT_NONE;
 	SET_STATE(DHCP_STATE_INIT);
@@ -395,8 +390,6 @@ int8 dhcp_static_mode(wiz_NetInfo *net)
 
 	if(dhcp_alarm) alarm_del(dhcp_alarm_cb, -1);
 	//send_checker_NB();
-
-	return RET_OK;
 }
 
 /**
@@ -406,10 +399,8 @@ int8 dhcp_static_mode(wiz_NetInfo *net)
  *	(set USE_DHCP to VAL_ENABLE, and uncomment DHCP_AUTO define) \n
  *	and in the main loop, @ref alarm_run should be called continuously.
  * - At Static mode, it can be changed to DHCP mode through this function
- *
- * @return @b RET_OK: Success \n @b RET_NOK: Error
  */
-int8 dhcp_auto_start(void)
+void dhcp_auto_start(void)
 {
 	DBG("DHCP Start");
 	SET_STATE(DHCP_STATE_INIT);
@@ -422,7 +413,6 @@ int8 dhcp_auto_start(void)
 	// ToDo: Set zero IP & SN
 	
 	if(dhcp_alarm) alarm_set(10, dhcp_alarm_cb, 0);
-	return RET_OK;
 }
 
 static void dhcp_alarm_cb(int8 arg)	// for DHCP auto mode

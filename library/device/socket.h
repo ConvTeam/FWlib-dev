@@ -53,6 +53,18 @@ typedef enum {	// 0 is not used (zero means just ignore dhcp config this time)
 } dhcp_mode;
 
 /**
+ * Indicate member variable of @ref wiz_NetInfo.
+ * This is used as a param of @ref ClsNetInfo function.
+ */
+typedef enum {
+	//NI_MAC_ADDR,	// If need, uncomment
+	NI_IP_ADDR,
+	NI_SN_MASK,
+	NI_GW_ADDR,
+	NI_DNS_ADDR
+} netinfo_member;
+
+/**
  * Common Network Information Structure.
  * This is used for everywhere related with network config
  */
@@ -71,6 +83,7 @@ void device_init(uint8 *tx_size, uint8 *rx_size);
 void device_SW_reset(void);
 void device_mem_init(uint8 *tx_size, uint8 *rx_size);
 void SetNetInfo(wiz_NetInfo *netinfo);
+void ClsNetInfo(netinfo_member member);
 void GetNetInfo(wiz_NetInfo *netinfo);
 void GetDstInfo(uint8 s, uint8 *dstip, uint16 *dstport);
 void SetSocketOption(uint8 option_type, uint16 option_value);

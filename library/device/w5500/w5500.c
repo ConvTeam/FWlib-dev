@@ -95,19 +95,19 @@ void IINCHIP_CSoff(void)
 {
   //WIZ_CS(LOW);
   //WIZ_CS2(LOW);
-  wizspi_cs2(VAL_LOW);
+  wizspi_cs(WIZ_SPI2, VAL_LOW);
 }
 void IINCHIP_CSon(void)
 {
   //WIZ_CS(HIGH);
   //WIZ_CS2(HIGH);
-  wizspi_cs2(VAL_HIGH);
+  wizspi_cs(WIZ_SPI2, VAL_HIGH);
 }
 uint8  IINCHIP_SpiSendData(uint8 dat)
 {
   //return(SPI1_SendByte(dat));
   //return(SPI2_SendByte(dat));
-  return(wizspi_byte(dat));
+  return(wizspi_byte(WIZ_SPI2, dat));
 }
 
 
@@ -452,15 +452,6 @@ void setSUBR(uint8 * addr)
   IINCHIP_WRITE_COMMON( (WIZC_SUBR0 + 3), addr[3]);
 }
 
-void clearSUBR(void)
-{
-  IINCHIP_WRITE_COMMON((WIZC_SUBR0 + 0), 0);
-  IINCHIP_WRITE_COMMON((WIZC_SUBR0 + 1), 0);
-  IINCHIP_WRITE_COMMON((WIZC_SUBR0 + 2), 0);
-  IINCHIP_WRITE_COMMON((WIZC_SUBR0 + 3), 0);
-}
-
-
 /**
 @brief  This function sets up MAC address.
 */ 
@@ -489,14 +480,6 @@ void setSIPR(
   IINCHIP_WRITE_COMMON((WIZC_SIPR0 + 3),addr[3]);
 }
 
-void clearSIPR(void)
-{  
-  IINCHIP_WRITE_COMMON((WIZC_SIPR0 + 0), 0);
-  IINCHIP_WRITE_COMMON((WIZC_SIPR0 + 1), 0);
-  IINCHIP_WRITE_COMMON((WIZC_SIPR0 + 2), 0);
-  IINCHIP_WRITE_COMMON((WIZC_SIPR0 + 3), 0);
-}
-  
 /**
 @brief  This function sets up Source IP address.
 */

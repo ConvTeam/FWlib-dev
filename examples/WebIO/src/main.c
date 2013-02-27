@@ -136,12 +136,12 @@ static int8 mn_set_led(menu_ctrl mctrl, int8 *mbuf)
 		if(str_check(isdigit, (int8*)mbuf) == RET_OK) {
 			uint8 input = atoi((char*)mbuf);
 			if(input == 1) {
-				wizpf_led_set(WIZ_LED3, VAL_ON);
-				wizpf_led_set(WIZ_LED4, VAL_ON);
+				wizpf_led_set(WIZ_LED1, VAL_ON);
+				wizpf_led_set(WIZ_LED2, VAL_ON);
 				printf("LED On\r\n");
 			} else if(input == 2) {
-				wizpf_led_set(WIZ_LED3, VAL_OFF);
-				wizpf_led_set(WIZ_LED4, VAL_OFF);
+				wizpf_led_set(WIZ_LED1, VAL_OFF);
+				wizpf_led_set(WIZ_LED2, VAL_OFF);
 				printf("LED Off\r\n");
 			} else {
 				printf("wrong number(%d) - try again\r\n", input);
@@ -306,7 +306,7 @@ void MAC_get_func(char *buf, uint16 *len)
 
 void LED1_get_func(char *buf, uint16 *len)
 {
-	if(wizpf_led_get(WIZ_LED3) == VAL_ON){	// led on
+	if(wizpf_led_get(WIZ_LED1) == VAL_ON){	// led on
 		*len = sprintf(buf, "<input name=\"LED1\" type=\"radio\" value=\"ON\" checked>ON<input name=\"LED1\" type=\"radio\" value=\"OFF\">OFF");
 	}else{						// led off
 		*len = sprintf(buf, "<input name=\"LED1\" type=\"radio\" value=\"ON\">ON<input name=\"LED1\" type=\"radio\" value=\"OFF\" checked>OFF");
@@ -315,15 +315,15 @@ void LED1_get_func(char *buf, uint16 *len)
 void LED1_set_func(char *buf, uint16 *len)
 {
 	if(!strcmp(buf, "ON")){
-		wizpf_led_set(WIZ_LED3, VAL_ON);
+		wizpf_led_set(WIZ_LED1, VAL_ON);
 	}else{
-		wizpf_led_set(WIZ_LED3, VAL_OFF);
+		wizpf_led_set(WIZ_LED1, VAL_OFF);
 	}
 }
 
 void LED2_get_func(char *buf, uint16 *len)
 {
-	if(wizpf_led_get(WIZ_LED4) == VAL_ON){	// led on
+	if(wizpf_led_get(WIZ_LED2) == VAL_ON){	// led on
 		*len = sprintf(buf, "<input name=\"LED2\" type=\"radio\" value=\"ON\" checked>ON<input name=\"LED2\" type=\"radio\" value=\"OFF\">OFF");
 	}else{						// led off
 		*len = sprintf(buf, "<input name=\"LED2\" type=\"radio\" value=\"ON\">ON<input name=\"LED2\" type=\"radio\" value=\"OFF\" checked>OFF");
@@ -332,9 +332,9 @@ void LED2_get_func(char *buf, uint16 *len)
 void LED2_set_func(char *buf, uint16 *len)
 {
 	if(!strcmp(buf, "ON")){
-		wizpf_led_set(WIZ_LED4, VAL_ON);
+		wizpf_led_set(WIZ_LED2, VAL_ON);
 	}else{
-		wizpf_led_set(WIZ_LED4, VAL_OFF);
+		wizpf_led_set(WIZ_LED2, VAL_OFF);
 	}
 }
 
@@ -359,7 +359,7 @@ int main(void)
 	}
 
 	printf("\r\n-----------------------------------\r\n");
-	printf("Web Server using W5200\r\n");
+	printf("Web Server\r\n");
 	printf("-----------------------------------\r\n\r\n");
 
 	menu_init();
