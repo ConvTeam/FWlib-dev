@@ -1,9 +1,22 @@
+/**
+ * @file		common.h
+ * @brief		Library Common Header File.
+ * This header file influence on all library area directly
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *		2013/02/22 - 1.0 Release
+ * @author	Mike Jeong
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
 
 #ifndef _COMMON_H
 #define _COMMON_H
 
+
 #include "wizconfig.h"
 #include "common/types.h"
+
 
 //-------------------------------------- Compiler Definition --------------------------------------
 #ifdef COMPILER_IAR_EWARM
@@ -169,6 +182,17 @@
 #include "device/socket.h"
 #include "device/sockutil.h"
 #include "host/wizplatform.h"
+#if (USE_DHCP == VAL_ENABLE)
+#include "protocol/DHCP/dhcp.h"
+#else
+#define dhcp_init(sock, ip_update_hook, ip_conflict_hook, def)
+#define dhcp_manual(action, renew, rebind)
+#define dhcp_get_state()
+#define dhcp_set_storage(net)
+#define dhcp_get_storage(net)
+#define dhcp_static_mode(net)
+#define dhcp_auto_start()
+#endif
 
 //------------------------------------------- LOG ---------------------------------------------
 #if !defined(WIZ_LOG_LEVEL) || (WIZ_LOG_LEVEL < 0) || (WIZ_LOG_LEVEL > 3)
@@ -247,9 +271,9 @@
 #endif
 
 #if (WIZ_LOG_LEVEL > 0) && !defined(FILE_LOG_SILENCE)
-#define NL1	printf("\r\n");
-#define NL2	printf("\r\n\r\n");
-#define NL3	printf("\r\n\r\n\r\n");
+#define NL1	printf("\r\n")
+#define NL2	printf("\r\n\r\n")
+#define NL3	printf("\r\n\r\n\r\n")
 #else
 #define NL1
 #define NL2

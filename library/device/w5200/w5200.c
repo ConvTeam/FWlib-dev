@@ -1,4 +1,14 @@
-
+/**
+ * @file		w5200.c
+ * @brief		W5200 Abstract Layer Source File
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *		2013/02/22 - 1.0 Release
+ * @author	
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
+ 
 //#define FILE_LOG_SILENCE
 #include "common/common.h"
 //#include "device/w5200/w5200.h"
@@ -537,13 +547,7 @@ void recv_data_ignore(uint8 s, uint16 len)
 
 
 
-
-
-
-
-
-
-#define XXXXXXXXXXXX	// ??? ªË¡¶ ???
+// ToDo: Check & Remove ???
 
 /**
 @brief	Output destination IP address of appropriate channel

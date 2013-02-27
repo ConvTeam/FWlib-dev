@@ -1,13 +1,18 @@
+/**
+ * @file		w5200/socket.c
+ * @brief		TCP/IP Chip Device Driver Source File - For w5200
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *		2013/02/22 - 1.0 Release
+ * @author	modified by Mike Jeong
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
 
 //#define FILE_LOG_SILENCE
 #include "common/common.h"
 //#include "device/socket.h"
 
-
-static uint8 DNS[4]={0};
-static uint8 DHCP = 0;
-static uint16 local_port = 0xC000;	// Dynamic Port: C000(49152) ~ FFFF(65535)
-//extern uint16 sent_ptr;
 
 extern uint16 SMASK[TOTAL_SOCK_NUM]; //  Variable for Tx buffer MASK in each channel
 extern uint16 RMASK[TOTAL_SOCK_NUM]; //  Variable for Rx buffer MASK in each channel
@@ -16,15 +21,20 @@ extern uint16 RSIZE[TOTAL_SOCK_NUM]; //  Max Rx buffer size by each channel
 extern uint16 SBUFBASEADDRESS[TOTAL_SOCK_NUM]; //  Tx buffer base address by each channel
 extern uint16 RBUFBASEADDRESS[TOTAL_SOCK_NUM]; //  Rx buffer base address by each channel
 
+static uint8 DNS[4]={0};
+static dhcp_mode DHCP = NETINFO_STATIC;
+static uint16 local_port = 0xC000;	// Dynamic Port: C000(49152) ~ FFFF(65535)
+
 static uint32 tcp_close_elapse[TOTAL_SOCK_NUM] = {0,};
 static uint32 tcp_resend_elapse[TOTAL_SOCK_NUM] = {0,};
 static uint16 txrd_checker[TOTAL_SOCK_NUM];
 
 
 /**
-@brief	This function initialize the W5200.
-@return 	None.
-*/  
+ * Initialize the w5200 device
+ * @param tx_size Tx socket buffer size array
+ * @param rx_size Rx socket buffer size array
+ */  
 void device_init(uint8 *tx_size, uint8 *rx_size)
 {
 	device_SW_reset();
@@ -32,8 +42,9 @@ void device_init(uint8 *tx_size, uint8 *rx_size)
 }
 
 /**
-@brief  This function is for resetting of the iinchip. Initializes the iinchip to work in whether DIRECT or INDIRECT mode
-*/ 
+ * Reset w5200 device.
+ * Be careful to use this because after reset the device, all register will return to reset value.
+ */ 
 void device_SW_reset(void)
 { 
 	setMR( MR_RST );
@@ -42,8 +53,11 @@ void device_SW_reset(void)
 
 
 /**
-@brief  This function set the transmit & receive buffer size as per the channels
-*/ 
+ * Initialize the Tx & Rx buffer size as per the channels
+ * Normally, user does not need to use this, because this is called by @ref device_init function
+ * @param tx_size Tx socket buffer size array
+ * @param rx_size Rx socket buffer size array
+ */ 
 void device_mem_init(uint8 *tx_size, uint8 *rx_size)
 {
 	int16 i;
@@ -138,23 +152,23 @@ void device_mem_init(uint8 *tx_size, uint8 *rx_size)
 */  
 void SetNetInfo(wiz_NetInfo *ni)
 {
-	if(ni->Mac[0] != 0x00 || ni->Mac[1] != 0x00 || ni->Mac[2] != 0x00 || 
-		ni->Mac[3] != 0x00 || ni->Mac[4] != 0x00 || ni->Mac[5] != 0x00)
-		setSHAR(ni->Mac);	// set local MAC address
-	if(ni->IP[0] != 0x00 || ni->IP[1] != 0x00 || ni->IP[2] != 0x00 || ni->IP[3] != 0x00)
-		setSIPR(ni->IP);	// set local IP address
-	if(ni->SN[0] != 0x00 || ni->SN[1] != 0x00 || ni->SN[2] != 0x00 || ni->SN[3] != 0x00)
-		setSUBR(ni->SN);	// set Subnet mask
-	if(ni->GW[0] != 0x00 || ni->GW[1] != 0x00 || ni->GW[2] != 0x00 || ni->GW[3] != 0x00)
-		setGAR(ni->GW);		// set Gateway address
-	if(ni->DNS[0] != 0x00 || ni->DNS[1] != 0x00 || ni->DNS[2] != 0x00 || ni->DNS[3] != 0x00){
-		DNS[0] = ni->DNS[0];
-		DNS[1] = ni->DNS[1];
-		DNS[2] = ni->DNS[2];
-		DNS[3] = ni->DNS[3];
+	if(ni->mac[0] != 0x00 || ni->mac[1] != 0x00 || ni->mac[2] != 0x00 || 
+		ni->mac[3] != 0x00 || ni->mac[4] != 0x00 || ni->mac[5] != 0x00)
+		setSHAR(ni->mac);	// set local MAC address
+	if(ni->ip[0] != 0x00 || ni->ip[1] != 0x00 || ni->ip[2] != 0x00 || ni->ip[3] != 0x00)
+		setSIPR(ni->ip);	// set local IP address
+	if(ni->sn[0] != 0x00 || ni->sn[1] != 0x00 || ni->sn[2] != 0x00 || ni->sn[3] != 0x00)
+		setSUBR(ni->sn);	// set Subnet mask
+	if(ni->gw[0] != 0x00 || ni->gw[1] != 0x00 || ni->gw[2] != 0x00 || ni->gw[3] != 0x00)
+		setGAR(ni->gw);		// set Gateway address
+	if(ni->dns[0] != 0x00 || ni->dns[1] != 0x00 || ni->dns[2] != 0x00 || ni->dns[3] != 0x00){
+		DNS[0] = ni->dns[0];
+		DNS[1] = ni->dns[1];
+		DNS[2] = ni->dns[2];
+		DNS[3] = ni->dns[3];
 	}
 
-	if(ni->DHCP != 0) DHCP = ni->DHCP;
+	if(ni->dhcp != 0) DHCP = ni->dhcp;
 }
 
 
@@ -164,15 +178,15 @@ void SetNetInfo(wiz_NetInfo *ni)
 */  
 void GetNetInfo(wiz_NetInfo *netinfo)
 {
-	getSHAR(netinfo->Mac); // get local MAC address
-	getSIPR(netinfo->IP); // get local IP address
-	getSUBR(netinfo->SN); // get subnet mask address
-	getGAR(netinfo->GW); // get gateway address
-	netinfo->DNS[0] = DNS[0];
-	netinfo->DNS[1] = DNS[1];
-	netinfo->DNS[2] = DNS[2];
-	netinfo->DNS[3] = DNS[3];
-	netinfo->DHCP = DHCP;
+	getSHAR(netinfo->mac); // get local MAC address
+	getSIPR(netinfo->ip); // get local IP address
+	getSUBR(netinfo->sn); // get subnet mask address
+	getGAR(netinfo->gw); // get gateway address
+	netinfo->dns[0] = DNS[0];
+	netinfo->dns[1] = DNS[1];
+	netinfo->dns[2] = DNS[2];
+	netinfo->dns[3] = DNS[3];
+	netinfo->dhcp = DHCP;
 }
 
 void GetDstInfo(uint8 s, uint8 *dstip, uint16 *dstport)

@@ -1,23 +1,50 @@
+/**
+ * @file		util.h
+ * @brief		Common Utility Function Set Source File
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *		2013/02/22 - 1.0 Release
+ * @author	Mike Jeong
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
 
 #ifndef _UTIL_H
 #define _UTIL_H
 
 //#include "common/common.h"
 
-#define MEM_FREE(mem_p) do{if(mem_p){free(mem_p);mem_p = NULL;}}while(0)
+/**
+ * @def MEM_FREE
+ * If pointer is not NULL, free it and set to NULL
+ * @def BITSET
+ * Set bit in variable
+ * @def BITCLR
+ * Clear bit in variable
+ * @typedef void_func
+ * General purpose void function form
+ * @typedef alarm_cbfunc
+ * Alarm call back function form 
+ * @typedef long2char
+ * General purpose type change union (32bit <-> 8bit)
+ * @typedef short2char
+ * General purpose type change union (16bit <-> 8bit)
+ */
+#define MEM_FREE(mem_p) do{ if(mem_p) { free(mem_p); mem_p = NULL; } }while(0)
 #define BITSET(var_v, bit_v) (var_v |= bit_v)
 #define BITCLR(var_v, bit_v) (var_v &= ~(bit_v))
 
-typedef void (*pFunc)(void);
+typedef void (*void_func)(void);
 typedef void (*alarm_cbfunc)(int8 arg);
-typedef union _var_l2c {
-	uint32	l;
-	uint8	c[4];
-}var_l2c;
-typedef union _var_s2c {
+typedef union long2char_t {
+	uint32	byte4;
+	uint8	byte1[4];
+} long2char;
+
+typedef union short2char_t {
 	uint16	s;
 	uint8	c[2];
-}var_s2c;
+} short2char;
 
 
 int8 alarm_set(uint32 time, alarm_cbfunc cb, int8 arg);
