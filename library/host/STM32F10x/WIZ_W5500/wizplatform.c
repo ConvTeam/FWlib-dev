@@ -1,3 +1,13 @@
+/**
+ * @file		WIZ_W5500/wizplatform.c
+ * @brief		Platform Specific Function Source File - For W5500 Evaluation Board
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *		2013/02/22 - 1.0 Release
+ * @author	Mike Jeong
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
 
 //#define FILE_LOG_SILENCE
 #include "common/common.h"
@@ -5,7 +15,7 @@
 
 extern void EXTI_IMR_EMR_enable(void);
 
-__IO uint32 msTicks = 0;	// 최대값은 대략 50일 정도
+__IO uint32 msTicks = 0;	// Max: about 50 days
 
 #define USART1_RX_INTERRUPT VAL_ENABLE
 #define SYSTICK_HZ			1000
@@ -21,7 +31,7 @@ int8 u1rx_buf[U1RX_BUF_SIZE];
 int16 u1rx_wr=0, u1rx_rd=0;
 void USART1_IRQHandler(void)	// USART1 ISR
 {
-	if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET) {		//
+	if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET) {
 		USART_ClearITPendingBit(USART1, USART_IT_RXNE);
 		if( (u1rx_wr > u1rx_rd && u1rx_wr-u1rx_rd >= U1RX_BUF_SIZE-1) ||
 			(u1rx_wr < u1rx_rd && u1rx_rd == u1rx_wr+1) )	// Buffer Overflow
@@ -32,9 +42,6 @@ void USART1_IRQHandler(void)	// USART1 ISR
 			USART_SendData(USART1, (uint8)'@');
 			return;
 		}
-		//uint16_t kkk = USART_ReceiveData(USART1);
-		//for(int ii=0; ii<15; ii++) 
-		//printf("%x ", kkk);
 		u1rx_buf[u1rx_wr] = (int8)USART_ReceiveData(USART1);
 		if(u1rx_wr < U1RX_BUF_SIZE-1) u1rx_wr++;
 		else u1rx_wr = 0;
@@ -65,13 +72,13 @@ int8 platform_init(void)
 		ERR("wizspi_init fail");
 		return RET_NOK;
 	}
-       
-	device_HW_reset();       
+
+	device_HW_reset();
 	DEVICE_INIT_WITH_MEMCHK(tx_size, rx_size);
-       
+
 	wizpf_led_set(WIZ_LED3, VAL_ON);	// LED3 and LED4 On by default
 	wizpf_led_set(WIZ_LED4, VAL_ON);
-       
+
 	return RET_OK;
 }
 
@@ -121,7 +128,7 @@ uint32 wizpf_tick_conv(bool istick2sec, uint32 tickorsec)
 	else return tickorsec * SYSTICK_HZ;	// seconds to tick
 }
 
-int32 wizpf_tick_elapse(uint32 tick)	// + 지난 시간, - 다가올 시간
+int32 wizpf_tick_elapse(uint32 tick)	// + elapsed time, - Remaining time
 {
 	uint32 cur = wizpf_get_systick();
 

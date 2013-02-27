@@ -1,9 +1,18 @@
+/**
+ * @file		cmdrun.h
+ * @brief		AT Command Module - Implementation Part Header File
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *		2013/02/22 - 1.0 Release
+ * @author	Mike Jeong
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
 
 #ifndef	_CMDRUN_H
 #define	_CMDRUN_H
 
 #include "common/common.h"
-#include "protocol/DHCP/dhcp.h"
 
 
 #define RET_DONE		2
@@ -92,9 +101,9 @@ struct atc_info {
 	uint16 sendlen;
 	uint16 recvlen;
 	int8 echo;
-	int8 mode;	// 일단 변수만 만들어 둠
+	int8 mode;		// Reserved
 	int8 poll;
-	int8 country;	// 일단 변수만 만들어 둠
+	int8 country;	// Reserved
 };
 
 extern struct atc_info atci;

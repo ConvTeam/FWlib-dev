@@ -1,15 +1,26 @@
+/**
+ * @file		socket.h
+ * @brief		TCP/IP Chip Device Driver Header File - Common
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *		2013/02/22 - 1.0 Release
+ * @author	modified by Mike Jeong
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
 
 #ifndef	_SOCKET_H
 #define	_SOCKET_H
 
 //#include "common/common.h"
 
+
 #define SOCKSTAT_CLOSED			-1
 #define SOCKSTAT_INIT			0
 #define SOCKSTAT_LISTEN			1
 #define SOCKSTAT_SYNSENT		2
 #define SOCKSTAT_SYNRECV		3
-#define SOCKSTAT_ESTABLISHED	        4
+#define SOCKSTAT_ESTABLISHED	4
 #define SOCKSTAT_FIN_WAIT		5
 #define SOCKSTAT_CLOSING		6
 #define SOCKSTAT_TIME_WAIT		7
@@ -21,40 +32,44 @@
 #define SOCKERR_NOT_TCP			-2
 #define SOCKERR_NOT_UDP			-3
 #define SOCKERR_WRONG_ARG		-4
-#define SOCKERR_WRONG_STATUS	        -5
+#define SOCKERR_WRONG_STATUS	-5
 #define SOCKERR_CLOSED			-6
 #define SOCKERR_CLOSE_WAIT		-7
 #define SOCKERR_FIN_WAIT		-8
-#define SOCKERR_NOT_ESTABLISHED	        -9
+#define SOCKERR_NOT_ESTABLISHED	-9
 #define SOCKERR_WINDOW_FULL		-10
 #define SOCKERR_TIME_OUT		-11
 #define SOCKERR_NULL_SRC_IP		-12
-#define SOCKERR_BUF_NOT_ENOUGH	        -13
-#define SOCKERR_NOT_SPECIFIED	        -14
+#define SOCKERR_BUF_NOT_ENOUGH	-13
+#define SOCKERR_NOT_SPECIFIED	-14
 
-#define MAX_BUF_SIZE			1460		// ??
-#define KEEP_ALIVE_TIME			30	// 30sec // ??
+/**
+ * DHCP mode value of @ref wiz_NetInfo.
+ * 'dhcp' member variable of wiz_NetInfo struct can have one of these value
+ */
+typedef enum {	// 0 is not used (zero means just ignore dhcp config this time)
+	NETINFO_STATIC = 1,	///< Indicate DHCP is disabled.
+	NETINFO_DHCP,		///< Indicate DHCP is working.
+} dhcp_mode;
 
-#define NETINFO_STATIC			1
-#define NETINFO_DHCP_BUSY		2
-#define NETINFO_DHCP_STABLE		3
-#define NETINFO_DHCP_FAIL		4
-
-typedef struct _wiz_NetInfo
+/**
+ * Common Network Information Structure.
+ * This is used for everywhere related with network config
+ */
+typedef struct wiz_NetInfo_t
 {
-	uint8 Mac[6];
-	uint8 IP[4];
-	uint8 SN[4];
-	uint8 GW[4];
-	uint8 DNS[4];
-	uint8 DHCP;
+	uint8 mac[6];		///< MAC Address variable
+	uint8 ip[4];		///< IPv4 Address variable
+	uint8 sn[4];		///< Subnet Mask variable
+	uint8 gw[4];		///< Gateway Address variable
+	uint8 dns[4];		///< DNS Address variable
+	dhcp_mode dhcp;		///< DHCP mode variable (See:@ref dhcp_mode)
 } wiz_NetInfo;
 
 
 void device_init(uint8 *tx_size, uint8 *rx_size);
 void device_SW_reset(void);
 void device_mem_init(uint8 *tx_size, uint8 *rx_size);
-
 void SetNetInfo(wiz_NetInfo *netinfo);
 void GetNetInfo(wiz_NetInfo *netinfo);
 void GetDstInfo(uint8 s, uint8 *dstip, uint16 *dstport);

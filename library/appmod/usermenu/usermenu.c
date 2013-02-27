@@ -1,3 +1,13 @@
+/**
+ * @file		usermenu.c
+ * @brief		User Menu (Terminal) Module Source File
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *		2013/02/22 - 1.0 Release
+ * @author	Mike Jeong
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
 
 //#define FILE_LOG_SILENCE
 #include "appmod/usermenu/usermenu.h"
@@ -18,6 +28,10 @@ struct menu_info {
 struct menu_item mtree[MAX_MENU_COUNT];
 struct menu_info mi;
 
+
+/**
+ * Initialize Usermenu Module.
+ */
 void menu_init(void)
 {
 	memset(mtree, 0, sizeof(mtree));
@@ -25,9 +39,17 @@ void menu_init(void)
 	mi.cur = 0;
 }
 
+/**
+ * Add Usermenu.
+ * @param desc Brief which will be displayed
+ * @param parent Parent menu index. \n - Root index is 0 
+ *		\n - A return value of this function can be used
+ * @param mfunc The Callback function which will be called when user input enter key
+ * @return @b >0: Registered menu index (this can be used as parent number) 
+ *		\n @b RET_NOK: Error
+ */
 int8 menu_add(int8 *desc, int8 parent, menu_func mfunc)
 {
-	// null 함수인 parent에 추가 하면 하위메뉴가 생김, parent가 0이면 최상위임, 그러므로 index는 1부터 시작임
 	int32 len;
 
 	if(desc == NULL) {
@@ -57,9 +79,14 @@ int8 menu_add(int8 *desc, int8 parent, menu_func mfunc)
 	mtree[mi.total].mfunc = mfunc;
 	mi.total++;
 
-	return mi.total; // 메뉴 인덱스를 리턴
+	return mi.total;
 }
 
+/**
+ * Print Current Registered Menu.
+ * 
+ * This is for Debug or Check
+ */
 void menu_print_tree(void)
 {
 	uint8 i;
@@ -74,6 +101,11 @@ void menu_print_tree(void)
 	printf("=========================================\r\n");
 }
 
+/**
+ * Usermenu Handler
+ * 
+ * This function should be run under main loop.
+ */
 void menu_run(void)
 {
 	int8 recv_char;
@@ -84,12 +116,10 @@ void menu_run(void)
 	static uint8 depth = 1, buf_len = 0;
 
 	recv_char = (int8)getchar_nonblk();
-	if(recv_char == RET_NOK) return; // 입력 값 없는 경우	printf("RECV: 0x%x\r\n", recv_char);
-
+	if(recv_char == RET_NOK) return;	//printf("RECV: 0x%x\r\n", recv_char);
 	//PUTCHAR('\n');PUTCHAR('-');PUTCHAR('-');PUTCHAR('-');PUTCHAR('-');PUTCHAR('-');PUTCHAR('-');PUTCHAR('\n');
 
-	if(isgraph(recv_char) == 0) {	// 제어 문자 처리
-//printf("ctrl\r\n");
+	if(isgraph(recv_char) == 0) {	//printf("ctrl\r\n");
 		switch(recv_char) {
 		case 0x0a:
 			break;
@@ -124,32 +154,26 @@ void menu_run(void)
 			break;
 		}
 
-	} else if(buf_len < CMD_BUF_SIZE-1){	// -1 이유 : 0 이 하나 필요하므로 
-		buf[buf_len++] = (uint8_t)recv_char;
-//buf[buf_len] = 0;
-		PUTCHAR(recv_char);
-//printf(" buf(%c, %s)\r\n", recv_char, buf);
+	} else if(buf_len < CMD_BUF_SIZE-1){
+		buf[buf_len++] = (uint8_t)recv_char;	//buf[buf_len] = 0;
+		PUTCHAR(recv_char);	//printf(" buf(%c, %s)\r\n", recv_char, buf);
 	} else {
 		printf("input buffer stuffed\r\n");
 	}
 
-	if(recv_char != 0x0d && recv_char != 0x7f) return;		//LOGA("Command: %s", buf);
-
-//printf("\r\n~~~~~\r\n");
-	if(mi.cur == 0 || mtree[mi.cur-1].mfunc == NULL) {	// 루트거나 NULL Func(폴더)인 경우
+	if(recv_char != 0x0d && recv_char != 0x7f) return;		//LOGA("Command: %s", buf);//printf("\r\n~~~~~\r\n");
+	if(mi.cur == 0 || mtree[mi.cur-1].mfunc == NULL) {
 		if(buf_len != 0) {
-			if(str_check(isdigit, buf) == RET_OK) {
-//printf("----------digit(%d)\r\n", atoi(buf));
+			if(str_check(isdigit, buf) == RET_OK) {//printf("----------digit(%d)\r\n", atoi(buf));
 				tmp8 = atoi((char*)buf);
 				for(i=0; i<mi.total; i++) {
-					if(mi.cur == mtree[i].parent) {
-//printf("----------i(%d)\r\n", i);	
+					if(mi.cur == mtree[i].parent) {//printf("----------i(%d)\r\n", i);	
 						if(tmp8 == 1) break;
 						else tmp8--;
 					}
 				}
 
-				if(i < mi.total) {			//DBGA("----------set cur(%d)", tmp8);
+				if(i < mi.total) {		//DBGA("----------set cur(%d)", tmp8);
 					cnt = mi.cur;
 					mi.cur = i+1;
 					if(mtree[mi.cur-1].mfunc) {
@@ -188,10 +212,8 @@ void menu_run(void)
 		}
 	} else {
 		ret = mtree[mi.cur-1].mfunc(MC_DATA, buf);
-		if(ret != RET_OK) {
-			//printf("process continue\r\n");
-		} else {
-			//printf("process done\r\n");
+		if(ret != RET_OK) {			//printf("process continue\r\n");
+		} else {			//printf("process done\r\n");
 			mtree[mi.cur-1].mfunc(MC_END, buf);
 			mi.cur = mtree[mi.cur-1].parent;
 			depth--;

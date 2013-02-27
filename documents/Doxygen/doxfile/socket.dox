@@ -1,0 +1,124 @@
+
+/**
+ * @def SOCKSTAT_CLOSED
+ * Indicate the socket is closed state.
+ * It is the status that resource of SOCKETn is released. When
+ * DISCON or CLOSE command is performed, or ARPTO, or TCPTO
+ * occurs, it is changed to SOCK_CLOSED regardless of previous value.
+ * @def SOCKSTAT_INIT
+ * Indicate the socket is init state.
+ * It is shown in case that Sn_MR is set as TCP and OPEN
+ * commands are given to Sn_CR. It is changed to SOCK_INIT
+ * when Sn_MR (P3:P0) is Sn_MR_TCP and OPEN command is
+ * performed. It is the initial step of TCP connection establishment.
+ * It is possible to perform LISTEN command at the "TCP
+ * SERVER" mode and CONNECT command at the "TCP CLIENT".
+ * It is the status that SOCKETn operates as "TCP SERVER" and
+ * waits for connect-request (SYN packet) from "TCP CLIENT".
+ * @def SOCKSTAT_LISTEN
+ * Indicate the socket is listen state.
+ * Socket n operates in TCP Server Mode and waits for a
+ * connection-request (SYN packet) from a ¡°TCP CLIENT¡±.
+ * When the LISTEN command is used, the stage changes to SOCK_LISTEN
+ * Once the connection is established, the SOCKET state
+ * changes from SOCK_LISTEN to SOCK_ESTABLISHED; however,
+ * if the connection fails, TCPTO occurs (Sn_IR(TIME_OUT) ='1') and 
+ * the state changes to SOCK_CLOSED.
+ * @def SOCKSTAT_SYNSENT
+ * Indicate the socket is syn-sent state (momentary state).
+ * This status indicates that a connect-request (SYN packet) is
+ * sent to a "TCP SERVER". This status shows changing process
+ * from SOCK_INIT to SOCK_ESTABLISHED by CONNECT
+ * command. At this status, if connect-accept (SYN/ACK packet) 
+ * is received from "TCP SERVER", it is automatically
+ * changed to SOCK_ ESTBLISHED. If SYN/ACK packet is not
+ * received from the "TCP SERVER" before TCPTO occurs
+ * (Sn_IR(TIMEOUT)=¡®1¡¯), it is changed to SOCK_CLOSED.
+ * @def SOCKSTAT_SYNRECV
+ * Indicate the socket is syn-received state (momentary state).
+ * This status indicate that a connect-request(SYN packet) is
+ * received from a "TCP CLIENT". It is automatically changed
+ * to SOCK_ESTABLISHED when W5200 successfully transmits
+ * connect-accept (SYN/ACK packet) to the "TCP CLIENT". 
+ * If it is failed, TCPTO occurs (Sn_IR(TIMEOUT)=¡®1¡¯), 
+ * and it is changed to SOCK_CLOSED
+ * @def SOCKSTAT_ESTABLISHED
+ * Indicate the socket is established state.
+ * It is shown in case that connection is established. 
+ * It is changed to SOCK_ESTABLISHED when SYN packet from
+ * "TCP CLIENT" is successfully processed at the SOCK_LISTEN, or
+ * CONNECTS command is successfully performed. At this status, 
+ * DATA packet can be transferred, that is, SEND or RECV command 
+ * can be performed.
+ * @def SOCKSTAT_FIN_WAIT
+ * Indicate the socket is finish-wait state (momentary state).
+ * These status shows that Socket n is closed. It is observed
+ * in the disconnect-process of active close or passive close. 
+ * It is changed to SOCK_CLOSED, when disconnect-process is
+ * successfully finished or TCPTO occurs (Sn_IR (TIMEOUT)='1').
+ * @def SOCKSTAT_CLOSING
+ * Indicate the socket is closing state (momentary state).
+ * These status shows that Socket n is closed. It is observed
+ * in the disconnect-process of active close or passive close. 
+ * It is changed to SOCK_CLOSED, when disconnect-process is
+ * successfully finished or TCPTO occurs (Sn_IR (TIMEOUT) ='1').
+ * @def SOCKSTAT_TIME_WAIT
+ * Indicate the socket is time-wait state (momentary state).
+ * These status shows that Socket n is closed. It is oserved
+ * in the disconnect-process of active close or passive close. It
+ * is changed to SOCK_CLOSED, when disconnect-process is
+ * successfully finished or TCPTO occurs (Sn_IR (TIMEOUT)='1').
+ * @def SOCKSTAT_CLOSE_WAIT
+ * Indicate the socket is close-wait state (momentary state).
+ * It is the status that disconnect-request (FIN packet) is received 
+ * from the peer As TCP connection is half-closed, it is possible 
+ * to transfer data packet. In order to complete the TCP disconnection, 
+ * DISCON command should be performed.
+ * For SOCKETn close without disconnection-process, CLOSE
+ * command should be just performed.
+ * @def SOCKSTAT_LAST_ACK
+ * Indicate the socket is last-ack state (momentary state).
+ * These status shows that Socket n is closed. It is observed
+ * in the disconnect-process of active close or passive close.
+ * It is changed to SOCK_CLOSED, when disconnect-process 
+ * is successfully finished or TCPTO occurs (Sn_IR (TIMEOUT)='1').
+ * @def SOCKSTAT_UDP
+ * Indicate the socket is opened as UDP.
+ * It is the status that SOCKETn is open as UDP mode. It is
+ * changed to SOCK_UDP when Sn_MR(P3:P0) is Sn_MR_UDP
+ * and OPEN command is performed. DATA packet can be
+ * transferred without connection that is necessary to TCP mode SOCKET.
+ *
+ * @def SOCKERR_BUSY
+ * Error because the socket is busy
+ * @def SOCKERR_NOT_TCP
+ * Error because the socket is not opened as TCP
+ * @def SOCKERR_NOT_UDP
+ * Error because the socket is not opened as UDP
+ * @def SOCKERR_WRONG_ARG
+ * Error because the parameter is wrong
+ * @def SOCKERR_WRONG_STATUS
+ * Error because the socket is unknown state
+ * @def SOCKERR_CLOSED
+ * Error because the socket is closed state
+ * @def SOCKERR_CLOSE_WAIT
+ * Error because the socket is close wait state
+ * @def SOCKERR_FIN_WAIT
+ * Error because the socket is fin wait state
+ * @def SOCKERR_NOT_ESTABLISHED
+ * Error because the socket is not established state
+ * @def SOCKERR_WINDOW_FULL
+ * Error because of network window full
+ * @def SOCKERR_TIME_OUT
+ * Error because of time out
+ * @def SOCKERR_NULL_SRC_IP
+ * Error because source IP is wrong
+ * @def SOCKERR_BUF_NOT_ENOUGH
+ * Error because buffer is not enough
+ * @def SOCKERR_NOT_SPECIFIED
+ * Error because of not specified reason
+ */
+ 
+
+
+

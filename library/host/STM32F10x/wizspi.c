@@ -1,3 +1,13 @@
+/**
+ * @file		wizspi.c
+ * @brief		SPI Adaptation Layer Source File - For STM32F10x
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *		2013/02/22 - 1.0 Release
+ * @author	Mike Jeong
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
 
 //#define FILE_LOG_SILENCE
 #include "host/wizspi.h"

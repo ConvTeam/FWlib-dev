@@ -1,6 +1,17 @@
+/**
+ * @file		dhcp.c
+ * @brief		DHCP Protocol Module Source File
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *		2013/02/22 - 1.0 Release
+ * @author	modified by Mike Jeong
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
 
 //#define FILE_LOG_SILENCE
-#include "protocol/DHCP/dhcp.h"
+#include "common/common.h"
+//#include "protocol/DHCP/dhcp.h"
 
 
 #define	DHCP_SERVER_PORT		67	// from server to client
@@ -30,7 +41,7 @@
 #define DHCP_RETRY_DELAY		5000	// tick
 //#define DHCP_INTERVAL_OPEN_RETRY	1000	// tick
 //#define DHCP_RECV_WAIT_TIME		3000	// tick
-#define DHCP_OPEN_DELAY			0	// tick
+#define DHCP_OPEN_DELAY			0		// tick
 #define DHCP_SEND_RETRY_COUNT	3
 
 #define IS_IP_SET(ip_p) (ip_p[0]+ip_p[1]+ip_p[2]+ip_p[3] != 0)
@@ -40,7 +51,7 @@
 	di.state = _new_state; \
 } while(0)
 
-enum {	//brief	DHCP option and value (cf. RFC1533) 
+enum {	//DHCP option and value (cf. RFC1533) 
 	padOption				= 0,
 	subnetMask				= 1,
 	timerOffset				= 2,
@@ -127,17 +138,15 @@ struct dhcp_msg {
 struct dhcp_info {
 	uint8 srv_ip[4];		// Server IP Address -	get from DHCP packet
 	uint8 srv_ip_real[4];	// Real Server IP Address - get from UDP info
-	//uint8 assigned_ip[4];	// Old Souce IP Address - previous source IP which will be used for internal ip update check
-
 	uint8 sock;
-	uint8 state;
-	uint8 action;
+	dhcp_state state;
+	dhcp_action action;
 	uint32 lease_time;
 	uint32 renew_time;
 	uint32 rebind_time;
 	uint32 xid;
-	pFunc ip_update;
-	pFunc ip_conflict;
+	void_func ip_update;
+	void_func ip_conflict;
 };
 
 static void dhcp_alarm_cb(int8 arg);	// for alarm mode;
@@ -158,28 +167,38 @@ static struct dhcp_info di;
 static struct dhcp_msg dm;
 static bool dhcp_alarm = FALSE;
 static bool dhcp_async = FALSE;
-//static bool   dhcp_run_wait = FALSE;
 static uint8  dhcp_run_cnt = 0;
 static uint32 dhcp_run_tick = 0;
 
-int8 dhcp_init(uint8 sock, pFunc ip_update_hook, pFunc ip_conflict_hook, wiz_NetInfo *def)
+/**
+ * Initialize DHCP module.
+ * This should be called just one time at first time
+ *
+ * @param sock Socket number to use
+ * @param ip_update_hook Callback function for IP-update hooking
+ * @param ip_conflict_hook Callback function for IP-conflict hooking (Not implemented yet)
+ * @param def Default Address to set
+ * @return @b RET_OK: Success \n @b RET_NOK: Error
+ */
+int8 dhcp_init(uint8 sock, void_func ip_update_hook, void_func ip_conflict_hook, wiz_NetInfo *def)
 {
 	if(sock >= TOTAL_SOCK_NUM) {
 		ERRA("wrong socket number(%d)", sock);
 		return RET_NOK;
 	}
 
-#ifdef DHCP_ALARM
-		dhcp_alarm = TRUE;
+#ifdef DHCP_AUTO
+	dhcp_alarm = TRUE;
 #endif
 #ifdef DHCP_ASYNC
-		dhcp_async = TRUE;
+	dhcp_async = TRUE;
 #endif
 
-	memset(&di, 0, sizeof(di));	//memset(&workinfo, 0, sizeof(workinfo));
-	memcpy(&storage, def, sizeof(storage));	//memcpy(workinfo.Mac, storage.Mac, 6);
+	memset(&di, 0, sizeof(di));
+	memcpy(&storage, def, sizeof(storage));
 	memset(&workinfo, 0, sizeof(workinfo));
-	memcpy(workinfo.Mac, storage.Mac, 6);
+	memcpy(workinfo.mac, storage.mac, 6);
+	workinfo.dhcp = NETINFO_STATIC;
 	SetNetInfo(&workinfo);
 	di.xid = 0x12345678;
 	di.sock = sock;
@@ -197,27 +216,41 @@ int8 dhcp_init(uint8 sock, pFunc ip_update_hook, pFunc ip_conflict_hook, wiz_Net
 	return RET_OK;
 }
 
-int8 dhcp_manual(int8 action, uint8 *saved_ip, uint32 *renew, uint32 *rebind)	// blocking function
+/**
+ * DHCP manual mode handler.
+ * - Blocking Function
+ * - Used only at DHCP manual mode (DHCP mode could be chosen at wizconfig.h file)
+ * - DHCP_MANUAL mode does not need a loop structure, but if there is no loop structure, \n
+ *    you should handle renew & rebind with your own way, or just ignore renew & rebind action
+ *
+ * @param action The action you want to do. (@ref dhcp_action)
+ * @param renew For returning renew time when DHCP be bound (NULL will be ignored)
+ * @param rebind For returning rebind time when DHCP be bound (NULL will be ignored)
+ * @return @b RET_OK: Success \n @b RET_NOK: Error
+ */
+int8 dhcp_manual(dhcp_action action, uint32 *renew, uint32 *rebind)	// blocking function
 {
-	int8 curstt = dhcp_get_state();
+	dhcp_state curstt = di.state;
 
 	if(dhcp_alarm == TRUE) return RET_NOK;
 
-	while(curstt != DHCP_STATE_INIT && curstt != DHCP_STATE_BOUND) {	// 어중간한 상황이면 좀 더 돌려준다
+	while(curstt != DHCP_STATE_INIT && curstt != DHCP_STATE_BOUND) {
 		dhcp_run();
-		curstt = dhcp_get_state();
+		curstt = di.state;
 	}
 
-	if(curstt == DHCP_STATE_INIT) {		// INIT상태이면
+	if(curstt == DHCP_STATE_INIT) {
 		di.action = DHCP_ACT_START;
 		memset(&workinfo, 0, sizeof(workinfo));
-		if(saved_ip) memcpy(workinfo.IP, saved_ip, 4);
-		workinfo.DHCP = NETINFO_DHCP_BUSY;
+		workinfo.dhcp = NETINFO_DHCP;
 		SetNetInfo(&workinfo);
-		do {	// 돌려준다
+		
+		// ToDo: Set zero IP & SN
+		
+		do {
 			dhcp_run();
-			curstt = dhcp_get_state();
-		} while((curstt != DHCP_STATE_INIT || workinfo.DHCP == NETINFO_DHCP_BUSY) 
+			curstt = di.state;
+		} while((curstt != DHCP_STATE_INIT || di.action != DHCP_ACT_START) 
 			&& curstt != DHCP_STATE_BOUND);
 		if(curstt != DHCP_STATE_BOUND) return RET_NOK;
 		if(renew) *renew = di.renew_time;
@@ -239,10 +272,10 @@ int8 dhcp_manual(int8 action, uint8 *saved_ip, uint32 *renew, uint32 *rebind)	//
 			ERRA("wrong action(%d)", action);
 			return RET_NOK;
 		}
-		curstt = dhcp_get_state();
-		while(curstt != DHCP_STATE_INIT && curstt != DHCP_STATE_BOUND) {	// 돌려준다
+		curstt = di.state;
+		while(curstt != DHCP_STATE_INIT && curstt != DHCP_STATE_BOUND) {
 			dhcp_run();
-			curstt = dhcp_get_state();
+			curstt = di.state;
 		}
 		if(curstt != DHCP_STATE_BOUND) return RET_NOK;
 		if(renew) *renew = di.renew_time;
@@ -252,32 +285,61 @@ int8 dhcp_manual(int8 action, uint8 *saved_ip, uint32 *renew, uint32 *rebind)	//
 	return RET_OK;
 }
 
-int8 dhcp_get_state(void)
+/**
+ * Return current DHCP state.
+ * @return DHCP state enum value (@ref dhcp_state)
+ */
+dhcp_state dhcp_get_state(void)
 {
 	return di.state;
 }
 
-int8 dhcp_set_storage(wiz_NetInfo *net)	// MAC수정 시 반드시 업데이트 할 것 (아니면 dhcp시 문제)
+/**
+ * Update DHCP default address storage.
+ * You can update DHCP internal address storage through this
+ *	- Normally, don't need to use this function except MAC address changed case
+ *	- MAC address of the storage is used when DHCP action (on the send packet)
+ *	- The others are used when Static mode or DHCP failed
+ *
+ * @param net The addresses you want to set at default address storage
+ *	- All zero address (like 0.0.0.0 or 0:0:0:0:0:0) will be ignored \n 
+ *		and be returned with address set formerly in it for reference
+ *	- Member variable DHCP is not used (just ignored)
+ * @return @b RET_OK: Success \n @b RET_NOK: Error
+ * @see @ref wiz_NetInfo, @ref dhcp_get_storage
+ * @warning You should update MAC address when chip MAC address is changed.
+ *		\n If not, DHCP send packet will have wrong MAC address.
+ */
+int8 dhcp_set_storage(wiz_NetInfo *net)	// Should be updated when MAC is changed
 {
 	if(net == NULL) {
 		DBG("NULL arg");
 		return RET_NOK;
 	}
 
-	if(net->Mac[0]!=0 || net->Mac[1]!=0 || net->Mac[2]!=0 || net->Mac[3]!=0 || 
-		net->Mac[2]!=0 || net->Mac[3]!=0) memcpy(storage.Mac, net->Mac, 6);
-	if(net->IP[0]!=0 || net->IP[1]!=0 || net->IP[2]!=0 || net->IP[3]!=0)
-		memcpy(storage.IP, net->IP, 4);
-	if(net->SN[0]!=0 || net->SN[1]!=0 || net->SN[2]!=0 || net->SN[3]!=0)
-		memcpy(storage.SN, net->SN, 4);
-	if(net->GW[0]!=0 || net->GW[1]!=0 || net->GW[2]!=0 || net->GW[3]!=0)
-		memcpy(storage.GW, net->GW, 4);
-	if(net->DNS[0]!=0 || net->DNS[1]!=0 || net->DNS[2]!=0 || net->DNS[3]!=0)
-		memcpy(storage.DNS, net->DNS, 4);
+	if(net->mac[0]!=0 || net->mac[1]!=0 || net->mac[2]!=0 || net->mac[3]!=0 || 
+		net->mac[2]!=0 || net->mac[3]!=0) memcpy(storage.mac, net->mac, 6);
+	if(net->ip[0]!=0 || net->ip[1]!=0 || net->ip[2]!=0 || net->ip[3]!=0)
+		memcpy(storage.ip, net->ip, 4);
+	if(net->sn[0]!=0 || net->sn[1]!=0 || net->sn[2]!=0 || net->sn[3]!=0)
+		memcpy(storage.sn, net->sn, 4);
+	if(net->gw[0]!=0 || net->gw[1]!=0 || net->gw[2]!=0 || net->gw[3]!=0)
+		memcpy(storage.gw, net->gw, 4);
+	if(net->dns[0]!=0 || net->dns[1]!=0 || net->dns[2]!=0 || net->dns[3]!=0)
+		memcpy(storage.dns, net->dns, 4);
 
 	return RET_OK;
 }
 
+/**
+ * Return DHCP default address storage.
+ * - This may be different from real address device, because this is just default value.
+ * - MAC address of the storage is used when DHCP action (on the send packet)
+ * - The others are used when Static mode or DHCP failed
+ *
+ * @param net The struct variable in which storage addresses will be returned
+ * @return @b RET_OK: Success \n @b RET_NOK: Error
+ */
 int8 dhcp_get_storage(wiz_NetInfo *net)
 {
 	if(net == NULL) {
@@ -285,85 +347,97 @@ int8 dhcp_get_storage(wiz_NetInfo *net)
 		return RET_NOK;
 	}
 
-	memcpy(net->Mac, storage.Mac, 6);
-	memcpy(net->IP, storage.IP, 4);
-	memcpy(net->SN, storage.SN, 4);
-	memcpy(net->GW, storage.GW, 4);
-	memcpy(net->DNS, storage.DNS, 4);
+	memcpy(net->mac, storage.mac, 6);
+	memcpy(net->ip, storage.ip, 4);
+	memcpy(net->sn, storage.sn, 4);
+	memcpy(net->gw, storage.gw, 4);
+	memcpy(net->dns, storage.dns, 4);
 
 	return RET_OK;
 }
 
+/**
+ * Change DHCP mode to Static.
+ * Even though DHCP was enabled, it can be changed to Static mode through this function
+ *
+ * @param net The addresses you want to set as static addresses
+ *	- NULL parameter or NULL member variable will be ignored and internal storage addresses will be used
+ *		\n and these address will be returned in this net parameter (if not NULL)
+ * @return @b RET_OK: Success \n @b RET_NOK: Error
+ */
 int8 dhcp_static_mode(wiz_NetInfo *net)
 {
-	wiz_NetInfo cur;
-
-	if(net == NULL) {
-		DBG("NULL arg");
-		return RET_NOK;
-	}
-
-	GetNetInfo(&cur);
-	if(cur.DHCP == NETINFO_STATIC) {
-		DBG("Already Static Mode");
-		return RET_NOK;
-	}
 	di.action = DHCP_ACT_NONE;
 	SET_STATE(DHCP_STATE_INIT);
 
-	// 입력된 값을 기존 값에 업데이트 & 빈 값은 기존 값 가져와서 설정하기
-	if(net->IP[0]!=0 || net->IP[1]!=0 || net->IP[2]!=0 || net->IP[3]!=0)
-		memcpy(storage.IP, net->IP, 4);		// dhcp_fail, static에서 사용하는 si를 설정
-	else memcpy(net->IP, storage.IP, 4);
-	if(net->SN[0]!=0 || net->SN[1]!=0 || net->SN[2]!=0 || net->SN[3]!=0)
-		memcpy(storage.SN, net->SN, 4);
-	else memcpy(net->SN, storage.SN, 4);
-	if(net->GW[0]!=0 || net->GW[1]!=0 || net->GW[2]!=0 || net->GW[3]!=0)
-		memcpy(storage.GW, net->GW, 4);
-	else memcpy(net->GW, storage.GW, 4);
-	if(net->DNS[0]!=0 || net->DNS[1]!=0 || net->DNS[2]!=0 || net->DNS[3]!=0)
-		memcpy(storage.DNS, net->DNS, 4);
-	else memcpy(net->DNS, storage.DNS, 4);
+	if(net != NULL) {
+		if(net->ip[0]!=0 || net->ip[1]!=0 || net->ip[2]!=0 || net->ip[3]!=0)
+			memcpy(storage.ip, net->ip, 4);
+		else memcpy(net->ip, storage.ip, 4);
+		if(net->sn[0]!=0 || net->sn[1]!=0 || net->sn[2]!=0 || net->sn[3]!=0)
+			memcpy(storage.sn, net->sn, 4);
+		else memcpy(net->sn, storage.sn, 4);
+		if(net->gw[0]!=0 || net->gw[1]!=0 || net->gw[2]!=0 || net->gw[3]!=0)
+			memcpy(storage.gw, net->gw, 4);
+		else memcpy(net->gw, storage.gw, 4);
+		if(net->dns[0]!=0 || net->dns[1]!=0 || net->dns[2]!=0 || net->dns[3]!=0)
+			memcpy(storage.dns, net->dns, 4);
+		else memcpy(net->dns, storage.dns, 4);
 
-	net->DHCP = NETINFO_STATIC;
-	SetNetInfo(net);
-	if(dhcp_alarm) alarm_del(dhcp_alarm_cb, -1);	// 모든 알람 제거
-	//send_checker_NB();	// 나중에 구현
+		net->dhcp = NETINFO_STATIC;
+		SetNetInfo(net);
+	} else {
+		SetNetInfo(&storage);
+		memset(&workinfo, 0, sizeof(workinfo));
+		workinfo.dhcp = NETINFO_STATIC;
+		SetNetInfo(&workinfo);
+	}
+
+	if(dhcp_alarm) alarm_del(dhcp_alarm_cb, -1);
+	//send_checker_NB();
 
 	return RET_OK;
 }
 
-int8 dhcp_alarm_start(uint8 *saved_ip)
+/**
+ * DHCP Auto mode (alarm mode) start function.
+ * - Used for DHCP start action at Auto mode \n
+ *	Auto mode can be selected at @ref wizconfig.h file. \n
+ *	(set USE_DHCP to VAL_ENABLE, and uncomment DHCP_AUTO define) \n
+ *	and in the main loop, @ref alarm_run should be called continuously.
+ * - At Static mode, it can be changed to DHCP mode through this function
+ *
+ * @return @b RET_OK: Success \n @b RET_NOK: Error
+ */
+int8 dhcp_auto_start(void)
 {
-	GetNetInfo(&workinfo);
-	if(workinfo.DHCP > NETINFO_STATIC) {
-		DBGA("Already DHCP Mode(%d)", workinfo.DHCP);
-		return RET_NOK;
-	} else DBG("DHCP Start");
+	DBG("DHCP Start");
 	SET_STATE(DHCP_STATE_INIT);
 	di.action = DHCP_ACT_START;
 
 	memset(&workinfo, 0, sizeof(workinfo));
-	if(saved_ip) memcpy(workinfo.IP, saved_ip, 4);
-	workinfo.DHCP = NETINFO_DHCP_BUSY;
+	workinfo.dhcp = NETINFO_DHCP;
 	SetNetInfo(&workinfo);
-	if(dhcp_alarm) alarm_set(10, dhcp_alarm_cb, 0);	// 알람 등록
+	
+	// ToDo: Set zero IP & SN
+	
+	if(dhcp_alarm) alarm_set(10, dhcp_alarm_cb, 0);
 	return RET_OK;
 }
 
-static void dhcp_alarm_cb(int8 arg)	// for alarm mode
+static void dhcp_alarm_cb(int8 arg)	// for DHCP auto mode
 {
 	if(dhcp_alarm == FALSE) return;
 	if(arg == 0) {
-		if(workinfo.DHCP == NETINFO_DHCP_FAIL) {
-			workinfo.DHCP = NETINFO_DHCP_BUSY;
-			di.action = DHCP_ACT_START;
-		}
-		if(dhcp_get_state() == DHCP_STATE_IP_CHECK) {
+		if(di.state == DHCP_STATE_IP_CHECK) {
 			alarm_set(wizpf_tick_conv(FALSE, di.renew_time), dhcp_alarm_cb, 1);
 			alarm_set(wizpf_tick_conv(FALSE, di.rebind_time), dhcp_alarm_cb, 2);
 		}
-		dhcp_run();	//alarm_set은 dhcp_run 안에서 필요 시 실행되게 수정됨
+		if(di.state == DHCP_STATE_FAILED) {
+			di.state = DHCP_STATE_INIT;
+			di.action = DHCP_ACT_START;
+		}
+		dhcp_run();
 	} else if(arg == 1) {	// renew
 		SET_STATE(DHCP_STATE_SELECTING);
 		di.action = DHCP_ACT_RENEW;
@@ -411,7 +485,7 @@ static void dhcp_run(void)
 	if(di.state == DHCP_STATE_INIT && di.action != DHCP_ACT_START) {
 		DBG("wrong attempt");
 		return;
-	} else if(GetUDPSocketStatus(di.sock) == SOCKSTAT_CLOSED) {	// 소켓이 closed이면 open함
+	} else if(GetUDPSocketStatus(di.sock) == SOCKSTAT_CLOSED) {
 		if(udp_open_fail == TRUE && !IS_TIME_PASSED(dhcp_run_tick, DHCP_RETRY_DELAY)) 
 			goto RET_ALARM;
 		if(UDPOpen(di.sock, DHCP_CLIENT_PORT) == RET_OK) {
@@ -428,11 +502,7 @@ static void dhcp_run(void)
 	}
 
 	switch(di.state) {
-	case DHCP_STATE_INIT:	// init reboot은 담에 필요하면 flash 사용해서 해볼 것 - 일단 무시
-		//if(IS_IP_SET(di.assigned_ip)) {DBG("INIT-REBOOT");		// INIT-REBOOT - Request previous IP
-		//	SET_STATE(DHCP_STATE_REQUESTING);
-		//	dhcp_run_tick = wizpf_get_systick();
-		//} else 
+	case DHCP_STATE_INIT:
 		if(dhcp_run_cnt==0 && !IS_TIME_PASSED(dhcp_run_tick, DHCP_OPEN_DELAY)) 
 			goto RET_ALARM;
 
@@ -442,7 +512,7 @@ static void dhcp_run(void)
 				if(dhcp_async) {
 					DBG("DHCP Discovery Send Async");
 					sockwatch_set(di.sock, WATCH_SOCK_UDP_SEND);
-					return;	// alarm등록은 Async Send완료된 후에 다시 함
+					return;	// alarm set is not needed
 				} else {
 					DBG("DHCP Discovery Sent");
 					SET_STATE(DHCP_STATE_SEARCHING);
@@ -457,8 +527,8 @@ static void dhcp_run(void)
 			dhcp_run_cnt = 0;
 			UDPClose(di.sock);
 			if(dhcp_async) sockwatch_close(di.sock);
-			dhcp_fail();	//dhcp_run_tick = wizpf_get_systick();
-			return; // alarm set 안함
+			dhcp_fail();
+			return; // alarm set is not needed
 		}
 		break;
 	case DHCP_STATE_SEARCHING:
@@ -482,7 +552,7 @@ static void dhcp_run(void)
 				if(dhcp_async) {
 					DBG("DHCP Request Send Async");
 					sockwatch_set(di.sock, WATCH_SOCK_UDP_SEND);
-					return;	// alarm등록은 Async Send완료된 후에 다시 함
+					return;	// alarm set is not needed
 				} else {
 					DBG("DHCP Request Sent");
 					SET_STATE(DHCP_STATE_REQUESTING);
@@ -497,8 +567,8 @@ static void dhcp_run(void)
 			dhcp_run_cnt = 0;
 			UDPClose(di.sock);
 			if(dhcp_async) sockwatch_close(di.sock);
-			dhcp_fail();	//dhcp_run_tick = wizpf_get_systick();
-			return; // alarm set 안함
+			dhcp_fail();
+			return; // alarm set is not needed
 		}
 		break;
 	case DHCP_STATE_REQUESTING:
@@ -507,7 +577,7 @@ static void dhcp_run(void)
 			if(ret == DHCP_MSG_ACK) {	// Recv ACK
 				LOG("DHCP Success");
 				SET_STATE(DHCP_STATE_IP_CHECK);
-				dhcp_run_tick = wizpf_get_systick();		// ??
+				dhcp_run_tick = wizpf_get_systick();
 				dhcp_run_cnt = 0;
 			} else if(ret == DHCP_MSG_NAK) {	// Recv NAK
 				if(di.action == DHCP_ACT_START) {
@@ -528,28 +598,29 @@ static void dhcp_run(void)
 			}
 		}
 		break;
-	case DHCP_STATE_IP_CHECK:	// 나중에 send_checker_NB로 갈아탈 것??, 일단 임시제거
-		//if(send_checker() == RET_OK) {	// IP 체크 이상없음
+	case DHCP_STATE_IP_CHECK:
+		//if(send_checker() == RET_OK) {
 			SET_STATE(DHCP_STATE_BOUND);
-			workinfo.DHCP = NETINFO_DHCP_STABLE;
 			SetNetInfo(&workinfo);
 			if(di.ip_update) di.ip_update();
-			LOGA("DHCP ok - New IP (%d.%d.%d.%d)", workinfo.IP[0], workinfo.IP[1], workinfo.IP[2], workinfo.IP[3]);
-			//bound_tick = wizpf_get_systick();
+			LOGA("DHCP ok - New IP (%d.%d.%d.%d)", workinfo.ip[0], workinfo.ip[1], workinfo.ip[2], workinfo.ip[3]);
 			UDPClose(di.sock);
 			if(dhcp_async) sockwatch_close(di.sock);
 		//} else {
 		//	SET_STATE(DHCP_STATE_INIT);
-		//	ERR("IP Addr conflicted - IP(%d.%d.%d.%d)", workinfo.IP[0], workinfo.IP[1], workinfo.IP[2], workinfo.IP[3]);
+		//	ERR("IP Addr conflicted - IP(%d.%d.%d.%d)", workinfo.ip[0], workinfo.ip[1], workinfo.ip[2], workinfo.ip[3]);
 		//	send_rel_dec(DHCP_MSG_DECLINE);
 		//	if(di.ip_conflict) (*di.ip_conflict)();
 		//}
 		break;
 	case DHCP_STATE_BOUND:
-		return; // alarm set 안함
+		di.action = DHCP_ACT_NONE;
+		return; // alarm set is not needed
+	case DHCP_STATE_FAILED:
+		return; // alarm set is not needed
 	default:
 		ERRA("wrong state(%d)", di.state);
-		return; // alarm set 안함
+		return; // alarm set is not needed
 	}
 
 RET_ALARM:
@@ -560,15 +631,14 @@ static void dhcp_fail(void)
 {
 	LOG("DHCP Fail - set temp addr");
 	di.action = DHCP_ACT_NONE;
-	SET_STATE(DHCP_STATE_INIT);	//storage.DHCP = 0;	// 오류 방지용
-	memcpy(&workinfo, &storage, sizeof(storage));	// 일단 디폴트(혹은 이전) 값을 설정
-	memset(workinfo.Mac, 0, 6);	// mac설정은 DHCP권한이 아님 (버그 방지)
-	workinfo.DHCP = NETINFO_DHCP_FAIL;
-	SetNetInfo(&workinfo);	// DHCP 상태를 설정
+	SET_STATE(DHCP_STATE_FAILED);
+	memcpy(&workinfo, &storage, sizeof(storage));
+	memset(workinfo.mac, 0, 6);
+	SetNetInfo(&workinfo);
 	network_disp(&workinfo);
 	if(dhcp_alarm) 
-		alarm_set(DHCP_START_RETRY_DELAY, dhcp_alarm_cb, 0);	// 알람 등록
-	//send_checker_NB();	// 나중에 구현
+		alarm_set(DHCP_START_RETRY_DELAY, dhcp_alarm_cb, 0);
+	//send_checker_NB();
 }
 
 static int8 recv_handler(void)
@@ -598,11 +668,11 @@ static int8 recv_handler(void)
 		return RET_NOK;
 	}
 
-	if(memcmp(dm.chaddr, storage.Mac, 6) != 0 || dm.xid != htonl(di.xid)) {
+	if(memcmp(dm.chaddr, storage.mac, 6) != 0 || dm.xid != htonl(di.xid)) {
 		DBG("No My DHCP Message. This message is ignored.");
 		DBGA("SRC_MAC_ADDR(%02X:%02X:%02X:%02X:%02X:%02X)", 
-			storage.Mac[0], storage.Mac[1], storage.Mac[2], 
-			storage.Mac[3], storage.Mac[4], storage.Mac[5]);
+			storage.mac[0], storage.mac[1], storage.mac[2], 
+			storage.mac[3], storage.mac[4], storage.mac[5]);
 		DBGA("chaddr(%02X:%02X:%02X:%02X:%02X:%02X)", dm.chaddr[0], 
 			dm.chaddr[1], dm.chaddr[2], dm.chaddr[3], dm.chaddr[4], dm.chaddr[5]);
 		DBGA("DHCP_XID(%08lX), xid(%08lX), yiaddr(%d.%d.%d.%d)", htonl(di.xid), 
@@ -619,11 +689,10 @@ static int8 recv_handler(void)
 		}
 	}
 	
-	memcpy(workinfo.IP, dm.yiaddr, 4);
+	memcpy(workinfo.ip, dm.yiaddr, 4);
 	DBG("DHCP MSG received..");
-	DBGA("yiaddr : %d.%d.%d.%d",workinfo.IP[0],workinfo.IP[1],workinfo.IP[2],workinfo.IP[3]);
+	DBGA("yiaddr : %d.%d.%d.%d",workinfo.ip[0],workinfo.ip[1],workinfo.ip[2],workinfo.ip[3]);
 
-	// 길이로 에러 검출
 	msg_type = 0;
 	cur = (uint8 *)(&dm.op);
 	cur = cur + 240;
@@ -643,19 +712,19 @@ static int8 recv_handler(void)
 			break;
 		case subnetMask:
 			opt_len =* cur++;
-			memcpy(workinfo.SN,cur,4);
+			memcpy(workinfo.sn,cur,4);
 			DBGA("subnetMask : %d.%d.%d.%d",
-				workinfo.SN[0],workinfo.SN[1],workinfo.SN[2],workinfo.SN[3]);
+				workinfo.sn[0],workinfo.sn[1],workinfo.sn[2],workinfo.sn[3]);
 			break;
 		case routersOnSubnet:
 			opt_len = *cur++;
-			memcpy(workinfo.GW,cur,4);
+			memcpy(workinfo.gw,cur,4);
 			DBGA("routersOnSubnet : %d.%d.%d.%d",
-				workinfo.GW[0],workinfo.GW[1],workinfo.GW[2],workinfo.GW[3]);
+				workinfo.gw[0],workinfo.gw[1],workinfo.gw[2],workinfo.gw[3]);
 			break;
 		case dns:
 			opt_len = *cur++;
-			memcpy(workinfo.DNS,cur,4);
+			memcpy(workinfo.dns,cur,4);
 			break;
 		case dhcpIPaddrLeaseTime:
 			opt_len = *cur++;
@@ -708,7 +777,7 @@ static int8 send_discover(void)
 	dm.hops = DHCP_HOPS;
 	dm.xid = htonl(di.xid);
 	dm.secs = htons(DHCP_SECS);
-	memcpy(dm.chaddr, storage.Mac, 6);
+	memcpy(dm.chaddr, storage.mac, 6);
 	dm.flags = htons(DHCP_BROADCAST);
 
 	// MAGIC_COOKIE 
@@ -724,7 +793,7 @@ static int8 send_discover(void)
 	dm.opt[len++] = dhcpClientIdentifier;
 	dm.opt[len++] = 0x07;
 	dm.opt[len++] = 0x01;
-	memcpy(&dm.opt[len], storage.Mac, 6);
+	memcpy(&dm.opt[len], storage.mac, 6);
 	len += 6;
 	
 	// host name
@@ -733,7 +802,7 @@ static int8 send_discover(void)
 	strcpy((char*)&dm.opt[len], HOST_NAME);
 	len += strlen(HOST_NAME);
 	sprintf((char*)&dm.opt[len], "%02x%02x%02x", 
-		storage.Mac[3], storage.Mac[4], storage.Mac[5]);
+		storage.mac[3], storage.mac[4], storage.mac[5]);
 	len += 6;
 
 	dm.opt[len++] = dhcpParamRequest;
@@ -784,12 +853,12 @@ static int8 send_request(void)
 
 	if(di.action == DHCP_ACT_RENEW) {
 		dm.flags = 0;		// For Unicast
-		memcpy(dm.ciaddr, workinfo.IP, 4);
+		memcpy(dm.ciaddr, workinfo.ip, 4);
 	} else {
 		dm.flags = htons(DHCP_BROADCAST);
 	}
 
-	memcpy(dm.chaddr, storage.Mac, 6);
+	memcpy(dm.chaddr, storage.mac, 6);
 
 	// MAGIC_COOKIE 
 	*(uint32*)&dm.opt[len] = htonl(MAGIC_COOKIE);
@@ -803,13 +872,13 @@ static int8 send_request(void)
 	dm.opt[len++] = dhcpClientIdentifier;
 	dm.opt[len++] = 0x07;
 	dm.opt[len++] = 0x01;
-	memcpy(&dm.opt[len], storage.Mac, 6);
+	memcpy(&dm.opt[len], storage.mac, 6);
 	len += 6;
 
 	if(di.action != DHCP_ACT_RENEW) {
 		dm.opt[len++] = dhcpRequestedIPaddr;
 		dm.opt[len++] = 0x04;
-		memcpy(&dm.opt[len], workinfo.IP, 4);
+		memcpy(&dm.opt[len], workinfo.ip, 4);
 		len += 4;
 		dm.opt[len++] = dhcpServerIdentifier;
 		dm.opt[len++] = 0x04;
@@ -823,7 +892,7 @@ static int8 send_request(void)
 	strcpy((char*)&dm.opt[len], HOST_NAME);
 	len += strlen(HOST_NAME);
 	sprintf((char*)&dm.opt[len], "%02x%02x%02x", 
-		storage.Mac[3], storage.Mac[4], storage.Mac[5]);
+		storage.mac[3], storage.mac[4], storage.mac[5]);
 	len += 6;
 
 	dm.opt[len++] = dhcpParamRequest;
@@ -878,7 +947,7 @@ static int8 send_rel_dec(int8 msgtype)
 	dm.xid = htonl(di.xid);
 	dm.secs = htons(DHCP_SECS);
 	dm.flags = DHCP_UNICAST;	//DHCP_BROADCAST;
-	memcpy(dm.chaddr, storage.Mac, 6);
+	memcpy(dm.chaddr, storage.mac, 6);
 
 	// MAGIC_COOKIE 
 	*(uint32*)&dm.opt[len] = htonl(MAGIC_COOKIE);
@@ -893,7 +962,7 @@ static int8 send_rel_dec(int8 msgtype)
 	dm.opt[len++] = dhcpClientIdentifier;
 	dm.opt[len++] = 0x07;
 	dm.opt[len++] = 0x01;
-	memcpy(&dm.opt[len], storage.Mac, 6);
+	memcpy(&dm.opt[len], storage.mac, 6);
 	len += 6;
 
 	dm.opt[len++] = dhcpServerIdentifier;
@@ -904,7 +973,7 @@ static int8 send_rel_dec(int8 msgtype)
 	if(msgtype == DHCP_MSG_DECLINE) {
 		dm.opt[len++] = dhcpRequestedIPaddr;
 		dm.opt[len++] = 0x04;
-		memcpy(&dm.opt[len], workinfo.IP, 4);
+		memcpy(&dm.opt[len], workinfo.ip, 4);
 		len += 4;
 		dm.opt[len++] = endOption;
 		srv_ip[0] = srv_ip[1] = srv_ip[2] = srv_ip[3] = 255;
@@ -938,14 +1007,14 @@ static int8 send_checker(void)
 	int16 len;
 
 	if(dhcp_async) {
-		len = UDPSendNB(di.sock, "CHECK_IP_CONFLICT", 17, workinfo.IP, 5000);
+		len = UDPSendNB(di.sock, "CHECK_IP_CONFLICT", 17, workinfo.ip, 5000);
 		if(len < sizeof(struct dhcp_msg)) {
 			if(len < 0) ERRA("UDPSend fail - ret(%d)", len);
 			else ERRA("UDPSend sent less than size - size(%d), sent(%d)", 17, len);
 			return RET_NOK;
 		} else sockwatch_set(di.sock, WATCH_SOCK_UDP_SEND);
 	} else {
-		len = UDPSend(di.sock, "CHECK_IP_CONFLICT", 17, workinfo.IP, 5000);
+		len = UDPSend(di.sock, "CHECK_IP_CONFLICT", 17, workinfo.ip, 5000);
 		if(len > 0) {	// sendto is complete. that means there is a node which has a same IP.
 			ERR("IP Conflict");
 			return RET_NOK;

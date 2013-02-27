@@ -1,3 +1,13 @@
+/**
+ * @file		WIZ_W7200/wizplatform.c
+ * @brief		Platform Specific Function Source File - For W7200 Evaluation Board
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *		2013/02/22 - 1.0 Release
+ * @author	Mike Jeong
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
 
 //#define FILE_LOG_SILENCE
 #include "common/common.h"
@@ -5,7 +15,7 @@
 
 extern void EXTI_IMR_EMR_enable(void);
 
-__IO uint32 msTicks = 0;	// 최대값은 대략 50일 정도
+__IO uint32 msTicks = 0;	// Max: about 50 days
 
 #define USART1_RX_INTERRUPT VAL_ENABLE
 #define SYSTICK_HZ			1000
@@ -21,7 +31,7 @@ int8 u1rx_buf[U1RX_BUF_SIZE];
 int16 u1rx_wr=0, u1rx_rd=0;
 void USART1_IRQHandler(void)	// USART1 ISR
 {
-	if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET) {		//
+	if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET) {
 		USART_ClearITPendingBit(USART1, USART_IT_RXNE);
 		if( (u1rx_wr > u1rx_rd && u1rx_wr-u1rx_rd >= U1RX_BUF_SIZE-1) ||
 			(u1rx_wr < u1rx_rd && u1rx_rd == u1rx_wr+1) )	// Buffer Overflow
@@ -32,9 +42,6 @@ void USART1_IRQHandler(void)	// USART1 ISR
 			USART_SendData(USART1, (uint8)'@');
 			return;
 		}
-		//uint16_t kkk = USART_ReceiveData(USART1);
-		//for(int ii=0; ii<15; ii++) 
-		//printf("%x ", kkk);
 		u1rx_buf[u1rx_wr] = (int8)USART_ReceiveData(USART1);
 		if(u1rx_wr < U1RX_BUF_SIZE-1) u1rx_wr++;
 		else u1rx_wr = 0;
@@ -119,7 +126,7 @@ uint32 wizpf_tick_conv(bool istick2sec, uint32 tickorsec)
 	else return tickorsec * SYSTICK_HZ;	// seconds to tick
 }
 
-int32 wizpf_tick_elapse(uint32 tick)	// + 지난 시간, - 다가올 시간
+int32 wizpf_tick_elapse(uint32 tick)	// + elapsed time, - Remaining time
 {
 	uint32 cur = wizpf_get_systick();
 
@@ -248,23 +255,6 @@ void GPIO_Configuration(void)
 	GPIO_ResetBits(GPIOB, WIZ_PWDN);
 	GPIO_SetBits(GPIOB, LED3); // led off
 	GPIO_SetBits(GPIOB, LED4); // led off
-
-	// WIZ Interrupt
-	//GPIO_InitStructure.GPIO_Pin = WIZ_INT;
-	//GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	//GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-	//GPIO_Init(GPIOC, &GPIO_InitStructure);
-	//EXTI_DeInit();
-
-	//GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource0);
-	//EXTI_InitStructure.EXTI_Line = EXTI_Line0;
-	//EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-	//EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
-	//EXTI_InitStructure.EXTI_LineCmd = ENABLE;
-	//EXTI_Init(&EXTI_InitStructure);
-	//EXTI_GenerateSWInterrupt(EXTI_Line0);
-
-	//EXTI_IMR_EMR_enable();
 }
 
 void RCC_Configuration(void)

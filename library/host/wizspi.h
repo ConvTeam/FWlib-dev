@@ -1,3 +1,13 @@
+/**
+ * @file		wizspi.h
+ * @brief		SPI Adaptation Layer Common Header File
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *		2013/02/22 - 1.0 Release
+ * @author	Mike Jeong
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
 
 #ifndef _SPI_H
 #define _SPI_H
