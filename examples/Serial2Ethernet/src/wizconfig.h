@@ -8,6 +8,7 @@
 
 //#define PLATFORM_W7200_EVB  // Defined in Project Option
 //#define PLATFORM_W5200_EVB
+//#define PLATFORM_W5500_EVB
 
 #define SYSTEM_LITTLE_ENDIAN	// ( Default )
 //#define SYSTEM_BIG_ENDIAN
