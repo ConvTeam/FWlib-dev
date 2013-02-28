@@ -563,7 +563,8 @@ void act_nrecv(int8 sock, uint16 maxlen)
 	uint8 dstip[4], i;
 	uint16 dstport;
 	int32 len;
- DBGA("Asock(%d)", sock);
+	
+	//DBGA("Asock(%d)", sock);
 	if(sock == VAL_NONE) {
 		if(recvnum == 0) CMD_RESP_RET(RET_NO_DATA, VAL_NONE);
 		for(i=ATC_SOCK_NUM_START; i<=ATC_SOCK_NUM_END; i++) {
@@ -572,7 +573,7 @@ void act_nrecv(int8 sock, uint16 maxlen)
 				break;
 			}
 		}
-	}DBGA("Bsock(%d)", sock);
+	}//DBGA("Bsock(%d)", sock);
 
 	if(sockstat[sock] == SOCK_STAT_IDLE) CMD_RESP_RET(RET_SOCK_CLS, VAL_NONE);
 	if(sockstat[sock] & SOCK_STAT_TCP_MASK) {	// TCP
@@ -589,8 +590,10 @@ void act_nrecv(int8 sock, uint16 maxlen)
 	atci.recvbuf[len] = 0;
 
 	MAKE_TCMD_DIGIT(atci.tcmd.arg1, len);
-	MAKE_TCMD_ADDR(atci.tcmd.arg2, dstip[0], dstip[1], dstip[2], dstip[3]);
-	MAKE_TCMD_DIGIT(atci.tcmd.arg3, dstport);
+	if((sockstat[sock] & SOCK_STAT_PROTMASK) == SOCK_STAT_UDP) {
+		MAKE_TCMD_ADDR(atci.tcmd.arg2, dstip[0], dstip[1], dstip[2], dstip[3]);
+		MAKE_TCMD_DIGIT(atci.tcmd.arg3, dstport);
+	}
 	cmd_resp(RET_RECV, sock);
 	printf("%s\r\n", atci.recvbuf);
 
@@ -605,14 +608,15 @@ void act_nsock(int8 sock)
 	if(sock < ATC_SOCK_NUM_START)
 	{
 		int8 *dump, i, type, cnt_con=0, cnt_notcon=0;
-DBG("NSOCK-start");
+
+		//DBG("NSOCK-start");
 		for(i=ATC_SOCK_NUM_START; i<=ATC_SOCK_NUM_END; i++) {
 			if(sockstat[i] != SOCK_STAT_IDLE) {
 				if(sockstat[i] & SOCK_STAT_CONNECTED) cnt_con++;
 				else cnt_notcon++;
 			}
-		}
-DBGA("NSOCK-con(%d),not(%d)", cnt_con, cnt_notcon);
+		} //DBGA("NSOCK-con(%d),not(%d)", cnt_con, cnt_notcon);
+
  		if(cnt_con+cnt_notcon == 0) {
 			cmd_resp_dump(VAL_NONE, NULL);
 			return;
