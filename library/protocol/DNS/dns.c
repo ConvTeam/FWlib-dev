@@ -389,7 +389,7 @@ int8 dns_query(uint8 sock, uint8 *domain, uint8 *ip)
 
 	tick = wizpf_get_systick();
 	srand(tick);
-	while(UDPOpen(sock, rand() % 5535 + 60000) != 1) {
+	while(UDPOpen(sock, rand() % 5535 + 60000) != RET_OK) {
 		if(i++ > 3) {
 			DBGA("UDPOpen fail (%d)times", i);
 			return RET_NOK;
