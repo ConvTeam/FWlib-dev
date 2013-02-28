@@ -319,7 +319,7 @@ int32 main(void)
 	menu_add("DNS", root, mn_dns);
 	menu_add("BASE64", root, mn_base64);
 	menu_add("eMail", root, mn_email);
-	menu_print_tree();
+	//menu_print_tree();		// For Debug
 
 	dhcp_auto_start();
 
