@@ -117,7 +117,6 @@ void menu_run(void)
 
 	recv_char = (int8)getchar_nonblk();
 	if(recv_char == RET_NOK) return;	//printf("RECV: 0x%x\r\n", recv_char);
-	//PUTCHAR('\n');PUTCHAR('-');PUTCHAR('-');PUTCHAR('-');PUTCHAR('-');PUTCHAR('-');PUTCHAR('-');PUTCHAR('\n');
 
 	if(isgraph(recv_char) == 0) {	//printf("ctrl\r\n");
 		switch(recv_char) {
@@ -162,38 +161,50 @@ void menu_run(void)
 	}
 
 	if(recv_char != 0x0d && recv_char != 0x7f) return;		//LOGA("Command: %s", buf);//printf("\r\n~~~~~\r\n");
-	if(mi.cur == 0 || mtree[mi.cur-1].mfunc == NULL) {
+
+	if(mi.cur == 0 || mtree[mi.cur-1].mfunc == NULL)	// Out of the tem
+	{
 		if(buf_len != 0) {
 			if(str_check(isdigit, buf) == RET_OK) {//printf("----------digit(%d)\r\n", atoi(buf));
 				tmp8 = atoi((char*)buf);
-				for(i=0; i<mi.total; i++) {
-					if(mi.cur == mtree[i].parent) {//printf("----------i(%d)\r\n", i);	
-						if(tmp8 == 1) break;
-						else tmp8--;
-					}
-				}
-
-				if(i < mi.total) {		//DBGA("----------set cur(%d)", tmp8);
-					cnt = mi.cur;
-					mi.cur = i+1;
-					if(mtree[mi.cur-1].mfunc) {
-						ret = mtree[mi.cur-1].mfunc(MC_START, buf);
-						if(ret == RET_OK) {
+				if(depth > 1 && tmp8 == 0) { // Return to upper menu
+					if(mi.cur != 0) {
+						if(mtree[mi.cur-1].mfunc)
 							mtree[mi.cur-1].mfunc(MC_END, buf);
-							mi.cur = cnt;
+						mi.cur = mtree[mi.cur-1].parent;
+						depth--;
+					} else printf("return tried despite root");
+				} else {
+					for(i=0; i<mi.total; i++) {
+						if(mi.cur == mtree[i].parent) {//printf("----------i(%d)\r\n", i);	
+							if(tmp8 == 1) break;
+							else tmp8--;
+						}
+					}
+
+					if(i < mi.total) {		//DBGA("----------set cur(%d)", tmp8);
+						cnt = mi.cur;
+						mi.cur = i+1;
+						if(mtree[mi.cur-1].mfunc) {
+							ret = mtree[mi.cur-1].mfunc(MC_START, buf);
+							if(ret == RET_OK) {
+								mtree[mi.cur-1].mfunc(MC_END, buf);
+								mi.cur = cnt;
+							} else {
+								depth++;
+							}
 						} else {
 							depth++;
+							disp = TRUE;
 						}
-					} else {
-						depth++;
-						disp = TRUE;
-					}
-				} else printf("wrong number(%s)\r\n", buf);
+					} else printf("wrong number(%s)\r\n", buf);
+				}
 			} else printf("not digit(%s)\r\n", buf);
 		}
 
 		if(buf_len == 0 || disp) {
 			printf("\r\n=== MENU ================================\r\n");
+			if(depth > 1) printf("  0: Back\r\n");
 			for(i=0, cnt=0; i<mi.total; i++) {
 				if(mi.cur == mtree[i].parent) {
 					cnt++;
@@ -210,7 +221,9 @@ void menu_run(void)
 			}
 			printf("=========================================\r\n");
 		}
-	} else {
+	}
+	else	// In the Item
+	{
 		ret = mtree[mi.cur-1].mfunc(MC_DATA, buf);
 		if(ret != RET_OK) {			//printf("process continue\r\n");
 		} else {			//printf("process done\r\n");
