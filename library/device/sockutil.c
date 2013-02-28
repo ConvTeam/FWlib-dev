@@ -205,8 +205,8 @@ int8 port_check(int8 *str, uint16 *port)
 	int8 *ptr;
 	uint32 val;
 
-	val = strtol((char*)str, (char**)&ptr, 10);
-printf("ptr(%p, %x), arg(%p), val(%d)\r\n", ptr, *ptr, str, val);
+	val = strtol((char*)str, (char**)&ptr, 10);		//printf("ptr(%p, %x), arg(%p), val(%d)\r\n", ptr, *ptr, str, val);
+
 	if(val == 0 || val > 65535 || *ptr != 0) return RET_NOK;
 	if(port) *port = val;
 
