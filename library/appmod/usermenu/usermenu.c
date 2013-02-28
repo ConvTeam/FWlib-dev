@@ -160,29 +160,30 @@ void menu_run(void)
 		printf("input buffer stuffed\r\n");
 	}
 
-	if(recv_char != 0x0d && recv_char != 0x7f) return;		//LOGA("Command: %s", buf);//printf("\r\n~~~~~\r\n");
+	if(recv_char != 0x0d && recv_char != 0x7f) return;		//LOGA("Command: %s", buf);
 
 	if(mi.cur == 0 || mtree[mi.cur-1].mfunc == NULL)	// Out of the tem
 	{
 		if(buf_len != 0) {
-			if(str_check(isdigit, buf) == RET_OK) {//printf("----------digit(%d)\r\n", atoi(buf));
+			if(str_check(isdigit, buf) == RET_OK) {//printf("digit(%d)\r\n", atoi(buf));
 				tmp8 = atoi((char*)buf);
-				if(depth > 1 && tmp8 == 0) { // Return to upper menu
+				if(depth > 1 && tmp8 == 0) { // If 0 entered, return to upper menu
 					if(mi.cur != 0) {
 						if(mtree[mi.cur-1].mfunc)
 							mtree[mi.cur-1].mfunc(MC_END, buf);
 						mi.cur = mtree[mi.cur-1].parent;
 						depth--;
+						disp = TRUE;
 					} else printf("return tried despite root");
-				} else {
+				} else {	// If not 0, search that menu
 					for(i=0; i<mi.total; i++) {
-						if(mi.cur == mtree[i].parent) {//printf("----------i(%d)\r\n", i);	
+						if(mi.cur == mtree[i].parent) {//printf("-i(%d)\r\n", i);	
 							if(tmp8 == 1) break;
 							else tmp8--;
 						}
 					}
 
-					if(i < mi.total) {		//DBGA("----------set cur(%d)", tmp8);
+					if(i < mi.total) {		//DBGA("-set cur(%d)", tmp8);
 						cnt = mi.cur;
 						mi.cur = i+1;
 						if(mtree[mi.cur-1].mfunc) {
@@ -200,37 +201,44 @@ void menu_run(void)
 					} else printf("wrong number(%s)\r\n", buf);
 				}
 			} else printf("not digit(%s)\r\n", buf);
-		}
-
-		if(buf_len == 0 || disp) {
-			printf("\r\n=== MENU ================================\r\n");
-			if(depth > 1) printf("  0: Back\r\n");
-			for(i=0, cnt=0; i<mi.total; i++) {
-				if(mi.cur == mtree[i].parent) {
-					cnt++;
-					if(mtree[i].mfunc == NULL) {
-						if(cnt < 10) 
-							 printf(" +%d: %s\r\n", cnt, mtree[i].desc);
-						else printf("+%2d: %s\r\n", cnt, mtree[i].desc);
-					} else {
-						if(cnt < 10) 
-							 printf("  %d: %s\r\n", cnt, mtree[i].desc);
-						else printf(" %2d: %s\r\n", cnt, mtree[i].desc);
-					}
-				}
-			}
-			printf("=========================================\r\n");
-		}
+		} else disp = TRUE;
 	}
 	else	// In the Item
 	{
-		ret = mtree[mi.cur-1].mfunc(MC_DATA, buf);
-		if(ret != RET_OK) {			//printf("process continue\r\n");
-		} else {			//printf("process done\r\n");
+		if(buf_len == 0) {
 			mtree[mi.cur-1].mfunc(MC_END, buf);
 			mi.cur = mtree[mi.cur-1].parent;
 			depth--;
-		}		
+			disp = TRUE;
+		} else {
+			ret = mtree[mi.cur-1].mfunc(MC_DATA, buf);
+			if(ret != RET_OK) {	//printf("process continue\r\n");
+			} else {			//printf("process done\r\n");
+				mtree[mi.cur-1].mfunc(MC_END, buf);
+				mi.cur = mtree[mi.cur-1].parent;
+				depth--;
+			}
+		}
+	}
+
+	if(disp) {
+		printf("\r\n=== MENU ================================\r\n");
+		if(depth > 1) printf("  0: Back\r\n");
+		for(i=0, cnt=0; i<mi.total; i++) {
+			if(mi.cur == mtree[i].parent) {
+				cnt++;
+				if(mtree[i].mfunc == NULL) {
+					if(cnt < 10) 
+						 printf(" +%d: %s\r\n", cnt, mtree[i].desc);
+					else printf("+%2d: %s\r\n", cnt, mtree[i].desc);
+				} else {
+					if(cnt < 10) 
+						 printf("  %d: %s\r\n", cnt, mtree[i].desc);
+					else printf(" %2d: %s\r\n", cnt, mtree[i].desc);
+				}
+			}
+		}
+		printf("=========================================\r\n");
 	}
 
 	memset(buf, 0, CMD_BUF_SIZE);

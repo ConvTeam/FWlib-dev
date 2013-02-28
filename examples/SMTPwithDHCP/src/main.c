@@ -6,12 +6,78 @@
 #include "appmod/loopback/loopback.h"
 #include "appmod/usermenu/usermenu.h"
 
+
 #define SOCK_DHCP		0	// UDP
 #define SOCK_DNS		1	// UDP
 #define SOCK_SMTP		2	// TCP
+#define TCP_LISTEN_PORT	5000
+#define UDP_LISTEN_PORT	5000
 
+static int8 mn_show_network(menu_ctrl mctrl, int8 *mbuf);
+static int8 mn_set_network(menu_ctrl mctrl, int8 *mbuf);
+static int8 mn_loopback(menu_ctrl mctrl, int8 *mbuf);
+static int8 mn_set_led(menu_ctrl mctrl, int8 *mbuf);
+static int8 mn_dns(menu_ctrl mctrl, int8 *mbuf);
+static int8 mn_base64(menu_ctrl mctrl, int8 *mbuf);
+static int8 mn_email(menu_ctrl mctrl, int8 *mbuf);
 
 bool lb_tcp = FALSE, lb_udp = FALSE;
+
+
+int32 main(void)
+{
+	int8 ret, root;
+	uint32 tick = 0;
+
+	ret = platform_init();
+	if(ret != RET_OK) {
+		goto FAIL_TRAP;
+	}
+
+	ret = network_init(SOCK_DHCP, NULL, NULL);
+	if(ret != RET_OK) {
+		ERRA("network_init fail - ret(%d)", ret);
+		goto FAIL_TRAP;
+	}
+
+	printf("\r\n-----------------------------------\r\n");
+	printf("SMTP Client\r\n");
+	printf("-----------------------------------\r\n\r\n");
+
+	Delay_tick(2000);
+
+	menu_init();
+	root = menu_add("Network setting", 0, NULL);
+	menu_add("Show", root, mn_show_network);
+	menu_add("Static Set", root, mn_set_network);
+	menu_add("Loopback", 0, mn_loopback);
+	menu_add("LED Test", 0, mn_set_led);
+	root = menu_add("App Test", 0, NULL);
+	menu_add("DNS", root, mn_dns);
+	menu_add("BASE64", root, mn_base64);
+	menu_add("eMail", root, mn_email);
+	//menu_print_tree();		// For Debug
+
+	dhcp_auto_start();
+
+	while(1) {
+
+		alarm_run();
+		menu_run();
+
+		if(lb_tcp) loopback_tcps(7, (uint16)TCP_LISTEN_PORT);
+		if(lb_udp) loopback_udp(7, (uint16)UDP_LISTEN_PORT);
+
+		if(wizpf_tick_elapse(tick) > 1000) {	// running check
+			wizpf_led_set(WIZ_LED1, VAL_TOG);
+			tick = wizpf_get_systick();
+		}
+	}
+
+FAIL_TRAP:
+	wizpf_led_trap(1);
+	return 0;
+}
 
 static int8 mn_show_network(menu_ctrl mctrl, int8 *mbuf)
 {
@@ -31,7 +97,7 @@ static int8 mn_show_network(menu_ctrl mctrl, int8 *mbuf)
 static int8 mn_set_network(menu_ctrl mctrl, int8 *mbuf)
 {
 #define INPUT_GUIDE(name_v) \
-	printf("Enter new "name_v" [xxx.xxx.xxx.xxx] or 'Enter key' to skip\r\n")
+	printf("Enter new "name_v" [xxx.xxx.xxx.xxx] or 'n' key to skip\r\n")
 #define NEXT_GUIDE(name_v, addr_v) \
 do {INPUT_GUIDE(name_v); \
 	printf("Current "name_v" is (%d.%d.%d.%d)\r\n", \
@@ -43,7 +109,7 @@ do {INPUT_GUIDE(name_v); \
 #define SET_STAGE(cur_name_v, next_name_v, cur_addr_v, next_addr_v) \
 do {uint8 _tmp[4], _next[4]; \
 	if(next_addr_v) memcpy(_next, next_addr_v, 4); \
-	if(mbuf[0] == 0) { \
+	if(mbuf[0] == 'n') { \
 		stage++; \
 		if(next_addr_v) NEXT_GUIDE(next_name_v, _next); \
 	} else { \
@@ -282,64 +348,6 @@ static int8 mn_email(menu_ctrl mctrl, int8 *mbuf)
 	return RET_NOK;
 
 #undef SET_STAGE
-}
-
-int32 main(void)
-{
-#define TCP_LISTEN_PORT	5000
-#define UDP_LISTEN_PORT	5000
-
-	int8 ret, root;
-	uint32 tick = 0;
-
-	ret = platform_init();
-	if(ret != RET_OK) {
-		goto FAIL_TRAP;
-	}
-
-	ret = network_init(SOCK_DHCP, NULL, NULL);
-	if(ret != RET_OK) {
-		ERRA("network_init fail - ret(%d)", ret);
-		goto FAIL_TRAP;
-	}
-
-	printf("\r\n-----------------------------------\r\n");
-	printf("SMTP Client\r\n");
-	printf("-----------------------------------\r\n\r\n");
-
-	Delay_tick(2000);
-
-	menu_init();
-	root = menu_add("Network setting", 0, NULL);
-	menu_add("Show", root, mn_show_network);
-	menu_add("Static Set", root, mn_set_network);
-	menu_add("Loopback", 0, mn_loopback);
-	menu_add("LED Test", 0, mn_set_led);
-	root = menu_add("App Test", 0, NULL);
-	menu_add("DNS", root, mn_dns);
-	menu_add("BASE64", root, mn_base64);
-	menu_add("eMail", root, mn_email);
-	//menu_print_tree();		// For Debug
-
-	dhcp_auto_start();
-
-	while(1) {
-
-		alarm_run();
-		menu_run();
-
-		if(lb_tcp) loopback_tcps(7, (uint16)TCP_LISTEN_PORT);
-		if(lb_udp) loopback_udp(7, (uint16)UDP_LISTEN_PORT);
-
-		if(wizpf_tick_elapse(tick) > 1000) {	// running check
-			wizpf_led_set(WIZ_LED1, VAL_TOG);
-			tick = wizpf_get_systick();
-		}
-	}
-
-FAIL_TRAP:
-	wizpf_led_trap(1);
-	return 0;
 }
 
 
