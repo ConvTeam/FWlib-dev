@@ -375,7 +375,8 @@ static int8 parseMSG(struct dhdr *pdhdr, uint8 *pbuf, uint8 *pSip)
  * @param sock Socket number to use
  * @param domain Domain name string to resolve
  * @param ip The variable in which resolved IP address will be returned
- * @return @b RET_OK: Success \n @b RET_NOK: Error
+ * @return @b RET_OK: Success
+ * @return @b RET_NOK: Error
  */
 int8 dns_query(uint8 sock, uint8 *domain, uint8 *ip)
 {

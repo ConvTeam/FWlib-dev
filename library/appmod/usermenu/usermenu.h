@@ -51,7 +51,8 @@ typedef enum {
  * The function form with which a user menu function will be added to the menu
  * @param mctrl With this signal, Callback function can determine user action (@ref menu_ctrl)
  * @param mbuf The string buffer which user input
- * @return @b RET_OK: Return to parent menu \n @b RET_NOK: Stay current menu
+ * @return @b RET_OK: Return to parent menu
+ * @return @b RET_NOK: Stay current menu
  */
 typedef int8 (*menu_func)(menu_ctrl mctrl, int8 *mbuf);
 

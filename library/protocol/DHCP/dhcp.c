@@ -9,8 +9,6 @@
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
 
-#include "wizconfig.h"
-
 //#define FILE_LOG_SILENCE
 #include "common/common.h"
 #if (USE_DHCP == VAL_DISABLE)
@@ -181,7 +179,8 @@ static uint32 dhcp_run_tick = 0;
  * @param ip_update_hook Callback function for IP-update hooking
  * @param ip_conflict_hook Callback function for IP-conflict hooking (Not implemented yet)
  * @param def Default Address to set
- * @return @b RET_OK: Success \n @b RET_NOK: Error
+ * @return @b RET_OK: Success
+ * @return @b RET_NOK: Error
  */
 int8 dhcp_init(uint8 sock, void_func ip_update_hook, void_func ip_conflict_hook, wiz_NetInfo *def)
 {
@@ -228,7 +227,8 @@ int8 dhcp_init(uint8 sock, void_func ip_update_hook, void_func ip_conflict_hook,
  * @param action The action you want to do. (@ref dhcp_action)
  * @param renew For returning renew time when DHCP be bound (NULL will be ignored)
  * @param rebind For returning rebind time when DHCP be bound (NULL will be ignored)
- * @return @b RET_OK: Success \n @b RET_NOK: Error
+ * @return @b RET_OK: Success
+ * @return @b RET_NOK: Error
  */
 int8 dhcp_manual(dhcp_action action, uint32 *renew, uint32 *rebind)	// blocking function
 {
@@ -625,7 +625,7 @@ static void dhcp_fail(void)
 	memcpy(&workinfo, &storage, sizeof(storage));
 	memset(workinfo.mac, 0, 6);
 	SetNetInfo(&workinfo);
-	network_disp(&workinfo);
+	network_disp();
 	if(dhcp_alarm) 
 		alarm_set(DHCP_START_RETRY_DELAY, dhcp_alarm_cb, 0);
 	//send_checker_NB();
