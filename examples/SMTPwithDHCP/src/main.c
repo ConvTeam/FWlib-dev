@@ -81,10 +81,8 @@ FAIL_TRAP:
 
 static int8 mn_show_network(menu_ctrl mctrl, int8 *mbuf)
 {
-	wiz_NetInfo netinfo;
-
 	if(mctrl == MC_START) {
-		network_disp(&netinfo);
+		network_disp();
 	} else if(mctrl == MC_END) {
 
 	} else if(mctrl == MC_DATA) {
@@ -108,10 +106,10 @@ do {INPUT_GUIDE(name_v); \
 		addr_v[0], addr_v[1], addr_v[2], addr_v[3])
 #define SET_STAGE(cur_name_v, next_name_v, cur_addr_v, next_addr_v) \
 do {uint8 _tmp[4], _next[4]; \
-	if(next_addr_v) memcpy(_next, next_addr_v, 4); \
+	if(next_addr_v != NULL) memcpy(_next, next_addr_v, 4); \
 	if(mbuf[0] == 'n') { \
 		stage++; \
-		if(next_addr_v) NEXT_GUIDE(next_name_v, _next); \
+		if(next_addr_v != NULL) NEXT_GUIDE(next_name_v, _next); \
 	} else { \
 		ret = ip_check(mbuf, _tmp); \
 		if(ret == RET_OK) { \
@@ -119,7 +117,7 @@ do {uint8 _tmp[4], _next[4]; \
 			stage++; \
 			SetNetInfo(&netinfo); \
 			SET_DONE_GUIDE(cur_name_v, cur_addr_v); \
-			if(next_addr_v) NEXT_GUIDE(next_name_v, _next); \
+			if(next_addr_v != NULL) NEXT_GUIDE(next_name_v, _next); \
 		} else { \
 			printf("wrong input(%s)\r\n\r\n", mbuf); \
 			INPUT_GUIDE(cur_name_v); \
@@ -140,10 +138,10 @@ do {uint8 _tmp[4], _next[4]; \
 	} else if(mctrl == MC_DATA) {
 		switch(stage) {
 		case 0:
-			SET_STAGE("IP Address", "SN mask", netinfo.ip, netinfo.sn);
+			SET_STAGE("IP Address", "SN Mask", netinfo.ip, netinfo.sn);
 			break;
 		case 1:
-			SET_STAGE("SN mask", "GW Address", netinfo.sn, netinfo.gw);
+			SET_STAGE("SN Mask", "GW Address", netinfo.sn, netinfo.gw);
 			break;
 		case 2:
 			SET_STAGE("GW Address", "DNS Address", netinfo.gw, netinfo.dns);

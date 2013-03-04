@@ -18,6 +18,17 @@ static watch_cbfunc watch_cb[TOTAL_SOCK_NUM] = {0,};
 static uint8 watch_sock[TOTAL_SOCK_NUM] = {0,};
 
 
+/**
+ * Initialize Network.
+ * This function should be called in the main function.
+ * If not, you have to handle network initialization manually.
+ * 
+ * @param dhcp_sock The socket number which will be used at dhcp action
+ * @param ip_update The hook function to be called back when IP Addr update.
+ * @param ip_conflict The hook function to be called back when IP Addr conflict.
+ * @return @b RET_OK: Success
+ * @return @b RET_NOK: Error
+ */
 int8 network_init(uint8 dhcp_sock, void_func ip_update, void_func ip_conflict)
 {
 #define NETINIT_ADDR_SET(name_p) \
@@ -58,40 +69,71 @@ do { \
 	NETINIT_ADDR_SET("Static");
 	netinfo.dhcp = NETINFO_STATIC;
 	SetNetInfo(&netinfo);
-	network_disp(&netinfo);
+	network_disp();
 #endif
 
 	return RET_OK;
 }
 
-void network_disp(wiz_NetInfo *ni)
+/**
+ * Display Current Network Information.
+ * Current IP Addr, Subnet Mask, Gateway Addr, DNS Server Addr, DHCP mode is displayed.
+ */
+void network_disp(void)
 {
-	GetNetInfo(ni);
+	wiz_NetInfo ni;
+	GetNetInfo(&ni);
 	LOG("---------------------------------------");
 	LOG("Current Network Configuration          ");
 	LOG("---------------------------------------");
 	LOGA("MAC : %02X:%02X:%02X:%02X:%02X:%02X", 
-		ni->mac[0], ni->mac[1], ni->mac[2], ni->mac[3], ni->mac[4], ni->mac[5]);
-	LOGA("IP  : %d.%d.%d.%d", ni->ip[0], ni->ip[1], ni->ip[2], ni->ip[3]);
-	LOGA("SN  : %d.%d.%d.%d", ni->sn[0], ni->sn[1], ni->sn[2], ni->sn[3]);
-	LOGA("GW  : %d.%d.%d.%d", ni->gw[0], ni->gw[1], ni->gw[2], ni->gw[3]);
-	LOGA("DNS : %d.%d.%d.%d", ni->dns[0], ni->dns[1], ni->dns[2], ni->dns[3]);
-	LOGA("DHCP: %s", ni->dhcp==NETINFO_STATIC? "Static": "DHCP");
+		ni.mac[0], ni.mac[1], ni.mac[2], ni.mac[3], ni.mac[4], ni.mac[5]);
+	LOGA("IP  : %d.%d.%d.%d", ni.ip[0], ni.ip[1], ni.ip[2], ni.ip[3]);
+	LOGA("SN  : %d.%d.%d.%d", ni.sn[0], ni.sn[1], ni.sn[2], ni.sn[3]);
+	LOGA("GW  : %d.%d.%d.%d", ni.gw[0], ni.gw[1], ni.gw[2], ni.gw[3]);
+	LOGA("DNS : %d.%d.%d.%d", ni.dns[0], ni.dns[1], ni.dns[2], ni.dns[3]);
+	LOGA("DHCP: %s", ni.dhcp==NETINFO_STATIC? "Static": "DHCP");
 	LOG("---------------------------------------");
 }
 
+/**
+ * Register callback function of a socket.
+ * When @ref sockwatch_run function detected a Completion or Event, \n
+ * this callback function will be called.
+ * 
+ * @param sock The socket number which is corresponding to 'cb' param
+ * @param cb The callback function to be called when the socket has any completion or event.
+ * @return @b RET_OK: Success
+ * @return @b RET_NOK: Error
+ */
 int8 sockwatch_open(uint8 sock, watch_cbfunc cb)
 {
-	DBGCRTCA(cb==NULL || sock>=TOTAL_SOCK_NUM, "wrong arg - sock(%d)", sock);
+	DBGA("WATCH Open - sock(%d), CB(%p)", sock, cb);
+	if(cb == NULL || sock >= TOTAL_SOCK_NUM) {
+		ERRA("wrong arg - sock(%d)", sock);
+		return RET_NOK;
+	}
 	if(watch_cb[sock] == NULL) watch_cb[sock] = cb;
 	else return RET_NOK;
 
 	return RET_OK;
 }
 
+/**
+ * Unregister callback function and Stop to watch all completion and event.
+ *
+ * @param sock The socket number which is corresponding to 'cb' param
+ * @return @b RET_OK: Success
+ * @return @b RET_NOK: Error
+ */
 int8 sockwatch_close(uint8 sock)
 {
-	DBGCRTCA(sock>=TOTAL_SOCK_NUM, "wrong sock(%d)", sock);
+	DBGA("WATCH Close - sock(%d)", sock);
+	if(sock >= TOTAL_SOCK_NUM) {
+		ERRA("wrong sock(%d)", sock);
+		return RET_NOK;
+	}
+
 	sockwatch_clr(sock, WATCH_SOCK_ALL_MASK);
 	watch_cb[sock] = NULL;
 
@@ -100,19 +142,26 @@ int8 sockwatch_close(uint8 sock)
 
 int8 sockwatch_set(uint8 sock, uint8 item)
 {
-	DBGA("WATCH SET - sock(%d), item(0x%x)", sock, item);
-	if(sock < TOTAL_SOCK_NUM) {	// socket sock
-		BITSET(watch_sock[sock], 0x7F & item);
-	} else return RET_NOK;
+	DBGA("WATCH Set - sock(%d), item(0x%x)", sock, item);
+	if(sock >= TOTAL_SOCK_NUM) {
+		ERRA("wrong sock(%d)", sock);
+		return RET_NOK;
+	}
+
+	BITSET(watch_sock[sock], 0x7F & item);
 
 	return RET_OK;
 }
 
 int8 sockwatch_clr(uint8 sock, uint8 item)
 {
-	if(sock < TOTAL_SOCK_NUM) {	// socket sock
-		BITCLR(watch_sock[sock], 0x7F & item);
-	} else return RET_NOK;
+	DBGA("WATCH Clear - sock(%d), item(0x%x)", sock, item);
+	if(sock >= TOTAL_SOCK_NUM) {
+		ERRA("wrong sock(%d)", sock);
+		return RET_NOK;
+	}
+
+	BITCLR(watch_sock[sock], 0x7F & item);
 
 	return RET_OK;
 }
@@ -138,7 +187,7 @@ do { \
 
 	for(i=0; i<TOTAL_SOCK_NUM; i++) {
 		if(watch_sock[i] == 0) continue;
-		if(watch_sock[i] & WATCH_SOCK_RECV) {		// checked every time when 'connected' state
+		if(watch_sock[i] & WATCH_SOCK_RECV) {	// checked every time when 'connected' state
 			if(GetSocketRxRecvBufferSize(i) > 0) WCF_HANDLE(WATCH_SOCK_RECV, RET_OK);
 		}
 		if(watch_sock[i] & WATCH_SOCK_CLS_EVT) {	// checked every time when 'connected' state
@@ -149,7 +198,7 @@ do { \
 			ret = TCPConnChk(i);
 			if(ret != SOCKERR_BUSY) WCF_HANDLE(WATCH_SOCK_CONN_EVT, ret);
 		}
-		if((watch_sock[i] & WATCH_SOCK_MASK_LOW) == 0) continue;	// things which would be checked occasionally will be checked all together
+		if((watch_sock[i] & WATCH_SOCK_MASK_LOW) == 0) continue;	// things which occurs occasionally will be checked all together
 		if(watch_sock[i] & WATCH_SOCK_CLS_TRY) {
 			ret = TCPCloseCHK(i);
 			if(ret != SOCKERR_BUSY) WCF_HANDLE(WATCH_SOCK_CLS_TRY, ret);

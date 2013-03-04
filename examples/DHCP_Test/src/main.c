@@ -147,7 +147,7 @@ static int8 show_netinfo(menu_ctrl mctrl, int8 *mbuf)
 	GetNetInfo(&netinfo);
 
 	if(mctrl == MC_START) {
-		network_disp(&netinfo);
+		network_disp();
 	} else if(mctrl == MC_END) {
 
 	} else if(mctrl == MC_DATA) {
