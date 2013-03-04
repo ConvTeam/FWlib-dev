@@ -63,7 +63,8 @@ static int32 DecodeMimeBase64[256] = {
  * @param cb Callback function in @ref alarm_cbfunc form
  * @param arg The value which will be returned through callback function
  		\n This is for separation in same callback function
- * @return @b RET_OK: Success \n @b RET_NOK: Error
+ * @return @b RET_OK: Success
+ * @return @b RET_NOK: Error
  */
 int8 alarm_set(uint32 time, alarm_cbfunc cb, int8 arg)
 {
@@ -103,7 +104,8 @@ int8 alarm_set(uint32 time, alarm_cbfunc cb, int8 arg)
  *		\n NULL value will be ignored
  * @param arg The value which was set when alarm event added as arg
  		\n -1 value will be ignored
- * @return @b RET_OK: Success \n @b RET_NOK: Error
+ * @return @b RET_OK: Success
+ * @return @b RET_NOK: Error
  */
 int8 alarm_del(alarm_cbfunc cb, int8 arg)
 {
@@ -133,8 +135,9 @@ int8 alarm_del(alarm_cbfunc cb, int8 arg)
  * @param cb Callback function in @ref alarm_cbfunc form
  *		\n NULL value will be ignored
  * @param arg The value which was set when alarm event added as arg
- 		\n -1 value will be ignored
- * @return @b RET_OK: Success \n @b RET_NOK: Error
+ *		\n -1 value will be ignored
+ * @return @b RET_OK: Success
+ * @return @b RET_NOK: Error
  */
 int8 alarm_chk(alarm_cbfunc cb, int8 arg)
 {
@@ -174,7 +177,8 @@ void alarm_run(void)
  * Ex) digit_length(12345, 10) : This will return 5.
  * @param dgt The digit value to count
  * @param base Digit base like 2, 8, 10, 16
- * @return @b >0: Counted digit letter \n @b RET_NOK: Error
+ * @return @b >0: Counted digit letter
+ * @return @b RET_NOK: Error
  */
 int8 digit_length(int32 dgt, int8 base)
 {
@@ -206,7 +210,8 @@ int8 digit_length(int32 dgt, int8 base)
  * Ex) str_check(islower, "AbcDe") : This will return RET_NOK.
  * @param method The method to use for check
  * @param str The string to check
- * @return @b RET_OK: Success \n @b RET_NOK: Error
+ * @return @b RET_OK: Success
+ * @return @b RET_NOK: Error
  */
 int32 str_check(int (*method)(int), int8 *str)
 {

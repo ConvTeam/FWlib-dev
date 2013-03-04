@@ -14,6 +14,29 @@
 
 //#include "common/common.h"
 
+/**
+ * @def WATCH_SOCK_UDP_SEND
+ * Indicate that 'UDP SEND' completion of this socket has to be watched.
+ * @def WATCH_SOCK_TCP_SEND
+ * Indicate that 'TCP SEND' completion of this socket has to be watched.
+ * @def WATCH_SOCK_CONN_TRY
+ * Indicate that 'CONNECT' completion of this socket has to be watched.
+ * @def WATCH_SOCK_CONN_EVT
+ * Indicate that 'CONNECT' event of this socket has to be watched.
+ * @def WATCH_SOCK_CLS_TRY
+ * Indicate that 'CLOSE' completion of this socket has to be watched.
+ * @def WATCH_SOCK_CLS_EVT
+ * Indicate that 'CLOSE' event of this socket has to be watched.
+ * @def WATCH_SOCK_RECV
+ * Indicate that 'RECEIVE' event of this socket has to be watched.
+ * @def WATCH_SOCK_MASK_LOW
+ * Mask all Completions of the socket.
+ * @def WATCH_SOCK_MASK_HIGH
+ * Mask all Events of the socket.
+ * @def WATCH_SOCK_ALL_MASK
+ * Mask all Completions and Events.
+ */
+
 #define WATCH_SOCK_UDP_SEND		0x01
 #define WATCH_SOCK_TCP_SEND 	0x02
 #define WATCH_SOCK_CONN_TRY		0x04
@@ -34,7 +57,7 @@ int8 sockwatch_clr(uint8 sock, uint8 item);
 int8 sockwatch_chk(uint8 sock, uint8 item);
 void sockwatch_run(void);
 int8 network_init(uint8 dhcp_sock, void_func ip_update, void_func ip_conflict);
-void network_disp(wiz_NetInfo *netinfo);
+void network_disp(void);
 int8 ip_check(int8 *str, uint8 *ip);
 int8 port_check(int8 *str, uint16 *port);
 int8 mac_check(int8 *str, uint8 *mac);

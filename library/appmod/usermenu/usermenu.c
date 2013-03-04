@@ -46,7 +46,7 @@ void menu_init(void)
  *		\n - A return value of this function can be used
  * @param mfunc The Callback function which will be called when user input enter key
  * @return @b >0: Registered menu index (this can be used as parent number) 
- *		\n @b RET_NOK: Error
+ * @return @b RET_NOK: Error
  */
 int8 menu_add(int8 *desc, int8 parent, menu_func mfunc)
 {

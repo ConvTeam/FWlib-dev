@@ -40,13 +40,13 @@ typedef enum {
 //#define DHCP_AUTO	// if not, you should handle manually	=> You can set this in wizconfig.h
 //#define DHCP_ASYNC	// if not, it works using sync function	=> You can set this in wizconfig.h
 
-#undef dhcp_init		//(sock, ip_update_hook, ip_conflict_hook, def)	RET_NOK
-#undef dhcp_manual		//(action, renew, rebind)	RET_OK
-#undef dhcp_get_state		//()		DHCP_STATE_INIT
-#undef dhcp_set_storage		//(net)	RET_OK
-#undef dhcp_get_storage		//(net)	RET_OK
-#undef dhcp_static_mode		//(net)	RET_OK		// Return succ because DHCP is disabled (currently static)
-#undef dhcp_auto_start		//()		RET_NOK		// Return fail because DHCP is disabled
+#undef dhcp_init
+#undef dhcp_manual
+#undef dhcp_get_state
+#undef dhcp_set_storage
+#undef dhcp_get_storage
+#undef dhcp_static_mode
+#undef dhcp_auto_start
 
 int8 dhcp_init(uint8 sock, void_func ip_update_hook, void_func ip_conflict_hook, wiz_NetInfo *def);
 int8 dhcp_manual(dhcp_action action, uint32 *renew, uint32 *rebind);		// blocking function
