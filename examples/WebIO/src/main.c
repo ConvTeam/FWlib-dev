@@ -16,7 +16,7 @@ bool lb_tcp = FALSE, lb_udp = FALSE;
 static int8 mn_show_network(menu_ctrl mctrl, int8 *mbuf)
 {
 	if(mctrl == MC_START) {
-		network_disp();
+		network_disp(NULL);
 	} else if(mctrl == MC_END) {
 
 	} else if(mctrl == MC_DATA) {

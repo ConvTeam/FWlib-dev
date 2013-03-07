@@ -1,0 +1,5 @@
+<map id="wizpf_tick_elapse" name="wizpf_tick_elapse">
+<area shape="rect" id="node2" href="$group__socket__module.html#gae284b2640e59a1ce3be2a62c628896e0" title="Check if a TCP Socket is closed." alt="" coords="181,5,288,32"/>
+<area shape="rect" id="node3" href="$group__socket__module.html#gafa9fd0c446156b08e996f114c6ffb4f4" title="Re&#45;Send the data in TCP mode without blocking." alt="" coords="179,56,290,83"/>
+<area shape="rect" id="node4" href="$group__alarm__module.html#gac97e5a582bdd4ca3f7c0eb0f5ffba0db" title="Alarm Module Handler." alt="" coords="195,107,274,133"/>
+</map>

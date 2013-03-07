@@ -4,7 +4,7 @@
  * @version	1.0
  * @date		2013/02/22
  * @par Revision
- *		2013/02/22 - 1.0 Release
+ *			2013/02/22 - 1.0 Release
  * @author	modified by Mike Jeong
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
@@ -371,12 +371,14 @@ static int8 parseMSG(struct dhdr *pdhdr, uint8 *pbuf, uint8 *pSip)
 }
 
 /**
- * @brief Perform DNS Query 
+ * @ingroup dns_module
+ * Perform DNS Query.
+ *
  * @param sock Socket number to use
  * @param domain Domain name string to resolve
  * @param ip The variable in which resolved IP address will be returned
- * @return @b RET_OK: Success
- * @return @b RET_NOK: Error
+ * @return RET_OK: Success
+ * @return RET_NOK: Error
  */
 int8 dns_query(uint8 sock, uint8 *domain, uint8 *ip)
 {

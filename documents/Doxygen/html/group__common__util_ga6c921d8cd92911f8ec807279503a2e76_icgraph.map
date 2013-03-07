@@ -1,0 +1,5 @@
+<map id="str_check" name="str_check">
+<area shape="rect" id="node2" href="$group__sockutil__module.html#ga18934ceb00002523ee396abb25ad3546" title="Check a string is right IP Address, and if right, copy the address to the &#39;ip&#39; variable as array..." alt="" coords="141,5,216,32"/>
+<area shape="rect" id="node3" href="$group__sockutil__module.html#ga86355a119f906cfc8fadbbc67202e8d9" title="Check a string is right MAC Address, and if right, copy the address to the &#39;mac&#39; variable as array..." alt="" coords="134,56,223,83"/>
+<area shape="rect" id="node4" href="$group__sockutil__module.html#gace8135b882d24cef7d7d078d01dad4a6" title="Initialize Network." alt="" coords="272,56,363,83"/>
+</map>

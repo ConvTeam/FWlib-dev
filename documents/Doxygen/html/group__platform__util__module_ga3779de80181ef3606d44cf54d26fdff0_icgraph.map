@@ -1,0 +1,7 @@
+<map id="Delay_ms" name="Delay_ms">
+<area shape="rect" id="node2" href="$group__atcmd__module.html#ga8a5135d96658cbd51c65ab5d1eb3bb8b" title="ATCMD Module Handler." alt="" coords="162,5,227,32"/>
+<area shape="rect" id="node3" href="$group__dns__module.html#gac42982cd854842ec3eb003e199056fb7" title="Perform DNS Query." alt="" coords="153,56,236,83"/>
+<area shape="rect" id="node4" href="$group__platform__util__module.html#gaa6baaaf8b7ecf2c35a6cad23e4a8b3ac" title="Assert Function using LED." alt="" coords="143,107,247,133"/>
+<area shape="rect" id="node5" href="$group__netdev__con__module.html#gaadc4a4a1bf4410a905491ec5812799e7" title="Reset the Network Device." alt="" coords="133,157,256,184"/>
+<area shape="rect" id="node6" href="$group__platform__util__module.html#gafc3928c86d77e2fb74e7c7c1c8c2fc14" title="Initialize Platform." alt="" coords="305,157,397,184"/>
+</map>

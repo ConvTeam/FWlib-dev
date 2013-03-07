@@ -1,3 +1,14 @@
+/**
+ * @file		httputil.h
+ * @brief		
+ * @version	1.0
+ * @date		2013/
+ * @par Revision
+ *			2013/ - 1.0 Release
+ * @author	
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
+
 #ifndef	__HTTPUTIL_H__
 #define	__HTTPUTIL_H__
 

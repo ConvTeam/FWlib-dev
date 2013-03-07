@@ -1,0 +1,4 @@
+<map id="TCPCloseCHK" name="TCPCloseCHK">
+<area shape="rect" id="node2" href="$group__socket__module.html#gad7703c0342b63fe0d4c05bbb72fc6d3b" title="Close a TCP socket." alt="" coords="175,5,255,32"/>
+<area shape="rect" id="node3" href="$group__sockutil__module.html#ga608d5ceb31c5fa4a2b7d285eed44005f" title="Sockwatch Module Handler If you use Sockwatch Module, this should run in the main loop..." alt="" coords="160,56,269,83"/>
+</map>

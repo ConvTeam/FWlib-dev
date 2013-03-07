@@ -4,7 +4,7 @@
  * @version	1.0
  * @date		2013/02/22
  * @par Revision
- *		2013/02/22 - 1.0 Release
+ *			2013/02/22 - 1.0 Release
  * @author	Mike Jeong
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
@@ -13,6 +13,7 @@
 #include "common/common.h"
 //#include "common/util.h"
 
+#define MAX_TICK_ELAPSE	0x7FFFFFFF	// Maximum elapse time you can set
 
 typedef struct alarm_node_t {
 	struct alarm_node_t *next;
@@ -57,14 +58,22 @@ static int32 DecodeMimeBase64[256] = {
 };
 
 /**
+ * @defgroup alarm_module Alarm
+ * Event Alarm Module.
+ * You can register delayed action through Alarm Module.
+ * @ingroup common_util
+ * @{
+ */
+
+/**
  * Add Alarm event to the waiting queue. 
  * @param time Delay time in tick. \n Max time is defined in common.h 
  * 		\n Zero time param is possible
  * @param cb Callback function in @ref alarm_cbfunc form
  * @param arg The value which will be returned through callback function
  		\n This is for separation in same callback function
- * @return @b RET_OK: Success
- * @return @b RET_NOK: Error
+ * @return RET_OK: Success
+ * @return RET_NOK: Error
  */
 int8 alarm_set(uint32 time, alarm_cbfunc cb, int8 arg)
 {
@@ -104,8 +113,8 @@ int8 alarm_set(uint32 time, alarm_cbfunc cb, int8 arg)
  *		\n NULL value will be ignored
  * @param arg The value which was set when alarm event added as arg
  		\n -1 value will be ignored
- * @return @b RET_OK: Success
- * @return @b RET_NOK: Error
+ * @return RET_OK: Success
+ * @return RET_NOK: Error
  */
 int8 alarm_del(alarm_cbfunc cb, int8 arg)
 {
@@ -136,8 +145,8 @@ int8 alarm_del(alarm_cbfunc cb, int8 arg)
  *		\n NULL value will be ignored
  * @param arg The value which was set when alarm event added as arg
  *		\n -1 value will be ignored
- * @return @b RET_OK: Success
- * @return @b RET_NOK: Error
+ * @return RET_OK: Success
+ * @return RET_NOK: Error
  */
 int8 alarm_chk(alarm_cbfunc cb, int8 arg)
 {
@@ -172,13 +181,21 @@ void alarm_run(void)
 	}
 }
 
+/* @} */
+
+
+/**
+ * @addtogroup common_util
+ * @{
+ */
+
 /**
  * Count digit's letter
  * Ex) digit_length(12345, 10) : This will return 5.
  * @param dgt The digit value to count
  * @param base Digit base like 2, 8, 10, 16
- * @return @b >0: Counted digit letter
- * @return @b RET_NOK: Error
+ * @return >0: Counted digit letter
+ * @return RET_NOK: Error
  */
 int8 digit_length(int32 dgt, int8 base)
 {
@@ -210,8 +227,8 @@ int8 digit_length(int32 dgt, int8 base)
  * Ex) str_check(islower, "AbcDe") : This will return RET_NOK.
  * @param method The method to use for check
  * @param str The string to check
- * @return @b RET_OK: Success
- * @return @b RET_NOK: Error
+ * @return RET_OK: Success
+ * @return RET_NOK: Error
  */
 int32 str_check(int (*method)(int), int8 *str)
 {
@@ -230,7 +247,9 @@ int32 str_check(int (*method)(int), int8 *str)
  * Separate string into small peace by delimiter like strtok.
  * But if the input string contains more than one character from delimiter \n
  * in a row, strsep returns an empty string for each pair of characters from delimiter.
+ *
  * Ex) strsep("a,b,c,,,f,gh", ",") : When meet ,,, strtok returns 'f' but this returns NULL.
+ *
  * @param stringp String to separate
  * @param delim Delimiter
  * @return Next pointer separated by delimiter
@@ -260,6 +279,50 @@ int8 *strsep(register int8 **stringp, register const int8 *delim)
     }
     /* NOTREACHED */
 }
+
+/**
+ * Calculate checksum of a stream.
+ * @param src The string to calculate checksum.
+ * @param len The string length.
+ * @return Checksum
+ */ 
+uint16 checksum(uint8 * src, uint32 len)
+{
+	uint16 sum, tsum, i, j;
+	uint32 lsum;
+
+	j = len >> 1;
+	lsum = 0;
+
+	for(i = 0; i < j; i++) {
+		tsum = src[i*2];
+		tsum = tsum << 8;
+		tsum += src[i*2+1];
+		lsum += tsum;
+	}
+
+	if(len % 2) {
+		tsum = src[i*2];
+		lsum += (tsum << 8);
+	}
+
+	sum = lsum;
+	sum = ~(sum + (lsum >> 16));
+
+	return (uint16)sum;	
+}
+
+/* @} */
+
+
+
+/**
+ * @defgroup base64_util Base64
+ * Base64 Codec.
+ * Base64 Utilities which is used at SMTP or something.
+ * @ingroup common_util
+ * @{
+ */
 
 /**
  * Decode string with base64 protocol.
@@ -354,6 +417,8 @@ int32 base64_encode(int8 *text, int32 numBytes, int8 *encodedText)
 
     return 0;
 }
+
+/* @} */
 
 #ifdef USE_FULL_ASSERT
 /* NOT USE !!!
