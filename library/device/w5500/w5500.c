@@ -1,9 +1,13 @@
-/*
- * (c)COPYRIGHT
- * ALL RIGHT RESERVED
- *
- * FileName : w5500.c
-  * -----------------------------------------------------------------
+/**
+ * @file		w5500.c
+ * @brief		W5500 HAL Source File.
+ * This is used by socket.c
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *			2013/02/22 - 1.0 Release
+ * @author	
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
  
  //#define FILE_LOG_SILENCE
@@ -25,19 +29,19 @@
 */
 
 //static uint8 I_STATUS[TOTAL_SOCK_NUM];
-//static uint16 RMASK[MAX_SOCK_NUM]; /**< Variable for Rx buffer MASK in each channel */ 
-//static uint16 SSIZE[TOTAL_SOCK_NUM]; /**< Max Tx buffer size by each channel */
-//static uint16 RSIZE[TOTAL_SOCK_NUM]; /**< Max Rx buffer size by each channel */
-//static uint16 SBUFBASEADDRESS[MAX_SOCK_NUM]; /**< Tx buffer base address by each channel */ 
-//static uint16 RBUFBASEADDRESS[MAX_SOCK_NUM]; /**< Rx buffer base address by each channel */ 
+//static uint16 RMASK[MAX_SOCK_NUM]; //< Variable for Rx buffer MASK in each channel */ 
+//static uint16 SSIZE[TOTAL_SOCK_NUM]; //< Max Tx buffer size by each channel */
+//static uint16 RSIZE[TOTAL_SOCK_NUM]; //< Max Rx buffer size by each channel */
+//static uint16 SBUFBASEADDRESS[MAX_SOCK_NUM]; //< Tx buffer base address by each channel */ 
+//static uint16 RBUFBASEADDRESS[MAX_SOCK_NUM]; //< Rx buffer base address by each channel */ 
 
 
 uint8 I_STATUS[TOTAL_SOCK_NUM];
-//static uint16 RMASK[MAX_SOCK_NUM]; /**< Variable for Rx buffer MASK in each channel */ 
-uint16 SSIZE[TOTAL_SOCK_NUM]; /**< Max Tx buffer size by each channel */
-uint16 RSIZE[TOTAL_SOCK_NUM]; /**< Max Rx buffer size by each channel */
-//static uint16 SBUFBASEADDRESS[MAX_SOCK_NUM]; /**< Tx buffer base address by each channel */ 
-//static uint16 RBUFBASEADDRESS[MAX_SOCK_NUM]; /**< Rx buffer base address by each channel */ 
+//static uint16 RMASK[MAX_SOCK_NUM]; //< Variable for Rx buffer MASK in each channel */ 
+uint16 SSIZE[TOTAL_SOCK_NUM]; //< Max Tx buffer size by each channel */
+uint16 RSIZE[TOTAL_SOCK_NUM]; //< Max Rx buffer size by each channel */
+//static uint16 SBUFBASEADDRESS[MAX_SOCK_NUM]; //< Tx buffer base address by each channel */ 
+//static uint16 RBUFBASEADDRESS[MAX_SOCK_NUM]; //< Rx buffer base address by each channel */ 
 
 uint8 windowfull_retry_cnt[TOTAL_SOCK_NUM];
 
@@ -151,7 +155,7 @@ void IINCHIP_RXBUF_WRRD(uint16 addr, uint8 data)
    }
 }
 
- /**
+ /*
 @brief  This function writes the data into W5200 registers.
 */
 void IINCHIP_WRITE(uint16 addr,  uint8 cntl_bits, uint8 data)
@@ -166,7 +170,7 @@ void IINCHIP_WRITE(uint16 addr,  uint8 cntl_bits, uint8 data)
    IINCHIP_CSon();                             // CS=1,  SPI end
    IINCHIP_ISR_ENABLE();                       // Interrupt Service Routine Enable
 }
-/**
+/*
 @brief  This function reads the value from W5200 registers.
 */
 uint8 IINCHIP_READ(uint16 addr, uint8 cntl_bits)
@@ -399,11 +403,11 @@ void IINCHIP_READ_RXBUF_SEQ(uint8 sock_num, uint16 addr, uint16 len, uint8 * dat
 
 // added
 
-/**
+/*
 @brief  This function sets up gateway IP address.
 */ 
 void setGAR(
-  uint8 * addr  /**< a pointer to a 4 -byte array responsible to set the Gateway IP address. */
+  uint8 * addr  //< a pointer to a 4 -byte array responsible to set the Gateway IP address. */
   )
 {
   IINCHIP_WRITE_COMMON( (WIZC_GAR0 + 0), addr[0]);
@@ -441,7 +445,7 @@ void getGWIP(uint8 * addr)
 }
 */
 
-/**
+/*
 @brief  It sets up SubnetMask address
 */ 
 void setSUBR(uint8 * addr)
@@ -452,11 +456,11 @@ void setSUBR(uint8 * addr)
   IINCHIP_WRITE_COMMON( (WIZC_SUBR0 + 3), addr[3]);
 }
 
-/**
+/*
 @brief  This function sets up MAC address.
 */ 
 void setSHAR(
-  uint8 * addr  /**< a pointer to a 6 -byte array responsible to set the MAC address. */
+  uint8 * addr  //< a pointer to a 6 -byte array responsible to set the MAC address. */
   )
 {
   IINCHIP_WRITE_COMMON((WIZC_SHAR0 + 0),addr[0]);
@@ -467,11 +471,11 @@ void setSHAR(
   IINCHIP_WRITE_COMMON((WIZC_SHAR0 + 5),addr[5]);
 }
 
-/**
+/*
 @brief  This function sets up Source IP address.
 */
 void setSIPR(
-  uint8 * addr  /**< a pointer to a 4 -byte array responsible to set the Source IP address. */
+  uint8 * addr  //< a pointer to a 4 -byte array responsible to set the Source IP address. */
   )
 {
   IINCHIP_WRITE_COMMON((WIZC_SIPR0 + 0),addr[0]);
@@ -480,7 +484,7 @@ void setSIPR(
   IINCHIP_WRITE_COMMON((WIZC_SIPR0 + 3),addr[3]);
 }
 
-/**
+/*
 @brief  This function sets up Source IP address.
 */
 void getGAR(uint8 * addr)
@@ -539,7 +543,7 @@ void setMR(uint8 val)
   IINCHIP_WRITE_COMMON(WIZC_MR, val); 
 }
 
-/**
+/*
 @brief  This function gets Interrupt register in common register.
  */
 uint8 getIR( void )
@@ -548,11 +552,11 @@ uint8 getIR( void )
 }
 
 
-/**
+/*
  Retransmittion 
- **/
+ */
  
-/**
+/*
 @brief  This function sets up Retransmission time.
 
 If there is no response from the peer or delay in response then retransmission 
@@ -564,7 +568,7 @@ void setRTR(uint16 timeout)
   IINCHIP_WRITE_COMMON((WIZC_RTR0 + 1),(uint8)(timeout & 0x00ff));
 }
 
-/**
+/*
 @brief  This function set the number of Retransmission.
 
 If there is no response from the peer or delay in response then recorded time 
@@ -575,7 +579,7 @@ void setRCR(uint8 retry)
   IINCHIP_WRITE_COMMON(WIZC_RCR,retry);
 }
 
-/**
+/*
 @brief  This function set the interrupt mask Enable/Disable appropriate Interrupt. ('1' : interrupt enable)
 
 If any bit in IMR is set as '0' then there is not interrupt signal though the bit is
@@ -586,7 +590,7 @@ void setIMR(uint8 mask)
   IINCHIP_WRITE_COMMON(WIZC_IMR, mask); // must be setted 0x10.
 }
 
-/**
+/*
 @brief  This function set the interrupt mask Enable/Disable appropriate Interrupt. ('1' : interrupt enable)
 
 If any bit in IMR is set as '0' then there is not interrupt signal though the bit is
@@ -597,7 +601,7 @@ void clearIR(uint8 mask)
   IINCHIP_WRITE_COMMON(WIZC_IR, ~mask | getIR() ); // must be setted 0x10.
 }
 
-/**
+/*
 @brief  This sets the maximum segment size of TCP in Active Mode), while in Passive Mode this is set by peer
 */
 void setSn_MSS(uint8 s, uint16 Sn_MSSR)
@@ -611,7 +615,7 @@ void setSn_TTL(uint8 s, uint8 ttl)
    IINCHIP_WRITE_SOCKETREG( s, WIZS_TTL , ttl);
 }
 
-/**
+/*
 @brief  get socket interrupt status
 
 These below functions are used to read the Interrupt & Soket Status register
@@ -622,7 +626,7 @@ uint8 getSn_IR(uint8 s)
 }
 
 
-/**
+/*
 @brief   get socket status
 */
 uint8 getSn_SR(uint8 s)
@@ -631,7 +635,7 @@ uint8 getSn_SR(uint8 s)
 }
 
 
-/**
+/*
 @brief  get socket TX free buf size
 
 This gives free buffer size of transmit buffer. This is the data size that user can transmit.
@@ -654,7 +658,7 @@ uint16 getSn_TX_FSR(uint8 s)
 }
 
 
-/**
+/*
 @brief   get socket RX recv buf size
 
 This gives size of received data in receive buffer. 
@@ -676,7 +680,7 @@ uint16 getSn_RX_RSR(uint8 s)
 }
 
 
-/**
+/*
 @brief   This function is being called by send() and sendto() function also. 
 
 This function read the Tx write pointer register and after copy the data in buffer update the Tx write pointer
@@ -701,7 +705,7 @@ void send_data_processing(uint8 s, uint8 *data, uint16 len)
 }
 
 
-/**
+/*
 @brief  This function is being called by recv() also.
 
 This function read the Rx read pointer register

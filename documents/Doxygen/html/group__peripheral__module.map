@@ -1,0 +1,7 @@
+<map id="Peripheral Driver" name="Peripheral Driver">
+<area shape="rect" id="node1" href="$group__spi__module.html" title="Platform independent SPI driver." alt="" coords="347,56,426,83"/>
+<area shape="rect" id="node2" href="$group__gpio__module.html" title="Platform independent GPIO driver." alt="" coords="341,5,432,32"/>
+<area shape="rect" id="node3" href="$group__timer__module.html" title="Platform independent TIMER driver." alt="" coords="338,107,435,133"/>
+<area shape="rect" id="node6" href="$group__usart__module.html" title="Platform independent USART driver." alt="" coords="336,157,437,184"/>
+<area shape="rect" id="node5" href="$group__platform__module.html" title="&#45;." alt="" coords="6,81,122,108"/>
+</map>

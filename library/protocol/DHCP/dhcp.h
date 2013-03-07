@@ -4,7 +4,7 @@
  * @version	1.0
  * @date		2013/02/22
  * @par Revision
- *		2013/02/22 - 1.0 Release
+ *			2013/02/22 - 1.0 Release
  * @author	modified by Mike Jeong
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
@@ -13,6 +13,11 @@
 #define _DHCP_H
 
 //#include "common/common.h"
+
+/**
+ * @addtogroup dhcp_module
+ * @{
+ */
 
 /**
  * @brief DHCP State
@@ -36,6 +41,9 @@ typedef enum {
 	DHCP_ACT_RENEW,			///< Start Renew only when BOUND state
 	DHCP_ACT_REBIND,		///< Start Rebind only when BOUND state
 } dhcp_action;
+
+/* @} */
+
 
 //#define DHCP_AUTO	// if not, you should handle manually	=> You can set this in wizconfig.h
 //#define DHCP_ASYNC	// if not, it works using sync function	=> You can set this in wizconfig.h

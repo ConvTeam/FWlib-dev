@@ -4,7 +4,7 @@
  * @version	1.0
  * @date		2013/02/22
  * @par Revision
- *		2013/02/22 - 1.0 Release
+ *			2013/02/22 - 1.0 Release
  * @author	
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
@@ -18,8 +18,10 @@
 int8 data_buf[TX_RX_MAX_BUF_SIZE];
 
 /**
+ * @ingroup loopback_module
  * Start TCP Loopback Test (Device Side).
- * For Loopback Test, need PC side Loopback test program 
+ * For Loopback Test, need PC side Loopback test program.
+ *
  * @param sock Socket number to use
  * @param port Port number to use
  */
@@ -66,8 +68,10 @@ void loopback_tcps(uint8 sock, uint16 port)
 }
 
 /**
+ * @ingroup loopback_module
  * Start UDP Loopback Test (Device Side).
- * For Loopback Test, need PC side Loopback test program 
+ * For Loopback Test, need PC side Loopback test program.
+ *
  * @param sock Socket number to use
  * @param port Port number to use
  */

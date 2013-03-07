@@ -4,7 +4,7 @@
  * @version	1.0
  * @date		2013/02/22
  * @par Revision
- *		2013/02/22 - 1.0 Release
+ *			2013/02/22 - 1.0 Release
  * @author	Mike Jeong
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
@@ -30,6 +30,7 @@ struct menu_info mi;
 
 
 /**
+ * @ingroup usermenu_module
  * Initialize Usermenu Module.
  */
 void menu_init(void)
@@ -40,13 +41,15 @@ void menu_init(void)
 }
 
 /**
+ * @ingroup usermenu_module
  * Add Usermenu.
+ *
  * @param desc Brief which will be displayed
  * @param parent Parent menu index. \n - Root index is 0 
  *		\n - A return value of this function can be used
  * @param mfunc The Callback function which will be called when user input enter key
- * @return @b >0: Registered menu index (this can be used as parent number) 
- * @return @b RET_NOK: Error
+ * @return >0: Registered menu index (this can be used as parent number) 
+ * @return RET_NOK: Error
  */
 int8 menu_add(int8 *desc, int8 parent, menu_func mfunc)
 {
@@ -83,8 +86,8 @@ int8 menu_add(int8 *desc, int8 parent, menu_func mfunc)
 }
 
 /**
+ * @ingroup usermenu_module
  * Print Current Registered Menu.
- * 
  * This is for Debug or Check
  */
 void menu_print_tree(void)
@@ -102,8 +105,8 @@ void menu_print_tree(void)
 }
 
 /**
- * Usermenu Handler
- * 
+ * @ingroup usermenu_module
+ * Usermenu Handler.
  * This function should be run under main loop.
  */
 void menu_run(void)

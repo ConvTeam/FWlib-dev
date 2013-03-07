@@ -4,7 +4,7 @@
  * @version	1.0
  * @date		2013/02/22
  * @par Revision
- *		2013/02/22 - 1.0 Release
+ *			2013/02/22 - 1.0 Release
  * @author	Mike Jeong
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
@@ -14,61 +14,64 @@
 
 //#include "common/common.h"
 
+/**
+ * @def PUTCHAR
+ * @ingroup usart_module
+ * Define the compiler independent function which put character.
+ * @def GETCHAR
+ * @ingroup usart_module
+ * Define the compiler independent function which get character.
+ */
 #ifdef COMPILER_IAR_EWARM
 #define PUTCHAR(ch_v)		putchar(ch_v)
 #define GETCHAR()			getchar()
-//#define GETCHAR_NONBLK()	getchar_nonblk()
 #elif COMPILER_GCC_ARM
-
+#define PUTCHAR(ch_v)		// ToDo
+#define GETCHAR()			// ToDo
+#else // for doxygen
+#define PUTCHAR(ch_v)
+#define GETCHAR()
 #endif
 
-
+/**
+ * @ingroup usart_module
+ * Indicate the USART index number
+ */
 typedef enum {
-	WIZ_USART1, 
-	WIZ_USART2, 
-	WIZ_USART3
+	WIZ_USART1,	///< Indicate the 1st USART
+	WIZ_USART2,	///< Indicate the 2nd USART
+	WIZ_USART3	///< Indicate the 3rd USART
 } wizpf_usart;
 
+/**
+ * @ingroup platform_util_module
+ * Indicate the LED index number
+ */
 typedef enum {
-	WIZ_LED1, 
-	WIZ_LED2,
-	WIZ_LED3,
-	WIZ_LED4
+	WIZ_LED1,	///< Indicate the 1st LED
+	WIZ_LED2,	///< Indicate the 2nd LED
+	WIZ_LED3,	///< Indicate the 3rd LED
+	WIZ_LED4	///< Indicate the 4th LED
 } wizpf_led;
 
+/**
+ * @ingroup gpio_module
+ * Indicate the GPIO mode
+ */
 typedef enum {
-	WIZ_GPIO_IN_FLOAT,
-	WIZ_GPIO_IN_PULLUP,
-	WIZ_GPIO_IN_PULLDOWN,
-	WIZ_GPIO_OUT_PUSHPULL,
-	WIZ_GPIO_OUT_OPENDRAIN,
+	WIZ_GPIO_IN_FLOAT,		///< Indicate Floating Input
+	WIZ_GPIO_IN_PULLUP,		///< Indicate Pulled up Input
+	WIZ_GPIO_IN_PULLDOWN,	///< Indicate Pulled down Input
+	WIZ_GPIO_OUT_PUSHPULL,	///< Indicate Push-Pull Output
+	WIZ_GPIO_OUT_OPENDRAIN,	///< Indicate Open-Drain Output
 } wizpf_gpio_mode;
-
-#define DEVICE_INIT_WITH_MEMCHK(tx_size_v, rx_size_v) \
-{ \
-	uint8 _i, *_tx, *_rx, _tx_cnt = 0, _rx_cnt = 0; \
-	if(sizeof(tx_size_v)/sizeof(uint8) != TOTAL_SOCK_NUM || \
-		sizeof(rx_size_v)/sizeof(uint8) != TOTAL_SOCK_NUM) { \
-		printf("Device Memory Configure fail 1"); \
-		while(1); \
-	} \
-	_tx = (uint8*)tx_size_v; \
-	_rx = (uint8*)rx_size_v; \
-	for(_i=0; _i<TOTAL_SOCK_NUM; _i++) { \
-		_tx_cnt += _tx[_i]; \
-		_rx_cnt += _rx[_i]; \
-	} \
-	if(_tx_cnt+_rx_cnt != TOTAL_SOCK_MEM) { \
-		printf("Device Memory Configure fail 2"); \
-		while(1); \
-	} \
-	device_init(tx_size_v, rx_size_v); \
-}
 
 
 int8 platform_init(void);
 int8 wizpf_uart_init(wizpf_usart usart);
 int8 wizpf_gpio_init(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin, wizpf_gpio_mode mode);
+int8 wizpf_gpio_set(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin, int8 value);
+int8 wizpf_gpio_get(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin);
 int8 wizpf_timer_init(void);
 uint32 wizpf_get_systick(void);
 uint32 wizpf_tick_conv(bool istick2sec, uint32 tickorsec);

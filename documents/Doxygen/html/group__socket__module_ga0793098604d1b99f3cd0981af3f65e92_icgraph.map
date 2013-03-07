@@ -1,0 +1,5 @@
+<map id="TCPSendCHK" name="TCPSendCHK">
+<area shape="rect" id="node2" href="$group__socket__module.html#gaf128a43bcbf3a2ac5faade3a9539ba22" title="Send the data in TCP mode." alt="" coords="173,5,251,32"/>
+<area shape="rect" id="node3" href="$group__socket__module.html#ga5729cf3cc844ffd1a68aa64bc3dc3442" title="Re&#45;Send the data in TCP mode." alt="" coords="165,56,259,83"/>
+<area shape="rect" id="node4" href="$group__sockutil__module.html#ga608d5ceb31c5fa4a2b7d285eed44005f" title="Sockwatch Module Handler If you use Sockwatch Module, this should run in the main loop..." alt="" coords="157,107,267,133"/>
+</map>

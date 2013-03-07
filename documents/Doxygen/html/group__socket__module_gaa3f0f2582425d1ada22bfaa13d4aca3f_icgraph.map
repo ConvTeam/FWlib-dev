@@ -1,0 +1,4 @@
+<map id="TCPConnChk" name="TCPConnChk">
+<area shape="rect" id="node2" href="$group__socket__module.html#ga92d4ea0412cae2b6b2068bf4452f0b0a" title="Open a TCP client socket." alt="" coords="155,5,266,32"/>
+<area shape="rect" id="node3" href="$group__sockutil__module.html#ga608d5ceb31c5fa4a2b7d285eed44005f" title="Sockwatch Module Handler If you use Sockwatch Module, this should run in the main loop..." alt="" coords="156,56,265,83"/>
+</map>

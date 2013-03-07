@@ -1,10 +1,10 @@
 /**
  * @file		WIZ_W5200/wizplatform.c
- * @brief		Platform Specific Function Source File - For W5200 Evaluation Board
+ * @brief		Platform Specific Source File - For W5200 Evaluation Board
  * @version	1.0
  * @date		2013/02/22
  * @par Revision
- *		2013/02/22 - 1.0 Release
+ *			2013/02/22 - 1.0 Release
  * @author	Mike Jeong
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
@@ -20,14 +20,15 @@ __IO uint32 msTicks = 0;	// Max: about 50 days
 #define USART1_RX_INTERRUPT VAL_ENABLE
 #define SYSTICK_HZ			1000
 
+
 void SysTick_Handler(void)	// SysTick ISR
 {
 	msTicks++;
 }
 
 #if (USART1_RX_INTERRUPT == VAL_ENABLE)
-#define U1RX_BUF_SIZE	300
-int8 u1rx_buf[U1RX_BUF_SIZE];
+#define U1RX_BUF_SIZE		300
+int8  u1rx_buf[U1RX_BUF_SIZE];
 int16 u1rx_wr=0, u1rx_rd=0;
 void USART1_IRQHandler(void)	// USART1 ISR
 {
@@ -169,6 +170,16 @@ int8 wizpf_gpio_init(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin, wizpf_gpio_mode mode)
 	return RET_OK;
 }
 
+int8 wizpf_gpio_set(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin, int8 value)
+{
+	return RET_NOK;
+}
+
+int8 wizpf_gpio_get(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin)
+{
+	return RET_NOK;
+}
+
 int8 wizpf_timer_init(void)
 {
 	ERR("Timer is not implemented yet");
@@ -193,7 +204,7 @@ uint32 wizpf_tick_conv(bool istick2sec, uint32 tickorsec)
 	else return tickorsec * SYSTICK_HZ;	// seconds to tick
 }
 
-int32 wizpf_tick_elapse(uint32 tick)	// + elapsed time, - Remaining time
+int32 wizpf_tick_elapse(uint32 tick)	// + Elapsed time, - Remaining time
 {
 	uint32 cur = wizpf_get_systick();
 
@@ -350,8 +361,6 @@ void RCC_Configuration(void)
 	//RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);	// For IIN Chip EXTI
 }
 
-
-
 void NVIC_Configuration(void)
 {
 	/* Set the Vector Table base location at 0x08000000 */
@@ -369,7 +378,7 @@ void NVIC_Configuration(void)
 
 }
 
-void Delay_us( uint8 time_us )
+void Delay_us(uint8 time_us)
 {
 	register uint8 i, j;
 
@@ -448,6 +457,11 @@ int getchar(void)
 
 	// Todo
 
+int putchar(int ch);	// For Doxygen
+int getchar(void);	// For Doxygen
+#else
+int putchar(int ch);	// For Doxygen
+int getchar(void);	// For Doxygen
 #endif
 
 

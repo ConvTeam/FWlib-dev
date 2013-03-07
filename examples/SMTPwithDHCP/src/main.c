@@ -82,7 +82,7 @@ FAIL_TRAP:
 static int8 mn_show_network(menu_ctrl mctrl, int8 *mbuf)
 {
 	if(mctrl == MC_START) {
-		network_disp();
+		network_disp(NULL);
 	} else if(mctrl == MC_END) {
 
 	} else if(mctrl == MC_DATA) {
@@ -336,7 +336,7 @@ static int8 mn_email(menu_ctrl mctrl, int8 *mbuf)
 		case 5:	// Message
 			ret = send_mail(SOCK_SMTP, (uint8*)sender, (uint8*)passwd, 
 				(uint8*)recipient, (uint8*)subject, (uint8*)mbuf, ip);
-			if(ret != 0) printf("mail send success\r\n");
+			if(ret == RET_OK) printf("mail send success\r\n");
 			else printf("mail send fail\r\n");
 			return RET_OK;
 		default: printf("wrong stage(%d)\r\n", stage);
