@@ -34,13 +34,13 @@ int32 main(void)
 	Delay_tick(2000);	// prevent first send fail
 	
 	// ToDo: Modules Initialization
-	// ex) dhcp_auto_start();
+	// Ex) dhcp_auto_start();
 	//     atc_init();
 
 	while(1) {
 	
 		// ToDo: Modules Run
-		// ex) atc_run();
+		// Ex) atc_run();
 		//     alarm_run();
 		//     sockwatch_run();
 

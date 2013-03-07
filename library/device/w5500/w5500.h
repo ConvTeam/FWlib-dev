@@ -1,6 +1,15 @@
-/*
-@file    w5500.h
-*/
+/**
+ * @file		w5500.h
+ * @brief		W5500 HAL Header File.
+ * This is used by socket.c
+ * @version	1.0
+ * @date		2013/02/22
+ * @par Revision
+ *			2013/02/22 - 1.0 Release
+ * @author	
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
+
 #ifndef  _W5500_H_
 #define  _W5500_H_
 
@@ -81,7 +90,7 @@
 
 
 //----------------------------- W5500 Register values  -----------------------------
-/**
+/*
  @brief Sn_TSR Values
  */
 #define TS_SEND_ACK                 (0x04) 
@@ -99,51 +108,51 @@
 #define TESTREG_VAL23               (0x0058)
 
 /* MODE register values */
-#define MR_RST                       0x80     /**< reset */
-#define MR_WOL                       0x20     /**< Wake on Lan */
-#define MR_PB                        0x10     /**< ping block */
-#define MR_PPPOE                     0x08     /**< enable pppoe */
-#define MR_MACRAW_NOSIZECHK          0x04     /**< enbale MACRAW NO SIZE CHECHK */
-#define MR_UDP_FORCE_ARP             0x02     /**< enbale UDP_FORCE_ARP CHECHK */
+#define MR_RST                       0x80     //< reset */
+#define MR_WOL                       0x20     //< Wake on Lan */
+#define MR_PB                        0x10     //< ping block */
+#define MR_PPPOE                     0x08     //< enable pppoe */
+#define MR_MACRAW_NOSIZECHK          0x04     //< enbale MACRAW NO SIZE CHECHK */
+#define MR_UDP_FORCE_ARP             0x02     //< enbale UDP_FORCE_ARP CHECHK */
 
 /* IR register values */
-#define IR_CONFLICT                  0x80     /**< check ip confict */
-#define IR_UNREACH                   0x40     /**< get the destination unreachable message in UDP sending */
-#define IR_PPPoE                     0x20     /**< get the PPPoE close message */
-#define IR_MAGIC                     0x10     /**< get the magic packet interrupt */
-#define IR_SOCK(ch)                  (0x01 << ch) /**< check socket interrupt */
+#define IR_CONFLICT                  0x80     //< check ip confict */
+#define IR_UNREACH                   0x40     //< get the destination unreachable message in UDP sending */
+#define IR_PPPoE                     0x20     //< get the PPPoE close message */
+#define IR_MAGIC                     0x10     //< get the magic packet interrupt */
+#define IR_SOCK(ch)                  (0x01 << ch) //< check socket interrupt */
 
 /* Sn_MR values */
-#define Sn_MR_CLOSE                  0x00     /**< unused socket */
-#define Sn_MR_TCP                    0x01     /**< TCP */
-#define Sn_MR_UDP                    0x02     /**< UDP */
-#define Sn_MR_IPRAW                  0x03     /**< IP LAYER RAW SOCK */
-#define Sn_MR_MACRAW                 0x04     /**< MAC LAYER RAW SOCK */
-#define Sn_MR_PPPOE                  0x05     /**< PPPoE */
-#define Sn_MR_UNIBLOCK               0x10     /**< Unicast Block in UDP Multicating*/
-#define Sn_MR_ND                     0x20     /**< No Delayed Ack(TCP) flag */
-#define Sn_MR_BROADBLOCK             0x40     /**< Broadcast blcok in UDP Multicating */
-#define Sn_MR_MULTI                  0x80     /**< support UDP Multicating */
+#define Sn_MR_CLOSE                  0x00     //< unused socket */
+#define Sn_MR_TCP                    0x01     //< TCP */
+#define Sn_MR_UDP                    0x02     //< UDP */
+#define Sn_MR_IPRAW                  0x03     //< IP LAYER RAW SOCK */
+#define Sn_MR_MACRAW                 0x04     //< MAC LAYER RAW SOCK */
+#define Sn_MR_PPPOE                  0x05     //< PPPoE */
+#define Sn_MR_UNIBLOCK               0x10     //< Unicast Block in UDP Multicating*/
+#define Sn_MR_ND                     0x20     //< No Delayed Ack(TCP) flag */
+#define Sn_MR_BROADBLOCK             0x40     //< Broadcast blcok in UDP Multicating */
+#define Sn_MR_MULTI                  0x80     //< support UDP Multicating */
 
 /* Sn_MR values on MACRAW MODE */
-#define Sn_MR_MAWRAW_BCASTBLOCK      0xC0     /**< support Broadcasting On MACRAW MODE */
-#define Sn_MR_MAWRAW_MCASTBLOCK      0xA0     /**< support IPv4 Multicasting On MACRAW MODE */
-#define Sn_MR_MAWRAW_IPV6BLOCK       0x90     /**< support IPv6 Multicasting On MACRAW MODE */
-#define Sn_MR_MAWRAW_BCASTMCAST      0xE0     /**< support Broadcasting On MACRAW MODE */
-#define Sn_MR_MAWRAW_BCASTIPV6       0xD0     /**< support Broadcasting On MACRAW MODE */
-#define Sn_MR_MAWRAW_MCASTIPV6       0xB0     /**< support Broadcasting On MACRAW MODE */
-//#define Sn_MR_MAWRAW_MFENALE       0x10     /**< support MAC Fileter Enable On MACRAW MODE */
+#define Sn_MR_MAWRAW_BCASTBLOCK      0xC0     //< support Broadcasting On MACRAW MODE */
+#define Sn_MR_MAWRAW_MCASTBLOCK      0xA0     //< support IPv4 Multicasting On MACRAW MODE */
+#define Sn_MR_MAWRAW_IPV6BLOCK       0x90     //< support IPv6 Multicasting On MACRAW MODE */
+#define Sn_MR_MAWRAW_BCASTMCAST      0xE0     //< support Broadcasting On MACRAW MODE */
+#define Sn_MR_MAWRAW_BCASTIPV6       0xD0     //< support Broadcasting On MACRAW MODE */
+#define Sn_MR_MAWRAW_MCASTIPV6       0xB0     //< support Broadcasting On MACRAW MODE */
+//#define Sn_MR_MAWRAW_MFENALE       0x10     //< support MAC Fileter Enable On MACRAW MODE */
 
 /* Sn_CR values */
-#define Sn_CR_OPEN                   0x01     /**< initialize or open socket */
-#define Sn_CR_LISTEN                 0x02     /**< wait connection request in tcp mode(Server mode) */
-#define Sn_CR_CONNECT                0x04     /**< send connection request in tcp mode(Client mode) */
-#define Sn_CR_DISCON                 0x08     /**< send closing reqeuset in tcp mode */
-#define Sn_CR_CLOSE                  0x10     /**< close socket */
-#define Sn_CR_SEND                   0x20     /**< update txbuf pointer, send data */
-#define Sn_CR_SEND_MAC               0x21     /**< send data with MAC address, so without ARP process */
-#define Sn_CR_SEND_KEEP              0x22     /**<  send keep alive message */
-#define Sn_CR_RECV                   0x40     /**< update rxbuf pointer, recv data */
+#define Sn_CR_OPEN                   0x01     //< initialize or open socket */
+#define Sn_CR_LISTEN                 0x02     //< wait connection request in tcp mode(Server mode) */
+#define Sn_CR_CONNECT                0x04     //< send connection request in tcp mode(Client mode) */
+#define Sn_CR_DISCON                 0x08     //< send closing reqeuset in tcp mode */
+#define Sn_CR_CLOSE                  0x10     //< close socket */
+#define Sn_CR_SEND                   0x20     //< update txbuf pointer, send data */
+#define Sn_CR_SEND_MAC               0x21     //< send data with MAC address, so without ARP process */
+#define Sn_CR_SEND_KEEP              0x22     //<  send keep alive message */
+#define Sn_CR_RECV                   0x40     //< update rxbuf pointer, recv data */
 
 #ifdef __DEF_IINCHIP_PPP__
    #define Sn_CR_PCON                0x23      
@@ -159,49 +168,49 @@
    #define Sn_IR_PFAIL               0x40     
    #define Sn_IR_PNEXT               0x20     
 #endif
-#define Sn_IR_SEND_OK                0x10     /**< complete sending */
-#define Sn_IR_TIMEOUT                0x08     /**< assert timeout */
-#define Sn_IR_RECV                   0x04     /**< receiving data */
-#define Sn_IR_DISCON                 0x02     /**< closed socket */
-#define Sn_IR_CON                    0x01     /**< established connection */
+#define Sn_IR_SEND_OK                0x10     //< complete sending */
+#define Sn_IR_TIMEOUT                0x08     //< assert timeout */
+#define Sn_IR_RECV                   0x04     //< receiving data */
+#define Sn_IR_DISCON                 0x02     //< closed socket */
+#define Sn_IR_CON                    0x01     //< established connection */
 
 /* Sn_SR values */
-#define SOCK_CLOSED                  0x00     /**< closed */
-#define SOCK_INIT                    0x13     /**< init state */
-#define SOCK_LISTEN                  0x14     /**< listen state */
-#define SOCK_SYNSENT                 0x15     /**< connection state */
-#define SOCK_SYNRECV                 0x16     /**< connection state */
-#define SOCK_ESTABLISHED             0x17     /**< success to connect */
-#define SOCK_FIN_WAIT                0x18     /**< closing state */
-#define SOCK_CLOSING                 0x1A     /**< closing state */
-#define SOCK_TIME_WAIT               0x1B     /**< closing state */
-#define SOCK_CLOSE_WAIT              0x1C     /**< closing state */
-#define SOCK_LAST_ACK                0x1D     /**< closing state */
-#define SOCK_UDP                     0x22     /**< udp socket */
-#define SOCK_IPRAW                   0x32     /**< ip raw mode socket */
-#define SOCK_MACRAW                  0x42     /**< mac raw mode socket */
-#define SOCK_PPPOE                   0x5F     /**< pppoe socket */
+#define SOCK_CLOSED                  0x00     //< closed */
+#define SOCK_INIT                    0x13     //< init state */
+#define SOCK_LISTEN                  0x14     //< listen state */
+#define SOCK_SYNSENT                 0x15     //< connection state */
+#define SOCK_SYNRECV                 0x16     //< connection state */
+#define SOCK_ESTABLISHED             0x17     //< success to connect */
+#define SOCK_FIN_WAIT                0x18     //< closing state */
+#define SOCK_CLOSING                 0x1A     //< closing state */
+#define SOCK_TIME_WAIT               0x1B     //< closing state */
+#define SOCK_CLOSE_WAIT              0x1C     //< closing state */
+#define SOCK_LAST_ACK                0x1D     //< closing state */
+#define SOCK_UDP                     0x22     //< udp socket */
+#define SOCK_IPRAW                   0x32     //< ip raw mode socket */
+#define SOCK_MACRAW                  0x42     //< mac raw mode socket */
+#define SOCK_PPPOE                   0x5F     //< pppoe socket */
 
 /* IP PROTOCOL */
-#define IPPROTO_IP                   0        /**< Dummy for IP */
-#define IPPROTO_ICMP                 1        /**< Control message protocol */
-#define IPPROTO_IGMP                 2        /**< Internet group management protocol */
-#define IPPROTO_GGP                  3        /**< Gateway^2 (deprecated) */
-#define IPPROTO_TCP                  6        /**< TCP */
-#define IPPROTO_PUP                  12       /**< PUP */
-#define IPPROTO_UDP                  17       /**< UDP */
-#define IPPROTO_IDP                  22       /**< XNS idp */
-#define IPPROTO_ND                   77       /**< UNOFFICIAL net disk protocol */
-#define IPPROTO_RAW                  255      /**< Raw IP packet */
+#define IPPROTO_IP                   0        //< Dummy for IP */
+#define IPPROTO_ICMP                 1        //< Control message protocol */
+#define IPPROTO_IGMP                 2        //< Internet group management protocol */
+#define IPPROTO_GGP                  3        //< Gateway^2 (deprecated) */
+#define IPPROTO_TCP                  6        //< TCP */
+#define IPPROTO_PUP                  12       //< PUP */
+#define IPPROTO_UDP                  17       //< UDP */
+#define IPPROTO_IDP                  22       //< XNS idp */
+#define IPPROTO_ND                   77       //< UNOFFICIAL net disk protocol */
+#define IPPROTO_RAW                  255      //< Raw IP packet */
 
 /* Control Bits */
-#define CB_SOCK_NUM                  0xE0        /**< 3bits : Socket[0-2] */
-#define CB_MEM_SEL                   0x10        /**< 1bit  : Memory Selection */
+#define CB_SOCK_NUM                  0xE0        //< 3bits : Socket[0-2] */
+#define CB_MEM_SEL                   0x10        //< 1bit  : Memory Selection */
 #define CM_MEM_DM                    0xE0        /** Memory Direct Access Mode **/
-#define CB_RXBUF_SOCKREG_SEL         0x08        /**< 1bit  : Socket RX Buffers or uint8 Registers Selection */
+#define CB_RXBUF_SOCKREG_SEL         0x08        //< 1bit  : Socket RX Buffers or uint8 Registers Selection */
 
-#define CB_WRITE_EN                  0x04        /**< 1bit  : Write Enable */
-#define CB_SEQ_EN                    0x02        /**< 1bit  : SEQ Enable */
+#define CB_WRITE_EN                  0x04        //< 1bit  : Write Enable */
+#define CB_SEQ_EN                    0x02        //< 1bit  : SEQ Enable */
 
 // < SPI Control Byte Structure for W5500 >
 //

@@ -1,0 +1,4 @@
+<map id="UDPSendCHK" name="UDPSendCHK">
+<area shape="rect" id="node2" href="$group__socket__module.html#gaba0b9cf9345389939e6008d34511b09c" title="Send the data in UDP mode." alt="" coords="175,5,254,32"/>
+<area shape="rect" id="node3" href="$group__sockutil__module.html#ga608d5ceb31c5fa4a2b7d285eed44005f" title="Sockwatch Module Handler If you use Sockwatch Module, this should run in the main loop..." alt="" coords="160,56,269,83"/>
+</map>

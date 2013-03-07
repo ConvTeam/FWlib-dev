@@ -142,12 +142,8 @@ FAIL_TRAP:
 
 static int8 show_netinfo(menu_ctrl mctrl, int8 *mbuf)
 {
-	wiz_NetInfo netinfo;
-
-	GetNetInfo(&netinfo);
-
 	if(mctrl == MC_START) {
-		network_disp();
+		network_disp(NULL);
 	} else if(mctrl == MC_END) {
 
 	} else if(mctrl == MC_DATA) {

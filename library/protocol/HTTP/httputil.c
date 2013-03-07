@@ -1,3 +1,13 @@
+/**
+ * @file		httputil.c
+ * @brief		
+ * @version	1.0
+ * @date		2013/
+ * @par Revision
+ *			2013/ - 1.0 Release
+ * @author	
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
+ */
 
 #include "protocol/HTTP/httputil.h"
 #include "webpage.h"

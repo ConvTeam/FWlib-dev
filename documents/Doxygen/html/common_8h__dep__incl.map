@@ -1,0 +1,30 @@
+<map id="common.h" name="common.h">
+<area shape="rect" id="node2" href="$atcmd_8h.html" title="AT Command Module &#45; Interface Part Header File." alt="" coords="5,80,75,107"/>
+<area shape="rect" id="node4" href="$cmdrun_8h.html" title="AT Command Module &#45; Implementation Part Header File." alt="" coords="99,80,175,107"/>
+<area shape="rect" id="node6" href="$loopback_8h.html" title="Loopback Test Module Header File." alt="" coords="200,80,285,107"/>
+<area shape="rect" id="node8" href="$usermenu_8h.html" title="User Menu (Terminal) Module Header File." alt="" coords="309,80,400,107"/>
+<area shape="rect" id="node10" href="$util_8c.html" title="Common Utility Function Set Header File." alt="" coords="424,80,475,107"/>
+<area shape="rect" id="node11" href="$sockutil_8c.html" title="Socket Utility Source File." alt="" coords="499,80,577,107"/>
+<area shape="rect" id="node12" href="$w5200_2socket_8c.html" title="Socket Driver Source File &#45; For w5200." alt="" coords="603,80,675,107"/>
+<area shape="rect" id="node13" href="$w5200_8c.html" title="W5200 HAL Source File." alt="" coords="699,80,769,107"/>
+<area shape="rect" id="node14" href="$w5500_2socket_8c.html" title="Socket Driver Source File &#45; For w5500." alt="" coords="795,80,867,107"/>
+<area shape="rect" id="node15" href="$w5500_8c.html" title="W5500 HAL Source File." alt="" coords="891,80,961,107"/>
+<area shape="rect" id="node16" href="$_w_i_z___w5200_2wizplatform_8c.html" title="Platform Specific Source File &#45; For W5200 Evaluation Board." alt="" coords="987,80,1085,107"/>
+<area shape="rect" id="node17" href="$_w_i_z___w5500_2wizplatform_8c.html" title="Platform Specific Source File &#45; For W5500 Evaluation Board." alt="" coords="1109,80,1208,107"/>
+<area shape="rect" id="node18" href="$_w_i_z___w7200_2wizplatform_8c.html" title="Platform Specific Source File &#45; For W7200 Evaluation Board." alt="" coords="1232,80,1331,107"/>
+<area shape="rect" id="node19" href="$wizspi_8h.html" title="SPI Adaptation Layer Common Header File." alt="" coords="1355,80,1424,107"/>
+<area shape="rect" id="node21" href="$dhcp_8c.html" title="DHCP Protocol Module Source File." alt="" coords="1448,80,1509,107"/>
+<area shape="rect" id="node22" href="$dns_8h.html" title="DNS Protocol Module Header File." alt="" coords="1534,80,1588,107"/>
+<area shape="rect" id="node24" href="$httpd_8c.html" title="functions associated http processing" alt="" coords="1614,155,1676,181"/>
+<area shape="rect" id="node25" href="$httpd_8h.html" title="Define Constants and fucntions associated with HTTP protocol." alt="" coords="1665,80,1727,107"/>
+<area shape="rect" id="node26" href="$httputil_8h.html" title="httputil.h" alt="" coords="1704,155,1776,181"/>
+<area shape="rect" id="node28" href="$smtp_8h.html" title="SMTP (Simple Mail Transfer Protocol) Module Header File." alt="" coords="1803,80,1865,107"/>
+<area shape="rect" id="node3" href="$atcmd_8c.html" title="AT Command Module &#45; Interface Part Source File." alt="" coords="5,155,75,181"/>
+<area shape="rect" id="node5" href="$cmdrun_8c.html" title="AT Command Module &#45; Implementation Part Source File." alt="" coords="99,155,175,181"/>
+<area shape="rect" id="node7" href="$loopback_8c.html" title="Loopback Test Module Source File." alt="" coords="200,155,285,181"/>
+<area shape="rect" id="node9" href="$usermenu_8c.html" title="User Menu (Terminal) Module Source File." alt="" coords="309,155,400,181"/>
+<area shape="rect" id="node20" href="$wizspi_8c.html" title="SPI Adaptation Layer Source File &#45; For STM32F10x." alt="" coords="1355,155,1424,181"/>
+<area shape="rect" id="node23" href="$dns_8c.html" title="DNS Protocol Module Source File." alt="" coords="1534,155,1588,181"/>
+<area shape="rect" id="node27" href="$httputil_8c.html" title="httputil.c" alt="" coords="1704,229,1776,256"/>
+<area shape="rect" id="node29" href="$smtp_8c.html" title="SMTP (Simple Mail Transfer Protocol) Module Source File." alt="" coords="1803,155,1865,181"/>
+</map>

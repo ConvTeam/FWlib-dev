@@ -4,7 +4,7 @@
  * @version	1.0
  * @date		2013/02/22
  * @par Revision
- *		2013/02/22 - 1.0 Release
+ *			2013/02/22 - 1.0 Release
  * @author	Mike Jeong
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
@@ -13,6 +13,17 @@
 #include "host/wizspi.h"
 
 
+/**
+ * @addtogroup spi_module
+ * @{
+ */
+
+/**
+ * Initialize SPI Peripheral Device.
+ * @param spi SPI index number (@ref wizpf_spi)
+ * @return RET_OK: Success
+ * @return RET_NOK: Error
+ */
 int8 wizspi_init(wizpf_spi spi)
 {
 	SPI_TypeDef *SPIx;
@@ -74,6 +85,11 @@ int8 wizspi_init(wizpf_spi spi)
 	return RET_OK;
 }
 
+/**
+ * Set/Clear SPI CS Pin
+ * @param spi SPI index number (@ref wizpf_spi)
+ * @param val VAL_LOW: Active(set low) \n VAL_HIGH: Inactive(set high)
+ */
 void wizspi_cs(wizpf_spi spi, uint8 val)
 {
 	GPIO_TypeDef* GPIOx;
@@ -102,6 +118,12 @@ void wizspi_cs(wizpf_spi spi, uint8 val)
 	}
 }
 
+/**
+ * Send/Receive 1 Byte through SPI
+ * @param spi SPI index number (@ref wizpf_spi)
+ * @param byte 1 Byte to send
+ * @return Received 1 Byte
+ */
 uint8 wizspi_byte(wizpf_spi spi, uint8 byte)
 {
 	SPI_TypeDef *SPIx;
@@ -126,6 +148,7 @@ uint8 wizspi_byte(wizpf_spi spi, uint8 byte)
 	return (uint8)SPI_I2S_ReceiveData(SPIx);
 }
 
+/* @} */
 
 
 

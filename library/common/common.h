@@ -1,11 +1,12 @@
 /**
  * @file		common.h
  * @brief		Library Common Header File.
- * This header file influence on all library area directly
+ * This header file influence on all library area directly.
+ *
  * @version	1.0
  * @date		2013/02/22
  * @par Revision
- *		2013/02/22 - 1.0 Release
+ *			2013/02/22 - 1.0 Release
  * @author	Mike Jeong
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
@@ -105,7 +106,6 @@
 
 	#include "stm32f10x.h"
 	#include "host/wizspi.h"
-	#define MAX_TICK_ELAPSE	0x7FFFFFFF	// Maximum elapse time you can set
 
 #endif
 

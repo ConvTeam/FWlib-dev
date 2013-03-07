@@ -4,7 +4,7 @@
  * @version	1.0
  * @date		2013/02/22
  * @par Revision
- *		2013/02/22 - 1.0 Release
+ *			2013/02/22 - 1.0 Release
  * @author	Mike Jeong
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
@@ -15,10 +15,14 @@
 #include "common/common.h"
 
 
+/**
+ * @ingroup spi_module
+ * Indicate the SPI index number
+ */
 typedef enum {
-	WIZ_SPI1 = 0, 
-	WIZ_SPI2 = 1, 
-	WIZ_SPI3 = 2
+	WIZ_SPI1 = 0,	///< Indicate the 1st SPI
+	WIZ_SPI2 = 1, 	///< Indicate the 2nd SPI
+	WIZ_SPI3 = 2	///< Indicate the 3rd SPI
 } wizpf_spi;
 
 

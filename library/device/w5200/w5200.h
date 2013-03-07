@@ -1,10 +1,11 @@
 /**
  * @file		w5200.h
- * @brief		W5200 Abstract Layer Header File
+ * @brief		W5200 HAL Header File.
+ * This is used by socket.c
  * @version	1.0
  * @date		2013/02/22
  * @par Revision
- *		2013/02/22 - 1.0 Release
+ *			2013/02/22 - 1.0 Release
  * @author	
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
@@ -14,9 +15,6 @@
 
 //#include "common/common.h"
 
-/**
-@brief	 __DEF_IINCHIP_MAP_xxx__ : define memory map for iinchip 
-*/
 #define WIZ_COMMON_BASE 0x0000
 #define __DEF_IINCHIP_MAP_BASE__ 0x0000
 #define __DEF_IINCHIP_MAP_TXBUF__ (WIZ_COMMON_BASE + 0x8000) /* Internal Tx buffer address of the iinchip */

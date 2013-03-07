@@ -1,0 +1,7 @@
+<map id="SetNetInfo" name="SetNetInfo">
+<area shape="rect" id="node2" href="$group__dhcp__module.html#ga616d348a12ff4fc2b13ea066044cc609" title="Initialize DHCP module." alt="" coords="163,5,237,32"/>
+<area shape="rect" id="node4" href="$group__dhcp__module.html#ga6742b43b5f37aad6f317803c0a9ff139" title="DHCP manual mode handler." alt="" coords="151,56,249,83"/>
+<area shape="rect" id="node5" href="$group__dhcp__module.html#gac905d0694d5b5432aac7fe270a03922f" title="Change DHCP mode to Static." alt="" coords="136,107,264,133"/>
+<area shape="rect" id="node6" href="$group__dhcp__module.html#ga37e675ded052fb75d9bedea133f5e1aa" title="DHCP Auto mode (alarm mode) start function." alt="" coords="143,157,257,184"/>
+<area shape="rect" id="node3" href="$group__sockutil__module.html#gace8135b882d24cef7d7d078d01dad4a6" title="Initialize Network." alt="" coords="312,107,403,133"/>
+</map>

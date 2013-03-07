@@ -4,7 +4,7 @@
  * @version	1.0
  * @date		2013/02/22
  * @par Revision
- *		2013/02/22 - 1.0 Release
+ *			2013/02/22 - 1.0 Release
  * @author	modified by Mike Jeong
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
@@ -171,6 +171,12 @@ static bool dhcp_async = FALSE;
 static uint8  dhcp_run_cnt = 0;
 static uint32 dhcp_run_tick = 0;
 
+
+/**
+ * @addtogroup dhcp_module
+ * @{
+ */
+
 /**
  * Initialize DHCP module.
  * This should be called just one time at first time
@@ -179,8 +185,8 @@ static uint32 dhcp_run_tick = 0;
  * @param ip_update_hook Callback function for IP-update hooking
  * @param ip_conflict_hook Callback function for IP-conflict hooking (Not implemented yet)
  * @param def Default Address to set
- * @return @b RET_OK: Success
- * @return @b RET_NOK: Error
+ * @return RET_OK: Success
+ * @return RET_NOK: Error
  */
 int8 dhcp_init(uint8 sock, void_func ip_update_hook, void_func ip_conflict_hook, wiz_NetInfo *def)
 {
@@ -227,8 +233,8 @@ int8 dhcp_init(uint8 sock, void_func ip_update_hook, void_func ip_conflict_hook,
  * @param action The action you want to do. (@ref dhcp_action)
  * @param renew For returning renew time when DHCP be bound (NULL will be ignored)
  * @param rebind For returning rebind time when DHCP be bound (NULL will be ignored)
- * @return @b RET_OK: Success
- * @return @b RET_NOK: Error
+ * @return RET_OK: Success
+ * @return RET_NOK: Error
  */
 int8 dhcp_manual(dhcp_action action, uint32 *renew, uint32 *rebind)	// blocking function
 {
@@ -308,7 +314,7 @@ dhcp_state dhcp_get_state(void)
  *		and be returned with address set formerly in it for reference
  *	- Member variable DHCP is not used (just ignored)
  * @see @ref wiz_NetInfo, @ref dhcp_get_storage
- * @warning You should update MAC address when chip MAC address is changed.
+ * @note You should update MAC address when chip MAC address is changed.
  *		\n If not, DHCP send packet will have wrong MAC address.
  */
 void dhcp_set_storage(wiz_NetInfo *net)	// Should be updated when MAC is changed
@@ -414,6 +420,8 @@ void dhcp_auto_start(void)
 	
 	if(dhcp_alarm) alarm_set(10, dhcp_alarm_cb, 0);
 }
+
+/* @} */
 
 static void dhcp_alarm_cb(int8 arg)	// for DHCP auto mode
 {
@@ -625,7 +633,7 @@ static void dhcp_fail(void)
 	memcpy(&workinfo, &storage, sizeof(storage));
 	memset(workinfo.mac, 0, 6);
 	SetNetInfo(&workinfo);
-	network_disp();
+	network_disp(NULL);
 	if(dhcp_alarm) 
 		alarm_set(DHCP_START_RETRY_DELAY, dhcp_alarm_cb, 0);
 	//send_checker_NB();

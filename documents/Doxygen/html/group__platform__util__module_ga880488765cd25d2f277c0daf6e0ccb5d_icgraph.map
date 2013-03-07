@@ -1,0 +1,5 @@
+<map id="wizpf_led_set" name="wizpf_led_set">
+<area shape="rect" id="node2" href="$group__platform__util__module.html#gafc3928c86d77e2fb74e7c7c1c8c2fc14" title="Initialize Platform." alt="" coords="339,23,431,50"/>
+<area shape="rect" id="node3" href="$group__platform__util__module.html#gaa6baaaf8b7ecf2c35a6cad23e4a8b3ac" title="Assert Function using LED." alt="" coords="171,23,275,50"/>
+<area shape="rect" id="node4" href="$group__platform__util__module.html#ga51c4d8e68afb4f1ab35691a25a46c20f" title="Common GPIO Configuration." alt="" coords="155,74,291,101"/>
+</map>

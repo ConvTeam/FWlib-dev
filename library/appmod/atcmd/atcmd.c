@@ -4,7 +4,7 @@
  * @version	1.0
  * @date		2013/02/22
  * @par Revision
- *		2013/02/22 - 1.0 Release
+ *			2013/02/22 - 1.0 Release
  * @author	Mike Jeong
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
@@ -89,6 +89,7 @@ struct atc_info atci;
 
 
 /**
+ * @ingroup atcmd_module
  * Initialize ATCMD Module.
  * This should be called before @ref atc_run
  */
@@ -112,6 +113,7 @@ void atc_init(void)
 }
 
 /**
+ * @ingroup atcmd_module
  * ATCMD Module Handler.
  * If you use ATCMD Module, this should run in the main loop
  */

@@ -1,0 +1,6 @@
+<map id="Network Protocols" name="Network Protocols">
+<area shape="rect" id="node1" href="$group__smtp__module.html" title="Simple Mail Transfer Protocol." alt="" coords="181,157,240,184"/>
+<area shape="rect" id="node2" href="$group__dns__module.html" title="DNS(Domain Name System) Query." alt="" coords="186,56,235,83"/>
+<area shape="rect" id="node3" href="$group__http__module.html" title="Hypertext Transfer Protocol." alt="" coords="183,107,238,133"/>
+<area shape="rect" id="node4" href="$group__dhcp__module.html" title="Dynamic Host Configuration Protocol." alt="" coords="181,5,240,32"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="GetSocketRxRecvBufferSize" name="GetSocketRxRecvBufferSize">
+<area shape="rect" id="node2" href="$group__socket__module.html#gaf27e0855b1e5e855bbf46c83a02fa99d" title="Receive the data in TCP mode." alt="" coords="257,5,332,32"/>
+<area shape="rect" id="node3" href="$group__socket__module.html#gafbbebe2c65cbdf240c31a0fd524da725" title="Receive the data in UDP mode." alt="" coords="256,56,333,83"/>
+<area shape="rect" id="node4" href="$group__sockutil__module.html#ga608d5ceb31c5fa4a2b7d285eed44005f" title="Sockwatch Module Handler If you use Sockwatch Module, this should run in the main loop..." alt="" coords="240,107,349,133"/>
+</map>
