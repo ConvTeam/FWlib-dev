@@ -47,7 +47,7 @@ static void hdl_nsend(void);
 static void hdl_nrecv(void);
 static void hdl_nsock(void);
 static void hdl_nopt(void);
-#if 0
+#if 0 // for wlan
 static void hdl_wset(void);
 static void hdl_wstat(void);
 static void hdl_wscan(void);
@@ -110,6 +110,12 @@ void atc_init(void)
 	sockwatch_open(5, atc_async_cb);
 	sockwatch_open(6, atc_async_cb);
 	sockwatch_open(7, atc_async_cb);
+
+	printf("\r\n\r\n\r\n[W,0]\r\n");
+
+	// ToDo
+
+	printf("[S,0]\r\n");
 }
 
 /**
@@ -139,9 +145,7 @@ void atc_run(void)
 
 		atci.sendbuf[atci.worklen++] = recv_char;
 		if(atci.worklen >= atci.sendlen) { // 입력이 완료되면
-			uint8 *ip =    (atci.sendflag[0] == VAL_ENABLE) ? atci.sendip : NULL;
-			uint16 *port = (atci.sendflag[1] == VAL_ENABLE) ? &atci.sendport : NULL;
-			act_nsend(atci.sendsock, atci.sendbuf, atci.worklen, ip, port);
+			act_nsend(atci.sendsock, atci.sendbuf, atci.worklen, atci.sendip, &atci.sendport);
 			atci.sendsock = VAL_NONE;
 		}
 		return;
@@ -416,6 +420,9 @@ void cmd_resp_dump(int8 idval, int8 *dump)
 	} else {
 		if(idval == VAL_NONE) printf("[D,,%d]\r\n%s\r\n", len, dump);
 		else printf("[D,%d,%d]\r\n%s\r\n", idval, len, dump);
+		DBG("going to free");
+		MEM_FREE(dump);
+		DBG("free done");
 	}
 }
 
@@ -615,7 +622,7 @@ static void hdl_nmac(void)
 
 static void hdl_nopen(void)
 {
-	int8 type=0, save=0;
+	int8 type=0;
 	uint8 DstIP[4], *dip = NULL;
 	uint16 SrcPort, DstPort = 0;
 
@@ -644,22 +651,15 @@ static void hdl_nopen(void)
 				CHK_ARG_LEN(atci.tcmd.arg3, 0, 3);
 				CHK_ARG_LEN(atci.tcmd.arg4, 0, 4);
 			}
-		} //else {	// 'S'	무시정책이냐 아니면 전부 확인 정책이냐
-		//	CHK_ARG_LEN(atci.tcmd.arg3, 0, 3);
-		//	CHK_ARG_LEN(atci.tcmd.arg4, 0, 4);
-		//}
-
-		if(atci.tcmd.arg5[0] == 0) {
-			atci.tcmd.arg5[0] = 'O';
-			atci.tcmd.arg5[1] = 0;
-		} else if(CMP_CHAR_3(atci.tcmd.arg5, 'O', 'S', 'A')) {
-			RESP_CDR(RET_WRONG_ARG, 5);
+		} else {	// 'S'	무시정책이냐 아니면 전부 확인 정책이냐
+			CHK_ARG_LEN(atci.tcmd.arg3, 0, 3);
+			CHK_ARG_LEN(atci.tcmd.arg4, 0, 4);
 		}
 
+		CHK_ARG_LEN(atci.tcmd.arg5, 0, 5);
 		type = atci.tcmd.arg1[0];
-		save = atci.tcmd.arg5[0];
 		CMD_CLEAR();
-		act_nopen_a(type, save, SrcPort, dip, DstPort);
+		act_nopen_a(type, SrcPort, dip, DstPort);
 	}
 	else CRITICAL_ERRA("wrong sign(%d)", atci.tcmd.sign);
 }
@@ -688,6 +688,8 @@ static void hdl_nsend(void)
 {
 	int8 num = -1;
 	int32 ret;
+	uint8 *dip = NULL;
+	uint16 *dport = NULL;
 
 	if(atci.tcmd.sign == CMD_SIGN_NONE) RESP_CR(RET_WRONG_SIGN);
 	if(atci.tcmd.sign == CMD_SIGN_QUEST) RESP_CR(RET_WRONG_SIGN);
@@ -700,21 +702,22 @@ static void hdl_nsend(void)
 				RESP_CDR(RET_RANGE_OUT, 1);
 		}
 		if(str_check(isdigit, atci.tcmd.arg2) != RET_OK || 
-			(atci.sendlen = atoi((char*)atci.tcmd.arg2)) 	< 1 || 
-			atci.sendlen > WORK_BUF_SIZE) RESP_CDR(RET_WRONG_ARG, 2);
-		if(atci.tcmd.arg3[0] == 0) atci.sendflag[0] = VAL_DISABLE;
-		else if(ip_check(atci.tcmd.arg3, atci.sendip) == RET_OK) 
-			atci.sendflag[0] = VAL_ENABLE;
-		else RESP_CDR(RET_WRONG_ARG, 3);
-		
-		if(atci.tcmd.arg4[0] == 0) atci.sendflag[1] = VAL_DISABLE;
-		else if(port_check(atci.tcmd.arg4, &atci.sendport) == RET_OK) 
-			atci.sendflag[1] = VAL_ENABLE;
-		else RESP_CDR(RET_WRONG_ARG, 4);
+			(atci.sendlen = atoi((char*)atci.tcmd.arg2)) < 1 || 
+			atci.sendlen > WORK_BUF_SIZE) RESP_CDR(RET_RANGE_OUT, 2);
+
+		if(atci.tcmd.arg3[0]) {
+			if(ip_check(atci.tcmd.arg3, atci.sendip) == RET_OK) dip = atci.sendip;
+			else RESP_CDR(RET_WRONG_ARG, 3);
+		}
+		if(atci.tcmd.arg4[0]) {
+			if(port_check(atci.tcmd.arg4, &atci.sendport)==RET_OK) dport = &atci.sendport;
+			else RESP_CDR(RET_WRONG_ARG, 4);
+		}
+
 		CHK_ARG_LEN(atci.tcmd.arg5, 0, 5);
 		CHK_ARG_LEN(atci.tcmd.arg6, 0, 6);
 		CMD_CLEAR();
-		ret = act_nsend_chk(num, &atci.sendlen, atci.sendip, &atci.sendport);
+		ret = act_nsend_chk(num, &atci.sendlen, dip, dport);
 		if(ret != RET_OK) return;
 
 		atci.sendsock = num;	// 유효성 검사가 완료되면 SEND모드로 전환

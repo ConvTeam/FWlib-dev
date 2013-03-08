@@ -60,9 +60,10 @@ void alarm_run(void);
 int8   digit_length(int32 dgt, int8 base);
 int32  str_check(int (*method)(int), int8 *str);
 int8*  strsep(register int8 **stringp, register const int8 *delim);
+void   print_dump(void *buf, uint16 len);
 uint16 checksum(uint8 * src, uint32 len);
-int32 base64_decode(int8 *text, uint8 *dst, int32 numBytes );
-int32 base64_encode(int8 *text, int32 numBytes, int8 *encodedText);
+int32  base64_decode(int8 *text, uint8 *dst, int32 numBytes );
+int32  base64_encode(int8 *text, int32 numBytes, int8 *encodedText);
 
 #endif //_UTIL_H
 

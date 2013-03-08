@@ -48,14 +48,14 @@ void device_mem_init(uint8 *tx_size, uint8 *rx_size)
 	int16 i, mul;
 	int16 ssum, rsum;
 
-	DBG("device_mem_init()"); 
+	DBG("device_mem_init()");
 
 	ssum = 0;
 	rsum = 0;
 	SBUFBASEADDRESS[0] = (uint16)(__DEF_IINCHIP_MAP_TXBUF__);   // Set base address of Tx memory for channel #0
 	RBUFBASEADDRESS[0] = (uint16)(__DEF_IINCHIP_MAP_RXBUF__);   // Set base address of Rx memory for channel #0
 
-	for (i = 0 ; i < TOTAL_SOCK_NUM; i++)	// Set the size, masking and base address of Tx & Rx memory by each channel
+	for (i=0; i<TOTAL_SOCK_NUM; i++)	// Set the size, masking and base address of Tx & Rx memory by each channel
 	{
 		IINCHIP_WRITE((Sn_TXMEM_SIZE(i)),tx_size[i]);
 		IINCHIP_WRITE((Sn_RXMEM_SIZE(i)),rx_size[i]);
@@ -66,17 +66,19 @@ void device_mem_init(uint8 *tx_size, uint8 *rx_size)
 		SSIZE[i] = (int16)(0);
 		RSIZE[i] = (int16)(0);
 
-		if(ssum <= 16384) {	//if (ssum <= 8192)
+		if(ssum <= 16384) {	//if(ssum <= 8192)
 			if(tx_size[i]==1 || tx_size[i]==2 || tx_size[i]==4 || 
 				tx_size[i]==8 || tx_size[i]==16) mul = tx_size[i];
-			else mul = 2;	// by Ssoo디폴트 값 2K --20120522
-			SSIZE[i] = (int16)(1024) * mul;
+			else mul = 2;	// by Ssoo Default 2K --20120522
+			SSIZE[i] = 0x400 * mul;
+			SMASK[i] = 0x400 * mul - 1;
 		}
-		if(rsum <= 16384) {	//if (rsum <= 8192)
+		if(rsum <= 16384) {	//if(rsum <= 8192)
 			if(rx_size[i]==1 || rx_size[i]==2 || rx_size[i]==4 || 
 				rx_size[i]==8 || rx_size[i]==16) mul = rx_size[i];
-			else mul = 2;	// by Ssoo디폴트 값 2K --20120522
-			RSIZE[i] = (int16)(1024) * mul;
+			else mul = 2;	// by Ssoo Default 2K --20120522
+			RSIZE[i] = 0x400 * mul;
+			RMASK[i] = 0x400 * mul - 1;
 		}
 
 		ssum += SSIZE[i];
@@ -118,6 +120,7 @@ void ClsNetInfo(netinfo_member member)
 {
 	uint8 zero[6] = {0,};
 
+	DBGA("Reset Address(%d)", member);
 	switch(member) {
 	//case NI_MAC_ADDR:	// If need, uncomment
 	//	setSHAR(zero);
@@ -571,7 +574,7 @@ int32 TCPRecv(uint8 s, int8 *buf, uint16 len)
 		return SOCKERR_WRONG_ARG;
 	}
 
-	RSR_len = GetSocketRxRecvBufferSize(s);	// Check Receive Buffer of W5200
+	RSR_len = GetSocketRxRecvBufferSize(s);	// Check Receive Buffer
 	if(RSR_len == 0){
 		status = getSn_SR(s);
 		if(status == SOCK_CLOSED) return SOCKERR_CLOSED;
@@ -622,6 +625,7 @@ int8 UDPClose(uint8 s)
 	IINCHIP_WRITE(Sn_CR(s),Sn_CR_CLOSE);
 	while(IINCHIP_READ(Sn_CR(s)));  // wait to process the command...
 	IINCHIP_WRITE(Sn_IR(s), 0xFF);	// interrupt all clear
+
 	return RET_OK;
 }
 
@@ -685,7 +689,9 @@ int32 UDPSendNB(uint8 s, const int8 *buf, uint16 len, uint8 *addr, uint16 port)
 		IINCHIP_WRITE((Sn_DIPR0(s) + 3),addr[3]);
 		IINCHIP_WRITE(Sn_DPORT0(s),(uint8)((port & 0xff00) >> 8));
 		IINCHIP_WRITE((Sn_DPORT0(s) + 1),(uint8)(port & 0x00ff));
+
 		send_data_processing(s, (uint8*)buf, len);	// copy data
+
 		IINCHIP_WRITE(Sn_CR(s),Sn_CR_SEND);
 		while(IINCHIP_READ(Sn_CR(s)));  // wait to process the command...
 	}
@@ -734,10 +740,12 @@ int32 UDPRecv(uint8 s, int8 *buf, uint16 len, uint8 *addr, uint16 *port)
 		recv_data_ignore(s, RSR_len);
 		IINCHIP_WRITE(Sn_CR(s),Sn_CR_RECV);
 		while(IINCHIP_READ(Sn_CR(s)));
+
 		return SOCKERR_NOT_SPECIFIED;
 	} else {
 		recv_data_processing(s, prebuf, 8);
 		IINCHIP_WRITE(Sn_CR(s),Sn_CR_RECV);
+
 		if(addr) {		// read peer's IP address, port number.
 			addr[0] = prebuf[0];
 			addr[1] = prebuf[1];
@@ -759,6 +767,7 @@ int32 UDPRecv(uint8 s, int8 *buf, uint16 len, uint8 *addr, uint16 *port)
 			recv_data_ignore(s, GetSocketRxRecvBufferSize(s));
 			IINCHIP_WRITE(Sn_CR(s),Sn_CR_RECV);
 			while(IINCHIP_READ(Sn_CR(s)));
+
 			return SOCKERR_NOT_SPECIFIED;
 		}
 		RSR_len = tmp_len;
@@ -775,6 +784,7 @@ int32 UDPRecv(uint8 s, int8 *buf, uint16 len, uint8 *addr, uint16 *port)
 	case Sn_MR_UDP:
 		recv_data_processing(s, (uint8*)buf, RSR_len);
 		IINCHIP_WRITE(Sn_CR(s),Sn_CR_RECV);
+
 		if(tmp_len) {
 			while(IINCHIP_READ(Sn_CR(s)));
 			DBG("Ignore rest data");
