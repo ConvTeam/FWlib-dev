@@ -280,9 +280,13 @@
 #if (WIZ_LOG_LEVEL > 2) && !defined(FILE_LOG_SILENCE)
 #define DBGCRTC(cond_v, fmt) do { if(cond_v) {ERR(fmt); while(1); } } while(0)
 #define DBGCRTCA(cond_v, fmt, ...) do { if(cond_v) {ERRA(fmt, __VA_ARGS__); while(1); } } while(0)
+#define DBGDUMP(data_p, len_v) print_dump(data_p, len_v)
+#define DBGFUNC(func_p) func_p
 #else
 #define DBGCRTC(cond_v, fmt)
 #define DBGCRTCA(cond_v, fmt, ...)
+#define DBGDUMP(data_p, len_v)
+#define DBGFUNC(func_p)
 #endif
 
 #if (WIZ_LOG_LEVEL > 0) && !defined(FILE_LOG_SILENCE)
