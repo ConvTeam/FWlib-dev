@@ -123,7 +123,7 @@ void network_disp(wiz_NetInfo *netinfo)
  */
 int8 sockwatch_open(uint8 sock, watch_cbfunc cb)
 {
-	DBGA("WATCH Open - sock(%d), CB(%p)", sock, cb);
+	DBGA("WATCH Open - sock(%d), CB(%p)", sock, (void*)cb);
 	if(cb == NULL || sock >= TOTAL_SOCK_NUM) {
 		ERRA("wrong arg - sock(%d)", sock);
 		return RET_NOK;
@@ -281,7 +281,7 @@ int8 ip_check(int8 *str, uint8 *ip)
 {
 	uint8_t cnt=0;
 	int8 tmp[16], *split;
-	int32 digit;
+	int32 digit, sumchk = 0;
 
 	digit = strlen((char*)str);
 	if(digit > 15 || digit < 7) {
@@ -294,11 +294,12 @@ int8 ip_check(int8 *str, uint8 *ip)
 		digit = atoi((char*)split);
 		if(digit > 255 || digit < 0) return RET_NOK;
 		if(ip) ip[cnt] = digit;
+		sumchk += digit;
 		cnt++;
 		split = (int8*)strtok(NULL, ".");
 	}
 
-	if(cnt != 4) {		//printf("not 4 digit (%d)\r\n", cnt);
+	if(cnt != 4 || sumchk == 0) {		//printf("not 4 digit (%d)\r\n", cnt);
 		return RET_NOK;
 	}
 

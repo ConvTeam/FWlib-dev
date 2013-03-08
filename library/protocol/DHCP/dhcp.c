@@ -212,11 +212,6 @@ int8 dhcp_init(uint8 sock, void_func ip_update_hook, void_func ip_conflict_hook,
 	di.sock = sock;
 	if(ip_update_hook) di.ip_update = ip_update_hook;
 	if(ip_conflict_hook) di.ip_conflict = ip_conflict_hook;
-	
-	ClsNetInfo(NI_IP_ADDR);
-	ClsNetInfo(NI_SN_MASK);
-	ClsNetInfo(NI_GW_ADDR);
-	ClsNetInfo(NI_DNS_ADDR);
 
 	// ToDo: Remove setting zero IP & SN (set at start func)
 
@@ -427,7 +422,7 @@ static void dhcp_alarm_cb(int8 arg)	// for DHCP auto mode
 {
 	if(dhcp_alarm == FALSE) return;
 	if(arg == 0) {
-		if(di.state == DHCP_STATE_IP_CHECK) {
+		if(di.state == DHCP_STATE_BOUND) {
 			alarm_set(wizpf_tick_conv(FALSE, di.renew_time), dhcp_alarm_cb, 1);
 			alarm_set(wizpf_tick_conv(FALSE, di.rebind_time), dhcp_alarm_cb, 2);
 		}
@@ -486,6 +481,10 @@ static void dhcp_run(void)
 	} else if(GetUDPSocketStatus(di.sock) == SOCKSTAT_CLOSED) {
 		if(udp_open_fail == TRUE && !IS_TIME_PASSED(dhcp_run_tick, DHCP_RETRY_DELAY)) 
 			goto RET_ALARM;
+		ClsNetInfo(NI_IP_ADDR);
+		ClsNetInfo(NI_SN_MASK);
+		ClsNetInfo(NI_GW_ADDR);
+		ClsNetInfo(NI_DNS_ADDR);
 		if(UDPOpen(di.sock, DHCP_CLIENT_PORT) == RET_OK) {
 			if(dhcp_async) sockwatch_open(di.sock, dhcp_async_cb);
 			udp_open_fail = FALSE;
@@ -601,9 +600,8 @@ static void dhcp_run(void)
 			SET_STATE(DHCP_STATE_BOUND);
 			SetNetInfo(&workinfo);
 			if(di.ip_update) di.ip_update();
-			LOGA("DHCP ok - New IP (%d.%d.%d.%d)", workinfo.ip[0], workinfo.ip[1], workinfo.ip[2], workinfo.ip[3]);
-			UDPClose(di.sock);
-			if(dhcp_async) sockwatch_close(di.sock);
+			LOGA("DHCP ok - New IP (%d.%d.%d.%d)", 
+				workinfo.ip[0], workinfo.ip[1], workinfo.ip[2], workinfo.ip[3]);
 		//} else {
 		//	SET_STATE(DHCP_STATE_INIT);
 		//	ERR("IP Addr conflicted - IP(%d.%d.%d.%d)", workinfo.ip[0], workinfo.ip[1], workinfo.ip[2], workinfo.ip[3]);
@@ -613,6 +611,8 @@ static void dhcp_run(void)
 		break;
 	case DHCP_STATE_BOUND:
 		di.action = DHCP_ACT_NONE;
+		UDPClose(di.sock);
+		if(dhcp_async) sockwatch_close(di.sock);
 		return; // alarm set is not needed
 	case DHCP_STATE_FAILED:
 		return; // alarm set is not needed
@@ -656,6 +656,7 @@ static int8 recv_handler(void)
 		return RET_NOK;
 	}
 
+	//DBGFUNC(print_dump(&dm, sizeof(dm)));	// For debugging received packet
 	DBGA("DHCP_SIP:%d.%d.%d.%d",di.srv_ip[0],di.srv_ip[1],di.srv_ip[2],di.srv_ip[3]);
 	DBGA("DHCP_RIP:%d.%d.%d.%d",di.srv_ip_real[0],di.srv_ip_real[1],di.srv_ip_real[2],di.srv_ip_real[3]);
 	DBGA("recv_ip:%d.%d.%d.%d",recv_ip[0],recv_ip[1],recv_ip[2],recv_ip[3]);

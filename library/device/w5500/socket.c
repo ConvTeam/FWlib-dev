@@ -42,7 +42,7 @@ void device_SW_reset(void)
 	DBGA("MR value is %02x",IINCHIP_READ_COMMON(WIZC_MR));
 }
 
-void device_mem_init(uint8 * tx_size, uint8 * rx_size)
+void device_mem_init(uint8 *tx_size, uint8 *rx_size)
 {
 	int16 i, mul;
 	int16 ssum, rsum;
@@ -52,47 +52,47 @@ void device_mem_init(uint8 * tx_size, uint8 * rx_size)
 	ssum = 0;
 	rsum = 0;
 
-	for (i = 0 ; i < TOTAL_SOCK_NUM; i++) // Set the size, masking and base address of Tx & Rx memory by each channel
+	for (i=0; i<TOTAL_SOCK_NUM; i++)	// Set the size, masking and base address of Tx & Rx memory by each channel
 	{
 		IINCHIP_WRITE_SOCKETREG( i, WIZS_TXMEM_SIZE, tx_size[i]);
 		IINCHIP_WRITE_SOCKETREG( i, WIZS_RXMEM_SIZE, rx_size[i]);
 
 		DBGA("tx_size[%d]: %d, Sn_TXMEM_SIZE = %d",i, tx_size[i], IINCHIP_READ_SOCKETREG( i, WIZS_TXMEM_SIZE));
 		DBGA("rx_size[%d]: %d, Sn_RXMEM_SIZE = %d",i, rx_size[i], IINCHIP_READ_SOCKETREG( i, WIZS_RXMEM_SIZE));
+
 		SSIZE[i] = (int16)(0);
 		RSIZE[i] = (int16)(0);
 
-		if (ssum <= 16384) {	//if (ssum <= 8192)
+		if(ssum <= 16384) {	//if(ssum <= 8192)
 #if 1 //--4Channel사용시 적용 안됨 --20120522
 			if(tx_size[i]==1 || tx_size[i]==2 || tx_size[i]==4 || tx_size[i]==8 || tx_size[i]==16)
 #else
 			if(tx_size[i]==1 || tx_size[i]==2 || tx_size[i]==4 || tx_size[i]==8)
 #endif
 				mul = tx_size[i];
-			else mul = 2;	// by Ssoo디폴트 값 2K --20120522
-			SSIZE[i] = (int16)(1024) * mul;
+			else mul = 2;	// by Ssoo Default 2K --20120522
+			SSIZE[i] = 0x400 * mul;
+			SMASK[i] = 0x400 * mul - 1;
 		}
-
-		if (rsum <= 16384) {	//if (rsum <= 8192)
+		if(rsum <= 16384) {	//if(rsum <= 8192)
 #if 1 //--4Channel사용시 적용 안됨 --20120522
 			if(rx_size[i]==1 || rx_size[i]==2 || rx_size[i]==4 || rx_size[i]==8 || rx_size[i]==16)
 #else
 			if(rx_size[i]==1 || rx_size[i]==2 || rx_size[i]==4 || rx_size[i]==8)
 #endif
 				mul = rx_size[i];
-			else mul = 2;	// by Ssoo디폴트 값 2K --20120522
-			RSIZE[i] = (int16)(1024) * mul;
+			else mul = 2;	// by Ssoo Default 2K --20120522
+			RSIZE[i] = 0x400 * mul;
+			RMASK[i] = 0x400 * mul - 1;
 		}
 
 		ssum += SSIZE[i];
 		rsum += RSIZE[i];
 
-//        if (i != 0)             // Sets base address of Tx and Rx memory for channel #1,#2,#3
-//    {
-//      SBUFBASEADDRESS[i] = SBUFBASEADDRESS[i-1] + SSIZE[i-1];
-//      RBUFBASEADDRESS[i] = RBUFBASEADDRESS[i-1] + RSIZE[i-1];
-//    }
-
+//		if (i != 0) {            // Sets base address of Tx and Rx memory for channel #1,#2,#3
+//			SBUFBASEADDRESS[i] = SBUFBASEADDRESS[i-1] + SSIZE[i-1];
+//			RBUFBASEADDRESS[i] = RBUFBASEADDRESS[i-1] + RSIZE[i-1];
+//		}
 	DBGA("ch = %d",i);
 	DBGA("SBUFBASEADDRESS = %d",(uint16)SBUFBASEADDRESS[i]);
 	DBGA("RBUFBASEADDRESS = %d",(uint16)RBUFBASEADDRESS[i]);
@@ -105,15 +105,15 @@ void SetNetInfo(wiz_NetInfo *netinfo)
 {
 	if(netinfo->mac[0] != 0x00 || netinfo->mac[1] != 0x00 || netinfo->mac[2] != 0x00 || 
 		netinfo->mac[3] != 0x00 || netinfo->mac[4] != 0x00 || netinfo->mac[5] != 0x00)
-		setSHAR(netinfo->mac);	// set local MAC address
+		setSHAR(netinfo->mac);							// set local MAC address
 	if(netinfo->ip[0] != 0x00 || netinfo->ip[1] != 0x00 || netinfo->ip[2] != 0x00 || 
-	   netinfo->ip[3] != 0x00) setSIPR(netinfo->ip);	// set local IP address
+		netinfo->ip[3] != 0x00) setSIPR(netinfo->ip);	// set local IP address
 	if(netinfo->sn[0] != 0x00 || netinfo->sn[1] != 0x00 || netinfo->sn[2] != 0x00 || 
-	   netinfo->sn[3] != 0x00) setSUBR(netinfo->sn);	// set Subnet mask
+		netinfo->sn[3] != 0x00) setSUBR(netinfo->sn);	// set Subnet mask
 	if(netinfo->gw[0] != 0x00 || netinfo->gw[1] != 0x00 || netinfo->gw[2] != 0x00 || 
-	   netinfo->gw[3] != 0x00) setGAR(netinfo->gw);		// set Gateway address
+		netinfo->gw[3] != 0x00) setGAR(netinfo->gw);	// set Gateway address
 	if(netinfo->dns[0] != 0x00 || netinfo->dns[1] != 0x00 || netinfo->dns[2] != 0x00 || 
-	   netinfo->dns[3] != 0x00){
+		netinfo->dns[3] != 0x00){
 		DNS[0] = netinfo->dns[0];
 		DNS[1] = netinfo->dns[1];
 		DNS[2] = netinfo->dns[2];
@@ -127,6 +127,7 @@ void ClsNetInfo(netinfo_member member)
 {
 	uint8 zero[6] = {0,};
 
+	DBGA("Reset Address(%d)", member);
 	switch(member) {
 	//case NI_MAC_ADDR:	// If need, uncomment
 	//	setSHAR(zero);
@@ -183,7 +184,7 @@ void SetSocketOption(uint8 option_type, uint16 option_value)
 		break;
 	}
 }
-
+ 
 int8 GetTCPSocketStatus(uint8 s)
 {
 	if(s > TOTAL_SOCK_NUM) {
@@ -211,7 +212,7 @@ int8 GetTCPSocketStatus(uint8 s)
 		else return SOCKERR_WRONG_STATUS;
 	}
 }
- 
+
 int8 GetUDPSocketStatus(uint8 s)
 {
 	if(s > TOTAL_SOCK_NUM) {
@@ -234,17 +235,17 @@ int8 GetUDPSocketStatus(uint8 s)
 		else return SOCKERR_WRONG_STATUS;
 	}
 }
- 
+
 uint16 GetSocketTxFreeBufferSize(uint8 s)
 {
 	return getSn_TX_FSR(s); // get socket TX free buf size
 }
- 
+
 uint16 GetSocketRxRecvBufferSize(uint8 s)
 {
 	return getSn_RX_RSR(s); // get socket RX recv buf size
 }
- 
+
 int8 TCPServerOpen(uint8 s, uint16 port)
 {
 	if(s > TOTAL_SOCK_NUM) {
@@ -259,7 +260,6 @@ int8 TCPServerOpen(uint8 s, uint16 port)
 	}
 
 	TCPClose(s);
-	
 	//IINCHIP_WRITE(Sn_MR(s),Sn_MR_TCP);
 	//IINCHIP_WRITE(Sn_PORT0(s),(uint8)((port & 0xff00) >> 8));
 	//IINCHIP_WRITE((Sn_PORT0(s) + 1),(uint8)(port & 0x00ff));
@@ -273,14 +273,13 @@ int8 TCPServerOpen(uint8 s, uint16 port)
 	IINCHIP_WRITE_SOCKETREG(s, WIZS_CR, Sn_CR_OPEN);  // run sockinit Sn_CR
 	while(IINCHIP_READ_SOCKETREG(s, WIZS_CR));        // wait to process the command...
 	DBGA("Sn_SR = %.2x , Protocol = %.2x", IINCHIP_READ_SOCKETREG(s, WIZS_SR), IINCHIP_READ_SOCKETREG(s, WIZS_MR));
-        
 
 	//if (IINCHIP_READ(Sn_SR(s)) != SOCK_INIT) {
 		//DBGA("wrong status(%d)", IINCHIP_READ(Sn_SR(s)));
 		if(IINCHIP_READ_SOCKETREG(s, WIZS_SR) != SOCK_INIT) {
 		DBGA("wrong status(%d)", IINCHIP_READ_SOCKETREG(s, WIZS_SR)); 
 		return SOCKERR_WRONG_STATUS;
-	} else {                
+	} else {
 		//IINCHIP_WRITE(Sn_CR(s),Sn_CR_LISTEN);
 		//while(IINCHIP_READ(Sn_CR(s)));	          // wait to process the command...
 		IINCHIP_WRITE_SOCKETREG(s, WIZS_CR, Sn_CR_LISTEN);
@@ -324,7 +323,6 @@ int8 TCPCltOpenNB(uint8 s, uint16 sport, uint8 *dip, uint16 dport)
 	}
 
 	TCPClose(s);
-        
 	//IINCHIP_WRITE(Sn_MR(s),Sn_MR_TCP);
 	//IINCHIP_WRITE(Sn_PORT0(s),(uint8)((sport & 0xff00) >> 8));
 	//IINCHIP_WRITE((Sn_PORT0(s) + 1),(uint8)(sport & 0x00ff));
@@ -651,7 +649,7 @@ int32 TCPRecv(uint8 s, int8 *buf, uint16 len)
 		return SOCKERR_WRONG_ARG;
 	}
 
-	RSR_len = GetSocketRxRecvBufferSize(s);	// Check Receive Buffer of W5500
+	RSR_len = GetSocketRxRecvBufferSize(s);	// Check Receive Buffer
 	if(RSR_len == 0){
 		status = getSn_SR(s);
 		if(status == SOCK_CLOSED) return SOCKERR_CLOSED;
@@ -672,7 +670,7 @@ int32 TCPRecv(uint8 s, int8 *buf, uint16 len)
 
 	return RSR_len;
 }
- 
+
 int8 UDPOpen(uint8 s, uint16 port)
 {
 	if(s > TOTAL_SOCK_NUM) {
@@ -719,7 +717,7 @@ int8 UDPClose(uint8 s)
 	IINCHIP_WRITE_SOCKETREG(s, WIZS_CR, Sn_CR_CLOSE);
 	while(IINCHIP_READ_SOCKETREG(s, WIZS_CR));      // wait to process the command...
 	IINCHIP_WRITE_SOCKETREG(s, WIZS_IR, 0xFF);	// interrupt all clear
-	
+
 	return RET_OK;
 }
 
@@ -852,13 +850,13 @@ int32 UDPRecv(uint8 s, int8 *buf, uint16 len, uint8 *addr, uint16 *port)
                 
 		IINCHIP_WRITE_SOCKETREG(s, WIZS_CR, Sn_CR_RECV);
 		while(IINCHIP_READ_SOCKETREG(s, WIZS_CR));    
-                
+
 		return SOCKERR_NOT_SPECIFIED;
 	} else {
 		recv_data_processing(s, prebuf, 8);
 		//IINCHIP_WRITE(Sn_CR(s), Sn_CR_RECV);	// 데이터를 처리한 후 이것을 해줘야 적용됨
 		IINCHIP_WRITE_SOCKETREG(s, WIZS_CR, Sn_CR_RECV);	// 데이터를 처리한 후 이것을 해줘야 적용됨
-                
+
 		if(addr) {		// read peer's IP address, port number.
 			addr[0] = prebuf[0];
 			addr[1] = prebuf[1];

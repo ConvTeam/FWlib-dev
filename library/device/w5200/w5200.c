@@ -501,7 +501,7 @@ void recv_data_processing(uint8 s, uint8 *data, uint16 len)
   ptr = IINCHIP_READ(Sn_RX_RD0(s));
   ptr = ((ptr & 0x00ff) << 8) + IINCHIP_READ(Sn_RX_RD0(s) + 1);
   
-  DBGA(" ISR_RX: rd_ptr : %.4x", ptr);
+  DBGA("ISR_RX: rd_ptr : %.4x", ptr);
 
   src_mask = (uint32)ptr & getIINCHIP_RxMASK(s);
   src_ptr = (uint8 *)(getIINCHIP_RxBASE(s) + src_mask);

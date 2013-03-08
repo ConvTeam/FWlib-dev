@@ -281,6 +281,36 @@ int8 *strsep(register int8 **stringp, register const int8 *delim)
 }
 
 /**
+ * Print Binary Dump Data.
+ * @param buf The data to print
+ * @param len The data length
+ */ 
+void print_dump(void *buf, uint16 len)
+{
+	uint8 *tp = (uint8*)buf;
+	uint16 i;
+	uint16 line = len / 0x10;
+	uint16 left = len % 0x10;
+
+	LOG("===========================================================");
+	LOG("-ADDR----0--1--2--3--4--5--6--7----8--9--A--B--C--D--E--F--");  
+	for(i=0; i<line; i++) {
+		LOGA("0x%04x   %02x %02x %02x %02x %02x %02x %02x %02x"
+			"   %02x %02x %02x %02x %02x %02x %02x %02x", 0x10*i, 
+			tp[0x10*i+0x0], tp[0x10*i+0x1], tp[0x10*i+0x2], tp[0x10*i+0x3], 
+			tp[0x10*i+0x4], tp[0x10*i+0x5], tp[0x10*i+0x6], tp[0x10*i+0x7],
+			tp[0x10*i+0x8], tp[0x10*i+0x9], tp[0x10*i+0xA], tp[0x10*i+0xB], 
+			tp[0x10*i+0xC], tp[0x10*i+0xD], tp[0x10*i+0xE], tp[0x10*i+0xF]);
+	}
+	if(left) {
+		LOGFA("0x%04x   ", 0x10*line);
+		for(i=0; i<left; i++) LOGFA("%02x ", tp[0x10*line + i]);
+		NL1;
+	}
+	LOG("===========================================================");
+}
+
+/**
  * Calculate checksum of a stream.
  * @param src The string to calculate checksum.
  * @param len The string length.
