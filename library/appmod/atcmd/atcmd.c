@@ -340,7 +340,12 @@ static int8 cmd_divide(int8 *buf)
 	ARG_PARSE(atci.tcmd.arg3, ARG_3_SIZE, 3);
 	ARG_PARSE(atci.tcmd.arg4, ARG_4_SIZE, 4);
 	ARG_PARSE(atci.tcmd.arg5, ARG_5_SIZE, 5);
-	ARG_PARSE(atci.tcmd.arg6, ARG_6_SIZE, 6);	//printf("cmd_divide 4 \r\n");
+	ARG_PARSE(atci.tcmd.arg6, ARG_6_SIZE, 6);
+	if(*tmpptr != 0) {
+		ret = RET_WRONG_ARG;
+		CMD_CLEAR();
+		goto FAIL_END;
+	} //DBGA("Debug: (%s)", tmpptr);	최대 arg넘게 들어온 것 확인용 - Strict Param 정책
 
 OK_END:
 	ret = RET_OK;

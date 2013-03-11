@@ -80,6 +80,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div class="header">
   <div class="summary">
+<a href="#define-members">Macros</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
@@ -98,6 +99,12 @@ Collaboration diagram for Platform Utility:</div>
 </td></tr></table></center>
 </div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:gab5ea99f9c7233dd806923dd6a7db35f0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__platform__util__module.html#gab5ea99f9c7233dd806923dd6a7db35f0">wizpf_led_flicker</a>(led_v, interval_v)</td></tr>
+<tr class="memdesc:gab5ea99f9c7233dd806923dd6a7db35f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flicker a LED for debug with some interval.  <a href="#gab5ea99f9c7233dd806923dd6a7db35f0">More...</a><br/></td></tr>
+<tr class="separator:gab5ea99f9c7233dd806923dd6a7db35f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:ga44ebb4d3ca7fa929da1cd8844abe3e5a"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__platform__util__module.html#ga44ebb4d3ca7fa929da1cd8844abe3e5a">wizpf_led</a> { <a class="el" href="group__platform__util__module.html#gga44ebb4d3ca7fa929da1cd8844abe3e5aa0f1f71968e9c232921ce14f734f2614c">WIZ_LED1</a>, 
@@ -155,6 +162,51 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Platform independent functions. </p>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a class="anchor" id="gab5ea99f9c7233dd806923dd6a7db35f0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define wizpf_led_flicker</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">led_v, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">interval_v&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { \</div>
+<div class="line">    static uint32 tick = 0; \</div>
+<div class="line">    if(<a class="code" href="group__platform__util__module.html#gae8b37727d3006c2965d7c50c7cf48c38" title="Calculate Elapsed time (or Remaining time) [+]value is Elapsed-time, [-]value is Remaining-time.">wizpf_tick_elapse</a>(tick) &gt; interval_v) { \</div>
+<div class="line">        wizpf_led_set(led_v, <a class="code" href="types_8h.html#a189f2ceb8f11de3de214df8b1dab4704" title="Indicate the value is &#39;toggle&#39;.">VAL_TOG</a>); \</div>
+<div class="line">        tick = <a class="code" href="group__platform__util__module.html#gafde0d91fa5ac52d0d45b9aaf6170f7a8" title="Get current SysTick.">wizpf_get_systick</a>(); \</div>
+<div class="line">    } \</div>
+<div class="line">} <span class="keywordflow">while</span>(0)</div>
+</div><!-- fragment -->
+<p>Flicker a LED for debug with some interval. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">led_v</td><td>LED Index number (<a class="el" href="group__platform__util__module.html#ga44ebb4d3ca7fa929da1cd8844abe3e5a">wizpf_led</a>) </td></tr>
+    <tr><td class="paramname">interval_v</td><td>Interval time (ms) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="wizplatform_8h_source.html#l00077">77</a> of file <a class="el" href="wizplatform_8h_source.html">wizplatform.h</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a class="anchor" id="ga44ebb4d3ca7fa929da1cd8844abe3e5a"></a>
 <div class="memitem">
@@ -182,7 +234,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="wizplatform_8h_source.html#l00050">50</a> of file <a class="el" href="wizplatform_8h_source.html">wizplatform.h</a>.</p>
+<p>Definition at line <a class="el" href="wizplatform_8h_source.html#l00032">32</a> of file <a class="el" href="wizplatform_8h_source.html">wizplatform.h</a>.</p>
 
 </div>
 </div>
@@ -521,7 +573,7 @@ Here is the caller graph for this function:</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 7 2013 11:24:11 for WIZlib Library API by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Mar 10 2013 15:02:28 for WIZlib Library API by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

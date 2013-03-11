@@ -14,24 +14,6 @@
 
 //#include "common/common.h"
 
-/**
- * @def PUTCHAR
- * @ingroup usart_module
- * Define the compiler independent function which put character.
- * @def GETCHAR
- * @ingroup usart_module
- * Define the compiler independent function which get character.
- */
-#ifdef COMPILER_IAR_EWARM
-#define PUTCHAR(ch_v)		putchar(ch_v)
-#define GETCHAR()			getchar()
-#elif COMPILER_GCC_ARM
-#define PUTCHAR(ch_v)		// ToDo
-#define GETCHAR()			// ToDo
-#else // for doxygen
-#define PUTCHAR(ch_v)
-#define GETCHAR()
-#endif
 
 /**
  * @ingroup usart_module
@@ -65,6 +47,40 @@ typedef enum {
 	WIZ_GPIO_OUT_PUSHPULL,	///< Indicate Push-Pull Output
 	WIZ_GPIO_OUT_OPENDRAIN,	///< Indicate Open-Drain Output
 } wizpf_gpio_mode;
+
+/**
+ * @def PUTCHAR
+ * @ingroup usart_module
+ * Define the compiler independent function which put character.
+ * @def GETCHAR
+ * @ingroup usart_module
+ * Define the compiler independent function which get character.
+ */
+#ifdef COMPILER_IAR_EWARM
+#define PUTCHAR(ch_v)		putchar(ch_v)
+#define GETCHAR()			getchar()
+#elif COMPILER_GCC_ARM
+#define PUTCHAR(ch_v)		// ToDo
+#define GETCHAR()			// ToDo
+#else // for doxygen
+#define PUTCHAR(ch_v)
+#define GETCHAR()
+#endif
+
+/**
+ * @def wizpf_led_flicker
+ * @ingroup platform_util_module
+ * Flicker a LED for debug with some interval.
+ * @param led_v LED Index number (@ref wizpf_led)
+ * @param interval_v Interval time (ms)
+ */
+#define wizpf_led_flicker(led_v, interval_v) do { \
+	static uint32 tick = 0; \
+	if(wizpf_tick_elapse(tick) > interval_v) { \
+		wizpf_led_set(led_v, VAL_TOG); \
+		tick = wizpf_get_systick(); \
+	} \
+} while(0)
 
 
 int8 platform_init(void);

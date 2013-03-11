@@ -76,10 +76,11 @@ static void send_receive(uint8 s, uint8 * data, uint8 * pSip)
  * @return RET_OK: Success
  * @return RET_NOK: Error
  */
-uint8 send_mail(uint8 s, uint8 *sender, uint8 *passwd, 
+int8 send_mail(uint8 s, uint8 *sender, uint8 *passwd, 
 	uint8 *recipient, uint8 *subject, uint8 *content, uint8 *pSip)
 {
-	uint8 MIME[256]={'\0'}, encode[16]={'\0'}, ret=RET_OK;
+	int8 ret = RET_OK;
+	uint8 MIME[256]={'\0'}, encode[16]={'\0'};
 	int16 n;
 
 	if (TCPClientOpen(s, client_port++, pSip, 25) == 1)		// connnect to server

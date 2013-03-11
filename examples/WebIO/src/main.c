@@ -342,17 +342,13 @@ int main(void)
 #define TCP_LISTEN_PORT	5000
 #define UDP_LISTEN_PORT	5000
 
-	int8 ret, root;
-//	uint32 tick = 0;
+	int8 root;
 
-	ret = platform_init();
-	if(ret != RET_OK) {
+	if(platform_init() != RET_OK) 
 		goto FAIL_TRAP;
-	}
 
-	ret = network_init(SOCK_DHCP, NULL, NULL);
-	if(ret != RET_OK) {
-		ERRA("network_init fail - ret(%d)", ret);
+	if(network_init(SOCK_DHCP, NULL, NULL) != RET_OK) {
+		ERR("network_init fail");
 		goto FAIL_TRAP;
 	}
 
@@ -389,12 +385,7 @@ int main(void)
 		menu_run();
 		if(lb_tcp) loopback_tcps(7, (uint16)TCP_LISTEN_PORT);
 		if(lb_udp) loopback_udp(7, (uint16)UDP_LISTEN_PORT);
-/*
-		if(wizpf_tick_elapse(tick) > 1000) {
-			wizpf_led_set(WIZ_LED3, VAL_TOG);
-			tick = wizpf_get_systick();
-		}
-*/
+
 		WebServer(SOCK_HTTP);
 	}
 
