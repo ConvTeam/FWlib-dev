@@ -28,6 +28,7 @@ var searchData=
   ['porta',['PORTA',['../w5200__evb_8h.html#a7c8a7f98a98d8cb125dd57a66720ab30',1,'PORTA():&#160;w5200_evb.h'],['../w5500__evb_8h.html#a7c8a7f98a98d8cb125dd57a66720ab30',1,'PORTA():&#160;w5500_evb.h'],['../w7200__evb_8h.html#a7c8a7f98a98d8cb125dd57a66720ab30',1,'PORTA():&#160;w7200_evb.h']]],
   ['portb',['PORTB',['../w5200__evb_8h.html#a09a0c85cd3da09d9cdf63a5ac4c39f77',1,'PORTB():&#160;w5200_evb.h'],['../w5500__evb_8h.html#a09a0c85cd3da09d9cdf63a5ac4c39f77',1,'PORTB():&#160;w5500_evb.h'],['../w7200__evb_8h.html#a09a0c85cd3da09d9cdf63a5ac4c39f77',1,'PORTB():&#160;w7200_evb.h']]],
   ['portc',['PORTC',['../w5200__evb_8h.html#a68fea88642279a70246e026e7221b0a5',1,'PORTC():&#160;w5200_evb.h'],['../w5500__evb_8h.html#a68fea88642279a70246e026e7221b0a5',1,'PORTC():&#160;w5500_evb.h'],['../w7200__evb_8h.html#a68fea88642279a70246e026e7221b0a5',1,'PORTC():&#160;w7200_evb.h']]],
+  ['print_5fdump',['print_dump',['../group__common__util.html#ga55d926ae6c4b7b16dc4654a41ea672e9',1,'print_dump(void *buf, uint16 len):&#160;util.c'],['../group__common__util.html#ga55d926ae6c4b7b16dc4654a41ea672e9',1,'print_dump(void *buf, uint16 len):&#160;util.c']]],
   ['print_5ftime_5flog',['PRINT_TIME_LOG',['../wizconfig_8h.html#a89bb1a97b33d9ada032f2fffeaa9782c',1,'wizconfig.h']]],
   ['ptype_5fcgi',['PTYPE_CGI',['../httpd_8h.html#acfa29b3644f3416cc00a1acb5bf0549d',1,'httpd.h']]],
   ['ptype_5ferr',['PTYPE_ERR',['../httpd_8h.html#a0ca0f362f63dc62e859a5e32c25eb284',1,'httpd.h']]],
@@ -38,5 +39,5 @@ var searchData=
   ['ptype_5fmpeg',['PTYPE_MPEG',['../httpd_8h.html#a72633e5da78ca7511de7b8db7b9c0a53',1,'httpd.h']]],
   ['ptype_5fpdf',['PTYPE_PDF',['../httpd_8h.html#a88ab0022287d6bba216aee3bfbd7bbd1',1,'httpd.h']]],
   ['ptype_5ftext',['PTYPE_TEXT',['../httpd_8h.html#a75938d598ef45e1615800ed71e6aaa97',1,'httpd.h']]],
-  ['putchar',['PUTCHAR',['../group__usart__module.html#ga2f35cbf92133c4ddebd98362b4154f0f',1,'PUTCHAR():&#160;wizplatform.h'],['../group__usart__module.html#ga07036e93939040c563e862a6a31b65bc',1,'putchar(int ch):&#160;wizplatform.c']]]
+  ['putchar',['putchar',['../group__usart__module.html#ga07036e93939040c563e862a6a31b65bc',1,'putchar(int ch):&#160;wizplatform.c'],['../group__usart__module.html#ga2f35cbf92133c4ddebd98362b4154f0f',1,'PUTCHAR():&#160;wizplatform.h']]]
 ];

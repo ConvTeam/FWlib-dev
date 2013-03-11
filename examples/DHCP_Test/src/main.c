@@ -18,6 +18,7 @@
 //###########################################################################
 
 
+#define DHCP_SOCK 0
 
 static int8 show_netinfo(menu_ctrl mctrl, int8 *mbuf);
 static int8 set_dhcp_mode(menu_ctrl mctrl, int8 *mbuf);
@@ -36,18 +37,11 @@ static int8 set_dns(menu_ctrl mctrl, int8 *mbuf);
 
 int32 main(void)
 {
-	int8 ret;
-	uint32 tick = 0;
-
-
-	ret = platform_init();
-	if(ret != RET_OK) {
+	if(platform_init() != RET_OK) 
 		goto FAIL_TRAP;
-	}
 
-	ret = network_init(0, NULL, NULL);
-	if(ret != RET_OK) {
-		ERRA("network_init fail - ret(%d)", ret);
+	if(network_init(DHCP_SOCK, NULL, NULL) != RET_OK) {
+		ERR("network_init fail");
 		goto FAIL_TRAP;
 	}
 
@@ -74,6 +68,8 @@ int32 main(void)
   #endif
 
 #elif (DHCP_MODE == DHCP_MANUAL)
+{
+	int8 ret;
 	LOG("DHCP Mode: Manual");
   #ifdef DHCP_START_AS_STATIC
 	LOG("Started as Static mode");
@@ -89,7 +85,7 @@ int32 main(void)
 	dhcp_tick = wizpf_get_systick();
 	dhcp_active = TRUE;
   #endif
-
+}
 #endif
 //###########################################################################
 
@@ -111,7 +107,9 @@ int32 main(void)
 		alarm_run();
 #elif (DHCP_MODE == DHCP_MANUAL)
 		if(dhcp_active == TRUE && wizpf_tick_elapse(dhcp_tick) > dhcp_time) {
-			if(dhcp_time==dhcp_renew) DBG("start renew"); else DBG("start rebind");
+			int8 ret;
+			if(dhcp_time==dhcp_renew) DBG("start renew"); 
+			else DBG("start rebind");
 			ret = dhcp_manual(dhcp_time==dhcp_renew? 
 				DHCP_ACT_RENEW: DHCP_ACT_REBIND, &dhcp_renew, &dhcp_rebind);
 			dhcp_tick = wizpf_get_systick();
@@ -129,10 +127,7 @@ int32 main(void)
 
 		menu_run();	// to use usermenu to test DHCP mode
 
-		if(wizpf_tick_elapse(tick) > 1000) {	// running check
-			wizpf_led_set(WIZ_LED1, VAL_TOG);
-			tick = wizpf_get_systick();
-		}
+		wizpf_led_flicker(WIZ_LED1, 1000);	// check loop is running
 	}
 
 FAIL_TRAP:

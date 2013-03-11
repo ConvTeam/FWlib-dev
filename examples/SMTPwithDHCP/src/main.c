@@ -26,17 +26,11 @@ bool lb_tcp = FALSE, lb_udp = FALSE;
 
 int32 main(void)
 {
-	int8 ret, root;
-	uint32 tick = 0;
-
-	ret = platform_init();
-	if(ret != RET_OK) {
+	if(platform_init() != RET_OK) 
 		goto FAIL_TRAP;
-	}
 
-	ret = network_init(SOCK_DHCP, NULL, NULL);
-	if(ret != RET_OK) {
-		ERRA("network_init fail - ret(%d)", ret);
+	if(network_init(SOCK_DHCP, NULL, NULL) != RET_OK) {
+		ERR("network_init fail");
 		goto FAIL_TRAP;
 	}
 
@@ -45,6 +39,9 @@ int32 main(void)
 	printf("-----------------------------------\r\n\r\n");
 
 	Delay_tick(2000);
+
+	{
+	int8 root;
 
 	menu_init();
 	root = menu_add("Network setting", 0, NULL);
@@ -57,6 +54,7 @@ int32 main(void)
 	menu_add("BASE64", root, mn_base64);
 	menu_add("eMail", root, mn_email);
 	//menu_print_tree();		// For Debug
+	}
 
 	dhcp_auto_start();
 
@@ -68,10 +66,7 @@ int32 main(void)
 		if(lb_tcp) loopback_tcps(7, (uint16)TCP_LISTEN_PORT);
 		if(lb_udp) loopback_udp(7, (uint16)UDP_LISTEN_PORT);
 
-		if(wizpf_tick_elapse(tick) > 1000) {	// running check
-			wizpf_led_set(WIZ_LED1, VAL_TOG);
-			tick = wizpf_get_systick();
-		}
+		wizpf_led_flicker(WIZ_LED1, 1000);	// check loop is running
 	}
 
 FAIL_TRAP:

@@ -405,7 +405,7 @@ int8 TCPCloseCHK(uint8 s)
 	if(s > TOTAL_SOCK_NUM) {
 		ERRA("wrong socket number(%d)", s);
 		return SOCKERR_NOT_TCP;
-	} else DBG("start");
+	}
 
 	status = getSn_SR(s);
 	if(status == SOCK_CLOSED) goto END_OK;
@@ -663,7 +663,6 @@ int32 UDPSendNB(uint8 s, const int8 *buf, uint16 len, uint8 *addr, uint16 port)
 	if(status != SOCK_UDP) return SOCKERR_NOT_UDP;
 
 	if (len > getIINCHIP_TxMAX(s)) len = getIINCHIP_TxMAX(s); // check size not to exceed MAX size.
-
 	getSIPR(srcip);
 	getSUBR(snmask);
 

@@ -121,6 +121,9 @@ Functions</h2></td></tr>
 <tr class="memitem:gaacc49638060ab25b2960a4f75a8d3b8c"><td class="memItemLeft" align="right" valign="top">int8 *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__common__util.html#gaacc49638060ab25b2960a4f75a8d3b8c">strsep</a> (register int8 **stringp, register const int8 *delim)</td></tr>
 <tr class="memdesc:gaacc49638060ab25b2960a4f75a8d3b8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Separate string into small peace by delimiter like strtok.  <a href="#gaacc49638060ab25b2960a4f75a8d3b8c">More...</a><br/></td></tr>
 <tr class="separator:gaacc49638060ab25b2960a4f75a8d3b8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga55d926ae6c4b7b16dc4654a41ea672e9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__common__util.html#ga55d926ae6c4b7b16dc4654a41ea672e9">print_dump</a> (void *buf, uint16 len)</td></tr>
+<tr class="memdesc:ga55d926ae6c4b7b16dc4654a41ea672e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print Binary Dump Data.  <a href="#ga55d926ae6c4b7b16dc4654a41ea672e9">More...</a><br/></td></tr>
+<tr class="separator:ga55d926ae6c4b7b16dc4654a41ea672e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae5721ce229aa629e7929ba5b259d4d68"><td class="memItemLeft" align="right" valign="top">uint16&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__common__util.html#gae5721ce229aa629e7929ba5b259d4d68">checksum</a> (uint8 *src, uint32 len)</td></tr>
 <tr class="memdesc:gae5721ce229aa629e7929ba5b259d4d68"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate checksum of a stream.  <a href="#gae5721ce229aa629e7929ba5b259d4d68">More...</a><br/></td></tr>
 <tr class="separator:gae5721ce229aa629e7929ba5b259d4d68"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -162,7 +165,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Checksum </dd></dl>
 
-<p>Definition at line <a class="el" href="util_8c_source.html#l00289">289</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
+<p>Definition at line <a class="el" href="util_8c_source.html#l00319">319</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
 
 </div>
 </div>
@@ -203,6 +206,43 @@ Functions</h2></td></tr>
 RET_NOK: Error </dd></dl>
 
 <p>Definition at line <a class="el" href="util_8c_source.html#l00200">200</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga55d926ae6c4b7b16dc4654a41ea672e9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void print_dump </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>buf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16&#160;</td>
+          <td class="paramname"><em>len</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Print Binary Dump Data. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">buf</td><td>The data to print </td></tr>
+    <tr><td class="paramname">len</td><td>The data length </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="util_8c_source.html#l00288">288</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
 
 </div>
 </div>
@@ -308,7 +348,7 @@ Here is the caller graph for this function:</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 7 2013 11:24:11 for WIZlib Library API by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Mar 10 2013 15:02:28 for WIZlib Library API by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

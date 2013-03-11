@@ -280,141 +280,166 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;    <span class="comment">/* NOTREACHED */</span></div>
 <div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;}</div>
 <div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;</div>
-<div class="line"><a name="l00289"></a><span class="lineno"><a class="code" href="group__common__util.html#gae5721ce229aa629e7929ba5b259d4d68">  289</a></span>&#160;uint16 <a class="code" href="group__common__util.html#gae5721ce229aa629e7929ba5b259d4d68" title="Calculate checksum of a stream.">checksum</a>(uint8 * src, uint32 len)</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;{</div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;    uint16 sum, tsum, i, j;</div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;    uint32 lsum;</div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;</div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;    j = len &gt;&gt; 1;</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;    lsum = 0;</div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;    <span class="keywordflow">for</span>(i = 0; i &lt; j; i++) {</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;        tsum = src[i*2];</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;        tsum = tsum &lt;&lt; 8;</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;        tsum += src[i*2+1];</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;        lsum += tsum;</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;    }</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;    <span class="keywordflow">if</span>(len % 2) {</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;        tsum = src[i*2];</div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;        lsum += (tsum &lt;&lt; 8);</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;    }</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;    sum = lsum;</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;    sum = ~(sum + (lsum &gt;&gt; 16));</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;    <span class="keywordflow">return</span> (uint16)sum; </div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;}</div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;<span class="comment">/* @} */</span></div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;</div>
-<div class="line"><a name="l00335"></a><span class="lineno"><a class="code" href="group__base64__util.html#ga378dfe460cc9f34158f911112fb76863">  335</a></span>&#160;int32 <a class="code" href="group__base64__util.html#ga378dfe460cc9f34158f911112fb76863" title="Decode string with base64 protocol.">base64_decode</a>(int8 *text, uint8 *dst, int32 numBytes)</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;{</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;  <span class="keyword">const</span> int8* cp;</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;  int32 space_idx = 0, phase;</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;  int32 d, prev_d = 0;</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;  uint8 c;</div>
+<div class="line"><a name="l00288"></a><span class="lineno"><a class="code" href="group__common__util.html#ga55d926ae6c4b7b16dc4654a41ea672e9">  288</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="group__common__util.html#ga55d926ae6c4b7b16dc4654a41ea672e9" title="Print Binary Dump Data.">print_dump</a>(<span class="keywordtype">void</span> *buf, uint16 len)</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;{</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;    uint8 *tp = (uint8*)buf;</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;    uint16 i;</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;    uint16 line = len / 0x10;</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;    uint16 left = len % 0x10;</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;    <a class="code" href="common_8h.html#a7e7ceaf2fc0053fdb0754bc29e4c2764" title="Print Error Log without parameter (+CRLF).">LOG</a>(<span class="stringliteral">&quot;===========================================================&quot;</span>);</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;    <a class="code" href="common_8h.html#a7e7ceaf2fc0053fdb0754bc29e4c2764" title="Print Error Log without parameter (+CRLF).">LOG</a>(<span class="stringliteral">&quot;-ADDR----0--1--2--3--4--5--6--7----8--9--A--B--C--D--E--F--&quot;</span>);  </div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;    <span class="keywordflow">for</span>(i=0; i&lt;line; i++) {</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;        <a class="code" href="common_8h.html#a2b0dce22c9039851aa5ed240d1f3f122" title="Print Error Log with parameter (+CRLF).">LOGA</a>(<span class="stringliteral">&quot;0x%04x   %02x %02x %02x %02x %02x %02x %02x %02x&quot;</span></div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;            <span class="stringliteral">&quot;   %02x %02x %02x %02x %02x %02x %02x %02x&quot;</span>, 0x10*i, </div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;            tp[0x10*i+0x0], tp[0x10*i+0x1], tp[0x10*i+0x2], tp[0x10*i+0x3], </div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;            tp[0x10*i+0x4], tp[0x10*i+0x5], tp[0x10*i+0x6], tp[0x10*i+0x7],</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;            tp[0x10*i+0x8], tp[0x10*i+0x9], tp[0x10*i+0xA], tp[0x10*i+0xB], </div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;            tp[0x10*i+0xC], tp[0x10*i+0xD], tp[0x10*i+0xE], tp[0x10*i+0xF]);</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;    }</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    <span class="keywordflow">if</span>(left) {</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;        <a class="code" href="common_8h.html#aca412038de0ca1c43b697eb4293c672f" title="Print Error Log with parameter (No CRLF).">LOGFA</a>(<span class="stringliteral">&quot;0x%04x   &quot;</span>, 0x10*line);</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;        <span class="keywordflow">for</span>(i=0; i&lt;left; i++) <a class="code" href="common_8h.html#aca412038de0ca1c43b697eb4293c672f" title="Print Error Log with parameter (No CRLF).">LOGFA</a>(<span class="stringliteral">&quot;%02x &quot;</span>, tp[0x10*line + i]);</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;        <a class="code" href="common_8h.html#a4bd226165fa7b97601be67dbd966499d" title="Print only one CR+LF.">NL1</a>;</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;    }</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;    <a class="code" href="common_8h.html#a7e7ceaf2fc0053fdb0754bc29e4c2764" title="Print Error Log without parameter (+CRLF).">LOG</a>(<span class="stringliteral">&quot;===========================================================&quot;</span>);</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;}</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;</div>
+<div class="line"><a name="l00319"></a><span class="lineno"><a class="code" href="group__common__util.html#gae5721ce229aa629e7929ba5b259d4d68">  319</a></span>&#160;uint16 <a class="code" href="group__common__util.html#gae5721ce229aa629e7929ba5b259d4d68" title="Calculate checksum of a stream.">checksum</a>(uint8 * src, uint32 len)</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;{</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;    uint16 sum, tsum, i, j;</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;    uint32 lsum;</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;    j = len &gt;&gt; 1;</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;    lsum = 0;</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    <span class="keywordflow">for</span>(i = 0; i &lt; j; i++) {</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;        tsum = src[i*2];</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;        tsum = tsum &lt;&lt; 8;</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;        tsum += src[i*2+1];</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;        lsum += tsum;</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;    }</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;    <span class="keywordflow">if</span>(len % 2) {</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;        tsum = src[i*2];</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;        lsum += (tsum &lt;&lt; 8);</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    }</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;    sum = lsum;</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;    sum = ~(sum + (lsum &gt;&gt; 16));</div>
 <div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;    space_idx = 0;</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;    phase = 0;</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;    <span class="keywordflow">return</span> (uint16)sum; </div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;}</div>
 <div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;    <span class="keywordflow">for</span> ( cp = text; *cp != <span class="charliteral">&#39;\0&#39;</span>; ++cp ) {</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;        d = DecodeMimeBase64[(int32) *cp];</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;        <span class="keywordflow">if</span> ( d != -1 ) {</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;            <span class="keywordflow">switch</span> ( phase ) {</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;                <span class="keywordflow">case</span> 0:</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;                    ++phase;</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;                    <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;                <span class="keywordflow">case</span> 1:</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                    c = ( ( prev_d &lt;&lt; 2 ) | ( ( d &amp; 0x30 ) &gt;&gt; 4 ) );</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;                    <span class="keywordflow">if</span> ( space_idx &lt; numBytes )</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;                        dst[space_idx++] = c;</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;                    ++phase;</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;                    <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;                <span class="keywordflow">case</span> 2:</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;                    c = ( ( ( prev_d &amp; 0xf ) &lt;&lt; 4 ) | ( ( d &amp; 0x3c ) &gt;&gt; 2 ) );</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;                    <span class="keywordflow">if</span> ( space_idx &lt; numBytes )</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;                        dst[space_idx++] = c;</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;                    ++phase;</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;                    <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;                <span class="keywordflow">case</span> 3:</div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;                    c = ( ( ( prev_d &amp; 0x03 ) &lt;&lt; 6 ) | d );</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;                    <span class="keywordflow">if</span> ( space_idx &lt; numBytes )</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;                        dst[space_idx++] = c;</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;                    phase = 0;</div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;                    <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;            }</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;            prev_d = d;</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;        }</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    }</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;<span class="comment">/* @} */</span></div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;</div>
+<div class="line"><a name="l00365"></a><span class="lineno"><a class="code" href="group__base64__util.html#ga378dfe460cc9f34158f911112fb76863">  365</a></span>&#160;int32 <a class="code" href="group__base64__util.html#ga378dfe460cc9f34158f911112fb76863" title="Decode string with base64 protocol.">base64_decode</a>(int8 *text, uint8 *dst, int32 numBytes)</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;{</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;  <span class="keyword">const</span> int8* cp;</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;  int32 space_idx = 0, phase;</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;  int32 d, prev_d = 0;</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;  uint8 c;</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;    space_idx = 0;</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    phase = 0;</div>
 <div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;    <span class="keywordflow">return</span> space_idx;</div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;}</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;</div>
-<div class="line"><a name="l00387"></a><span class="lineno"><a class="code" href="group__base64__util.html#gaf75df4ca167a5473999f3bf5fdedf72b">  387</a></span>&#160;int32 <a class="code" href="group__base64__util.html#gaf75df4ca167a5473999f3bf5fdedf72b" title="Encode string with base64 protocol.">base64_encode</a>(int8 *text, int32 numBytes, int8 *encodedText)</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;{</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;  uint8 input[3]  = {0,0,0};</div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;  uint8 output[4] = {0,0,0,0};</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;  int32   index, i, j;</div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;  int8 *p, *plen;</div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;</div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;  plen           = text + numBytes - 1;</div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;  j              = 0;</div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;</div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;    <span class="keywordflow">for</span>  (i = 0, p = text;p &lt;= plen; i++, p++) {</div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;        index = i % 3;</div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;        input[index] = *p;</div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;</div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;        <span class="keywordflow">if</span> (index == 2 || p == plen) {</div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;            output[0] = ((input[0] &amp; 0xFC) &gt;&gt; 2);</div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;            output[1] = ((input[0] &amp; 0x3) &lt;&lt; 4) | ((input[1] &amp; 0xF0) &gt;&gt; 4);</div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;            output[2] = ((input[1] &amp; 0xF) &lt;&lt; 2) | ((input[2] &amp; 0xC0) &gt;&gt; 6);</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;            output[3] = (input[2] &amp; 0x3F);</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;    <span class="keywordflow">for</span> ( cp = text; *cp != <span class="charliteral">&#39;\0&#39;</span>; ++cp ) {</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;        d = DecodeMimeBase64[(int32) *cp];</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;        <span class="keywordflow">if</span> ( d != -1 ) {</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;            <span class="keywordflow">switch</span> ( phase ) {</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;                <span class="keywordflow">case</span> 0:</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;                    ++phase;</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;                    <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;                <span class="keywordflow">case</span> 1:</div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;                    c = ( ( prev_d &lt;&lt; 2 ) | ( ( d &amp; 0x30 ) &gt;&gt; 4 ) );</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;                    <span class="keywordflow">if</span> ( space_idx &lt; numBytes )</div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;                        dst[space_idx++] = c;</div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;                    ++phase;</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;                    <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;                <span class="keywordflow">case</span> 2:</div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;                    c = ( ( ( prev_d &amp; 0xf ) &lt;&lt; 4 ) | ( ( d &amp; 0x3c ) &gt;&gt; 2 ) );</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;                    <span class="keywordflow">if</span> ( space_idx &lt; numBytes )</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;                        dst[space_idx++] = c;</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;                    ++phase;</div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;                    <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;                <span class="keywordflow">case</span> 3:</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;                    c = ( ( ( prev_d &amp; 0x03 ) &lt;&lt; 6 ) | d );</div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;                    <span class="keywordflow">if</span> ( space_idx &lt; numBytes )</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;                        dst[space_idx++] = c;</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;                    phase = 0;</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;                    <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;            }</div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;            prev_d = d;</div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;        }</div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;    }</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;    <span class="keywordflow">return</span> space_idx;</div>
 <div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;</div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;            encodedText[j++] = MimeBase64[output[0]];</div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;            encodedText[j++] = MimeBase64[output[1]];</div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;            encodedText[j++] = index == 0? <span class="charliteral">&#39;=&#39;</span> : MimeBase64[output[2]];</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;            encodedText[j++] = index &lt;  2? <span class="charliteral">&#39;=&#39;</span> : MimeBase64[output[3]];</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;            input[0] = input[1] = input[2] = 0;</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;        }</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;    }</div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;</div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;    encodedText[j] = <span class="charliteral">&#39;\0&#39;</span>;</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;    <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;}</div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;</div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;<span class="comment">/* @} */</span></div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;</div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;<span class="preprocessor">#ifdef USE_FULL_ASSERT</span></div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;<span class="preprocessor"></span><span class="comment">/* NOT USE !!!</span></div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;<span class="comment"> * Asset function which declared at stm32f10x_conf.h file</span></div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;<span class="comment"> * If USE_FULL_ASSERT is defined this will be active.</span></div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;<span class="comment"> * @param file File name in which asset occurred.</span></div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;<span class="comment"> * @param line asserted line number</span></div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;<span class="keywordtype">void</span> assert_failed(uint8* file, uint32 line)</div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;{ </div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;  <span class="comment">/* User can add his own implementation to report the file name and line number,</span></div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;<span class="comment">     ex: printf(&quot;Wrong parameters value: file %s on line %d\r\n&quot;, file, line) */</span></div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;</div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;  <span class="comment">/* Infinite loop */</span></div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;  <span class="keywordflow">while</span> (1)</div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;  {</div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;  }</div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;}</div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;</div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;}</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;</div>
+<div class="line"><a name="l00417"></a><span class="lineno"><a class="code" href="group__base64__util.html#gaf75df4ca167a5473999f3bf5fdedf72b">  417</a></span>&#160;int32 <a class="code" href="group__base64__util.html#gaf75df4ca167a5473999f3bf5fdedf72b" title="Encode string with base64 protocol.">base64_encode</a>(int8 *text, int32 numBytes, int8 *encodedText)</div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;{</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;  uint8 input[3]  = {0,0,0};</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;  uint8 output[4] = {0,0,0,0};</div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;  int32   index, i, j;</div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;  int8 *p, *plen;</div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;  plen           = text + numBytes - 1;</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;  j              = 0;</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;</div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;    <span class="keywordflow">for</span>  (i = 0, p = text;p &lt;= plen; i++, p++) {</div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;        index = i % 3;</div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;        input[index] = *p;</div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;</div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;        <span class="keywordflow">if</span> (index == 2 || p == plen) {</div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;            output[0] = ((input[0] &amp; 0xFC) &gt;&gt; 2);</div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;            output[1] = ((input[0] &amp; 0x3) &lt;&lt; 4) | ((input[1] &amp; 0xF0) &gt;&gt; 4);</div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;            output[2] = ((input[1] &amp; 0xF) &lt;&lt; 2) | ((input[2] &amp; 0xC0) &gt;&gt; 6);</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;            output[3] = (input[2] &amp; 0x3F);</div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;</div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;            encodedText[j++] = MimeBase64[output[0]];</div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;            encodedText[j++] = MimeBase64[output[1]];</div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;            encodedText[j++] = index == 0? <span class="charliteral">&#39;=&#39;</span> : MimeBase64[output[2]];</div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;            encodedText[j++] = index &lt;  2? <span class="charliteral">&#39;=&#39;</span> : MimeBase64[output[3]];</div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;</div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;            input[0] = input[1] = input[2] = 0;</div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;        }</div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;    }</div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;</div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;    encodedText[j] = <span class="charliteral">&#39;\0&#39;</span>;</div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;</div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;}</div>
+<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;</div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;<span class="comment">/* @} */</span></div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;</div>
+<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;<span class="preprocessor">#ifdef USE_FULL_ASSERT</span></div>
+<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;<span class="preprocessor"></span><span class="comment">/* NOT USE !!!</span></div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;<span class="comment"> * Asset function which declared at stm32f10x_conf.h file</span></div>
+<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;<span class="comment"> * If USE_FULL_ASSERT is defined this will be active.</span></div>
+<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;<span class="comment"> * @param file File name in which asset occurred.</span></div>
+<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;<span class="comment"> * @param line asserted line number</span></div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;<span class="keywordtype">void</span> assert_failed(uint8* file, uint32 line)</div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;{ </div>
+<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;  <span class="comment">/* User can add his own implementation to report the file name and line number,</span></div>
+<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;<span class="comment">     ex: printf(&quot;Wrong parameters value: file %s on line %d\r\n&quot;, file, line) */</span></div>
+<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;</div>
+<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;  <span class="comment">/* Infinite loop */</span></div>
+<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;  <span class="keywordflow">while</span> (1)</div>
+<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;  {</div>
+<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;  }</div>
+<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;}</div>
+<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;</div>
+<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;</div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 7 2013 11:24:10 for WIZlib Library API by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Mar 10 2013 15:02:25 for WIZlib Library API by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>
