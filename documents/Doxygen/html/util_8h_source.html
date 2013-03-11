@@ -123,18 +123,19 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;int8   <a class="code" href="group__common__util.html#ga707cecc32cf994b92ecfb2fe17b52ad8" title="Count digit&#39;s letter Ex) digit_length(12345, 10) : This will return 5.">digit_length</a>(int32 dgt, int8 base);</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;int32  <a class="code" href="group__common__util.html#ga6c921d8cd92911f8ec807279503a2e76" title="Check string with standard library method.">str_check</a>(<span class="keywordtype">int</span> (*method)(<span class="keywordtype">int</span>), int8 *str);</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;int8*  <a class="code" href="group__common__util.html#gaacc49638060ab25b2960a4f75a8d3b8c" title="Separate string into small peace by delimiter like strtok.">strsep</a>(<span class="keyword">register</span> int8 **stringp, <span class="keyword">register</span> <span class="keyword">const</span> int8 *delim);</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;uint16 <a class="code" href="group__common__util.html#gae5721ce229aa629e7929ba5b259d4d68" title="Calculate checksum of a stream.">checksum</a>(uint8 * src, uint32 len);</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;int32 <a class="code" href="group__base64__util.html#ga378dfe460cc9f34158f911112fb76863" title="Decode string with base64 protocol.">base64_decode</a>(int8 *text, uint8 *dst, int32 numBytes );</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;int32 <a class="code" href="group__base64__util.html#gaf75df4ca167a5473999f3bf5fdedf72b" title="Encode string with base64 protocol.">base64_encode</a>(int8 *text, int32 numBytes, int8 *encodedText);</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#endif //_UTIL_H</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keywordtype">void</span>   <a class="code" href="group__common__util.html#ga55d926ae6c4b7b16dc4654a41ea672e9" title="Print Binary Dump Data.">print_dump</a>(<span class="keywordtype">void</span> *buf, uint16 len);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;uint16 <a class="code" href="group__common__util.html#gae5721ce229aa629e7929ba5b259d4d68" title="Calculate checksum of a stream.">checksum</a>(uint8 * src, uint32 len);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;int32  <a class="code" href="group__base64__util.html#ga378dfe460cc9f34158f911112fb76863" title="Decode string with base64 protocol.">base64_decode</a>(int8 *text, uint8 *dst, int32 numBytes );</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;int32  <a class="code" href="group__base64__util.html#gaf75df4ca167a5473999f3bf5fdedf72b" title="Encode string with base64 protocol.">base64_encode</a>(int8 *text, int32 numBytes, int8 *encodedText);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="preprocessor">#endif //_UTIL_H</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 7 2013 11:24:10 for WIZlib Library API by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Mar 10 2013 15:02:25 for WIZlib Library API by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

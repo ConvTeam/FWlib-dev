@@ -35,9 +35,10 @@
 } while(0)
 
 enum {
-	SOCKEVENT_CONN = 0,
-	SOCKEVENT_RECV = 1,
-	SOCKEVENT_CLS  = 2
+	SOCKEVENT_CONN		= 0,
+	SOCKEVENT_DISCON	= 1,
+	SOCKEVENT_CLS		= 2,
+	SOCKEVENT_RECV		= 3
 };
 
 struct atc_eventq {
@@ -48,14 +49,14 @@ struct atc_eventq {
 
 extern void cmd_resp(int8 retval, int8 idval);
 
-static int8  sockstat[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO] = {0,};	// for sock check (0 is ignored)
-static int16 sockport[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO] = {0,};	// for src port check
-static int8  sockbusy[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO] = {0,};	// for sock busy check
-static uint8 udpip[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO][4] = {0,};	// to store UDP Destination address
-static int16 udpport[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO]  = {0,};	// to store UDP Destination port
-static int16 tcpleft[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO]  = {0,};	// remained data len to send for TCP Resend
-static int8  recvord[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO]  = {0,};	// for check order of data recv
-static int8  recvnum = 0;							// the number of sock which received data
+static int8   sockstat[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO] = {0,};	// for sock check (0 is ignored)
+static int8   sockbusy[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO] = {0,};	// for sock busy check
+static uint16 sockport[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO] = {0,};	// for src port check
+static uint8  udpip[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO][4] = {0,};	// to store UDP Destination address
+static uint16 udpport[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO]  = {0,};	// to store UDP Destination port
+static uint16 tcpleft[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO]  = {0,};	// remained data len to send for TCP Resend
+static int8   recvord[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO]  = {0,};	// for check order of data recv
+static int8   recvnum = 0;							// the number of sock which received data
 struct atc_eventq *eventqueue;
 uint8 eqp_cnt = 0;
 
@@ -230,8 +231,10 @@ static void atc_resend_alarm(int8 arg)
 		} else {
 			sockbusy[arg] = VAL_FALSE;
 			DBGA("WATCH_SOCK_TCP_SEND fail - ret(%d)", ret);
-			sock_put(arg);
 			cmd_resp(RET_TIMEOUT, arg);
+			sock_put(arg);
+			if(atci.poll != POLL_MODE_FULL) EVENT_RESP(arg, SOCKEVENT_CLS);
+			else event_enqueue(arg, SOCKEVENT_CLS);
 		}
 	} else sockwatch_set(arg, WATCH_SOCK_TCP_SEND);
 }
@@ -254,8 +257,10 @@ void atc_async_cb(uint8 sock, uint8 item, int32 ret)
 		if(ret < RET_OK) {
 			sockbusy[sock] = VAL_FALSE;
 			DBGA("WATCH_SOCK_TCP_SEND fail - ret(%d)", ret);
-			sock_put(sock);
 			cmd_resp(RET_TIMEOUT, sock);
+			sock_put(sock);
+			if(atci.poll != POLL_MODE_FULL) EVENT_RESP(sock, SOCKEVENT_CLS);
+			else event_enqueue(sock, SOCKEVENT_CLS);
 		} else {
 			tcpleft[sock] -= ret;
 			if(tcpleft[sock] > 0) {
@@ -270,8 +275,10 @@ void atc_async_cb(uint8 sock, uint8 item, int32 ret)
 					} else {
 						sockbusy[sock] = VAL_FALSE;
 						DBGA("WATCH_SOCK_TCP_SEND fail - ret(%d)", ret);
-						sock_put(sock);
 						cmd_resp(RET_TIMEOUT, sock);
+						sock_put(sock);
+						if(atci.poll != POLL_MODE_FULL) EVENT_RESP(sock, SOCKEVENT_CLS);
+						else event_enqueue(sock, SOCKEVENT_CLS);
 					}
 				} else sockwatch_set(sock, WATCH_SOCK_TCP_SEND);
 			} else {
@@ -289,15 +296,15 @@ void atc_async_cb(uint8 sock, uint8 item, int32 ret)
 			cmd_resp(RET_OK, sock);//cmd_resp(RET_ASYNC, sock);??
 		} else {
 			DBGA("WATCH_SOCK_CONN_EVT fail - ret(%d)", ret);
-			sock_put(sock);
 			cmd_resp(RET_TIMEOUT, sock);
+			sock_put(sock);
 		}
 		break;
 	case WATCH_SOCK_CLS_TRY:	DBG("WATCH_SOCK_CLS_TRY");
 		sockbusy[sock] = VAL_FALSE;
 		if(ret == RET_OK) {
+			cmd_resp(RET_OK, sock);
 			sock_put(sock);
-			cmd_resp(RET_ASYNC, sock);
 		} else {
 			CRITICAL_ERRA("WATCH_SOCK_CONN_EVT fail - ret(%d)", ret);
 		}
@@ -316,11 +323,27 @@ void atc_async_cb(uint8 sock, uint8 item, int32 ret)
 	case WATCH_SOCK_CLS_EVT:	DBG("WATCH_SOCK_CLS_EVT");
 		sockbusy[sock] = VAL_FALSE;
 		if(ret == RET_OK) {
-			if(sockwatch_chk(sock, WATCH_SOCK_CLS_TRY) == RET_OK) 
-				cmd_resp(RET_OK, sock);
-			sock_put(sock);
-			if(atci.poll != POLL_MODE_FULL) EVENT_RESP(sock, SOCKEVENT_CLS);
-			else event_enqueue(sock, SOCKEVENT_CLS);
+			//if(sockwatch_chk(sock, WATCH_SOCK_CLS_TRY) == RET_OK) 	removed-직접처리
+			//	cmd_resp(RET_OK, sock);
+			if((sockstat[sock] & SOCK_STAT_PROTMASK) == SOCK_STAT_TCP_SRV) {
+				DBGA("Conn(%d) Closed - back to the Listen state", sock);
+				BITCLR(sockstat[sock], SOCK_STAT_CONNECTED);
+				sockwatch_clr(sock, WATCH_SOCK_ALL_MASK);
+				ret = TCPServerOpen(sock, sockport[sock]);
+				if(ret == RET_OK) {
+					sockwatch_set(sock, WATCH_SOCK_CONN_EVT);
+					if(atci.poll != POLL_MODE_FULL) EVENT_RESP(sock, SOCKEVENT_DISCON);
+					else event_enqueue(sock, SOCKEVENT_DISCON);
+				} else {
+					sock_put(sock);
+					if(atci.poll != POLL_MODE_FULL) EVENT_RESP(sock, SOCKEVENT_CLS);
+					else event_enqueue(sock, SOCKEVENT_CLS);
+				}
+			} else {
+				sock_put(sock);
+				if(atci.poll != POLL_MODE_FULL) EVENT_RESP(sock, SOCKEVENT_CLS);
+				else event_enqueue(sock, SOCKEVENT_CLS);
+			}
 		} else {
 			CRITICAL_ERRA("WATCH_SOCK_CONN_EVT fail - ret(%d)", ret);
 		}
@@ -338,9 +361,9 @@ void atc_async_cb(uint8 sock, uint8 item, int32 ret)
 					recvord[sock] = 1;
 					for(i=ATC_SOCK_NUM_START; i<=ATC_SOCK_NUM_END; i++)
 						if(i != sock && recvord[i] != 0) recvord[i]++;
-				} else {
-					ERR("wrong recv order");
-				}
+				} //else {	// 5200버퍼없어 못받고 잇다가 recv후 바로 수신되면 진입가능함 오류가 아님
+				//	ERR("wrong recv order");
+				//}
 				
 				if(atci.poll != POLL_MODE_FULL) 
 					EVENT_RESP_SIZE(sock, SOCKEVENT_RECV, GetSocketRxRecvBufferSize(sock));
@@ -532,7 +555,8 @@ void act_ncls(uint8 sock)
 	if(sockstat[sock] == SOCK_STAT_IDLE) CMD_RESP_RET(RET_SOCK_CLS, VAL_NONE);
 	if(sockstat[sock] & SOCK_STAT_TCP_MASK) {
 		ret = TCPCloseNB(sock);
-		if(ret != RET_OK) CMD_RESP_RET(RET_OK, VAL_NONE);
+		if(ret != RET_OK) CMD_RESP_RET(RET_SOCK_CLS, VAL_NONE);
+		sockwatch_clr(sock, WATCH_SOCK_CLS_EVT);
 		sockwatch_set(sock, WATCH_SOCK_CLS_TRY);
 		sockbusy[sock] = VAL_TRUE;
 		CMD_RESP_RET(RET_ASYNC, sock);
@@ -561,6 +585,12 @@ int8 act_nsend_chk(uint8 sock, uint16 *len, uint8 *dip, uint16 *dport)
 			cmd_resp(RET_NOT_CONN, VAL_NONE);
 			return RET_NOK;
 		}
+		if(dip || dport) {
+			cmd_resp(RET_WRONG_ARG, VAL_NONE);
+			if(dip) MAKE_TCMD_DIGIT(atci.tcmd.arg1, 3);
+			else MAKE_TCMD_DIGIT(atci.tcmd.arg1, 4);
+			return RET_NOK;
+		}
 	} else {									// UDP
 		if(dip == NULL) {
 			if(udpip[sock][0]==0 && udpip[sock][1]==0 && 
@@ -570,7 +600,7 @@ int8 act_nsend_chk(uint8 sock, uint16 *len, uint8 *dip, uint16 *dport)
 				cmd_resp(RET_WRONG_ARG, VAL_NONE);
 				return RET_NOK;
 			} else memcpy(atci.sendip, udpip[sock], 4);
-		} //else memcpy(udpip[sock], dip, 4);
+		}
 		if(dport == NULL) {
 			if(udpport[sock] == 0) {
 				DBG("No Predefined Dst Port");
@@ -578,7 +608,7 @@ int8 act_nsend_chk(uint8 sock, uint16 *len, uint8 *dip, uint16 *dport)
 				cmd_resp(RET_WRONG_ARG, VAL_NONE);
 				return RET_NOK;
 			} else atci.sendport = udpport[sock];
-		} //else udpport[sock] = *dport;
+		}
 	}
 
 	availlen = GetSocketTxFreeBufferSize(sock);
@@ -594,7 +624,7 @@ int8 act_nsend_chk(uint8 sock, uint16 *len, uint8 *dip, uint16 *dport)
 
 void act_nsend(uint8 sock, int8 *buf, uint16 len, uint8 *dip, uint16 *dport)
 {
-	int8 ret;
+	int32 ret;
 
 	if(sockstat[sock] & SOCK_STAT_TCP_MASK) {	// TCP
 		ret = TCPSendNB(sock, buf, len);
@@ -613,6 +643,8 @@ void act_nsend(uint8 sock, int8 *buf, uint16 len, uint8 *dip, uint16 *dport)
 		if(ret < RET_OK) {
 			DBGA("UDPSendNB fail - ret(%d)", ret);
 			CMD_RESP_RET(RET_WRONG_ADDR, VAL_NONE);
+		} else {
+			DBGA("UDPSendNB SUCC - len(%d),sent(%d)", len, ret);
 		}
 		sockwatch_set(sock, WATCH_SOCK_UDP_SEND);
 		sockbusy[sock] = VAL_TRUE;
@@ -654,6 +686,7 @@ void act_nrecv(int8 sock, uint16 maxlen)
 		goto FAIL_RET;
 	}
 	if(sockstat[sock] & SOCK_STAT_TCP_MASK) {	// TCP
+DBGA("TCPdbg---rx(%d)",GetSocketRxRecvBufferSize(sock));
 		if(!(sockstat[sock] & SOCK_STAT_CONNECTED)) {
 			DBGA("not connected - sock(%d)", sock);
 			ret = RET_NOT_CONN; 
@@ -664,7 +697,7 @@ void act_nrecv(int8 sock, uint16 maxlen)
 			ret = RET_NO_DATA; 
 			goto FAIL_RET;
 		}
-		len = TCPRecv(sock, atci.recvbuf, maxlen);
+		len = TCPRecv(sock, atci.recvbuf, maxlen);				DBGA("TCPdbg---m(%d)l(%d)f(%d)", maxlen, len, GetSocketRxRecvBufferSize(sock));
 	} else {									// UDP
 		uint16 bufleft = maxlen;
 		if(GetSocketRxRecvBufferSize(sock) == 0) {
@@ -672,8 +705,9 @@ void act_nrecv(int8 sock, uint16 maxlen)
 			ret = RET_NO_DATA; 
 			goto FAIL_RET;
 		}
+		
 		do {
-			DBGCRTC(len + bufleft >= WORK_BUF_SIZE, "buf not enough");
+			DBGCRTC(len + bufleft > WORK_BUF_SIZE, "buf not enough");
 			offset = UDPRecv(sock, &atci.recvbuf[len], bufleft, dstip, &dstport);
 			if(offset <= 0 || offset > (int32)bufleft) {	// Abnormal case - I don't think this could happen but just in case.
 				if(offset > (int32)bufleft) {
@@ -703,12 +737,19 @@ void act_nrecv(int8 sock, uint16 maxlen)
 				len += offset;
 				bufleft -= offset;
 			}
-		} while(GetSocketRxRecvBufferSize(sock) && bufleft > 0);
+		} 
+		while(GetSocketRxRecvBufferSize(sock) && bufleft > 0);
 		
 	}
 	atci.recvbuf[len] = 0;
 	DBGA("RECV prt-len(%d), max(%d)", len, maxlen);
 
+	MAKE_TCMD_DIGIT(atci.tcmd.arg1, len);
+	if((sockstat[sock] & SOCK_STAT_PROTMASK) == SOCK_STAT_UDP) {
+		MAKE_TCMD_ADDR(atci.tcmd.arg2, dstip[0], dstip[1], dstip[2], dstip[3]);
+		MAKE_TCMD_DIGIT(atci.tcmd.arg3, dstport);
+	}
+	
 	if(GetSocketRxRecvBufferSize(sock) == 0) {	// If there is no data left.
 		if(recvord[sock] < recvnum) {
 			for(i=ATC_SOCK_NUM_START; i<=ATC_SOCK_NUM_END; i++)
@@ -717,8 +758,20 @@ void act_nrecv(int8 sock, uint16 maxlen)
 		recvord[sock] = 0;
 		recvnum--;
 
-		if(sockstat[sock] & SOCK_STAT_CONNECTED) sockwatch_set(sock, WATCH_SOCK_RECV);
+		if((sockstat[sock] & SOCK_STAT_PROTMASK) == SOCK_STAT_IDLE) {	// 디버그용임. 안정되면 간단하게 수정할 것
+			CRITICAL_ERRA("Impossible status - recv from closed sock(%d)", sock);
+		} else if(sockstat[sock] & SOCK_STAT_TCP_MASK) {	// TCP
+			if(sockstat[sock] & SOCK_STAT_CONNECTED) 
+				sockwatch_set(sock, WATCH_SOCK_RECV);
+		} else if(sockstat[sock] & SOCK_STAT_UDP) {	
+			sockwatch_set(sock, WATCH_SOCK_RECV);
+		} else CRITICAL_ERRA("Impossible status - wrong sock state(0x%x)", sockstat[sock]);
+
+		cmd_resp(RET_RECV, sock);
+		printf("%s\r\n", atci.recvbuf);
 	} else {
+		cmd_resp(RET_RECV, sock);
+		printf("%s\r\n", atci.recvbuf);
 		EVENT_RESP_SIZE(sock, SOCKEVENT_RECV, GetSocketRxRecvBufferSize(sock));
 		// ????
 		//if(atci.poll != POLL_MODE_FULL) 
@@ -726,7 +779,8 @@ void act_nrecv(int8 sock, uint16 maxlen)
 		//else event_enqueue(sock, SOCKEVENT_RECV);
 	}
 
-
+DBGA("DBG3^1-sock(%d),recvnum(%d),recvord(%d,%d,%d,%d,%d,%d,%d,%d)", sock, recvnum, recvord[0], 
+		recvord[1], recvord[2], recvord[3], recvord[4], recvord[5], recvord[6], recvord[7]);
 
 /*
 if(atci.poll != POLL_MODE_NONE) {
@@ -750,17 +804,14 @@ if(atci.poll != POLL_MODE_NONE) {
 
 
 
-	MAKE_TCMD_DIGIT(atci.tcmd.arg1, len);
-	if((sockstat[sock] & SOCK_STAT_PROTMASK) == SOCK_STAT_UDP) {
-		MAKE_TCMD_ADDR(atci.tcmd.arg2, dstip[0], dstip[1], dstip[2], dstip[3]);
-		MAKE_TCMD_DIGIT(atci.tcmd.arg3, dstport);
-	}
-	cmd_resp(RET_RECV, sock);
-	printf("%s\r\n", atci.recvbuf);
+	
 
-	sockwatch_set(sock, WATCH_SOCK_RECV);
+	return;
 
 FAIL_RET:
+
+	DBGA("DBG3^2-sock(%d),recvnum(%d),recvord(%d,%d,%d,%d,%d,%d,%d,%d)", sock, recvnum, recvord[0], 
+		recvord[1], recvord[2], recvord[3], recvord[4], recvord[5], recvord[6], recvord[7]);
 
 	CMD_RESP_RET(ret, VAL_NONE);
 }

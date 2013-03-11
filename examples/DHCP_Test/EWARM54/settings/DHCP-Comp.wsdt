@@ -24,7 +24,7 @@
     <Windows>
       
       
-    <Wnd2>
+    <Wnd0>
         <Tabs>
           <Tab>
             <Identity>TabID-4556-1847</Identity>
@@ -36,7 +36,7 @@
           </Tab>
         </Tabs>
         
-      <SelectedTab>0</SelectedTab></Wnd2><Wnd3>
+      <SelectedTab>0</SelectedTab></Wnd0><Wnd1>
         <Tabs>
           <Tab>
             <Identity>TabID-16205-9407</Identity>
@@ -46,7 +46,7 @@
           </Tab>
         <Tab><Identity>TabID-3185-26754</Identity><TabName>Find in Files</TabName><Factory>Find-in-Files</Factory><Session/></Tab></Tabs>
         
-      <SelectedTab>0</SelectedTab></Wnd3></Windows>
+      <SelectedTab>0</SelectedTab></Wnd1></Windows>
     <Editor>
       
       
@@ -59,7 +59,7 @@
       
       
       
-    <Top><Row0><Sizes><Toolbar-0143c8e0><key>iaridepm.enu1</key></Toolbar-0143c8e0></Sizes></Row0></Top><Left><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>474</Bottom><Right>340</Right><x>-2</x><y>-2</y><xscreen>155</xscreen><yscreen>132</yscreen><sizeHorzCX>149903</sizeHorzCX><sizeHorzCY>169666</sizeHorzCY><sizeVertCX>330754</sizeVertCX><sizeVertCY>611825</sizeVertCY></Rect></Wnd2></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>259</Bottom><Right>1036</Right><x>-2</x><y>-2</y><xscreen>1038</xscreen><yscreen>261</yscreen><sizeHorzCX>1003868</sizeHorzCX><sizeHorzCY>335476</sizeHorzCY><sizeVertCX>149903</sizeVertCX><sizeVertCY>169666</sizeVertCY></Rect></Wnd3></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+    <Top><Row0><Sizes><Toolbar-0146c8e0><key>iaridepm.enu1</key></Toolbar-0146c8e0></Sizes></Row0></Top><Left><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>474</Bottom><Right>340</Right><x>-2</x><y>-2</y><xscreen>155</xscreen><yscreen>132</yscreen><sizeHorzCX>149903</sizeHorzCX><sizeHorzCY>169666</sizeHorzCY><sizeVertCX>330754</sizeVertCX><sizeVertCY>611825</sizeVertCY></Rect></Wnd0></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>259</Bottom><Right>1036</Right><x>-2</x><y>-2</y><xscreen>1038</xscreen><yscreen>261</yscreen><sizeHorzCX>1003868</sizeHorzCX><sizeHorzCY>335476</sizeHorzCY><sizeVertCX>149903</sizeVertCX><sizeVertCY>169666</sizeVertCY></Rect></Wnd1></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
   </Desktop>
 </Workspace>
 

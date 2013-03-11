@@ -8,20 +8,11 @@
 
 int32 main(void)
 {
-#define TCP_LISTEN_PORT	5000
-#define UDP_LISTEN_PORT	5000
-
-	int8 ret;
-	uint32 tick = 0;
-
-	ret = platform_init();
-	if(ret != RET_OK) {
+	if(platform_init() != RET_OK) 
 		goto FAIL_TRAP;
-	}
 
-	ret = network_init(ASSIST_SOCK, NULL, NULL);
-	if(ret != RET_OK) {
-		ERRA("network_init fail - ret(%d)", ret);
+	if(network_init(ASSIST_SOCK, NULL, NULL) != RET_OK) {
+		ERR("network_init fail");
 		goto FAIL_TRAP;
 	}
 
@@ -39,35 +30,13 @@ int32 main(void)
 		atc_run();
 		alarm_run();
 		sockwatch_run();
-
-		if(wizpf_tick_elapse(tick) > 1000) {	// running check
-			wizpf_led_set(WIZ_LED1, VAL_TOG);
-			tick = wizpf_get_systick();
-		}
+		wizpf_led_flicker(WIZ_LED1, 1000);	// check loop is running
 	}
 
 FAIL_TRAP:
 	wizpf_led_trap(1);
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

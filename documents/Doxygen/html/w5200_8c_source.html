@@ -585,7 +585,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;  ptr = IINCHIP_READ(Sn_RX_RD0(s));</div>
 <div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;  ptr = ((ptr &amp; 0x00ff) &lt;&lt; 8) + IINCHIP_READ(Sn_RX_RD0(s) + 1);</div>
 <div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;  </div>
-<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;  <a class="code" href="common_8h.html#a0325ae6233a5c48c889ce3c7fdaef0d5" title="Print Error Log with parameter (+CRLF).">DBGA</a>(<span class="stringliteral">&quot; ISR_RX: rd_ptr : %.4x&quot;</span>, ptr);</div>
+<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;  <a class="code" href="common_8h.html#a0325ae6233a5c48c889ce3c7fdaef0d5" title="Print Error Log with parameter (+CRLF).">DBGA</a>(<span class="stringliteral">&quot;ISR_RX: rd_ptr : %.4x&quot;</span>, ptr);</div>
 <div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;</div>
 <div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;  src_mask = (uint32)ptr &amp; getIINCHIP_RxMASK(s);</div>
 <div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;  src_ptr = (uint8 *)(getIINCHIP_RxBASE(s) + src_mask);</div>
@@ -691,7 +691,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 7 2013 11:24:10 for WIZlib Library API by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Mar 10 2013 15:02:25 for WIZlib Library API by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>
