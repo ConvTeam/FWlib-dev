@@ -1,0 +1,4 @@
+<map id="swaps" name="swaps">
+<area shape="rect" id="node2" href="$group__sockutil__module.html#ga9bd0012a3e42109f4cb6ae9002ff9bfb" title="htons function converts a unsigned short from host to TCP/IP network byte order (which is big&#45;endian)..." alt="" coords="113,5,167,32"/>
+<area shape="rect" id="node3" href="$group__sockutil__module.html#ga59378c87910c6f349031b85b133e9372" title="ntohs function converts a unsigned short from TCP/IP network byte order to host byte order (which is ..." alt="" coords="217,5,271,32"/>
+</map>

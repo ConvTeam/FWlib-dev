@@ -1,25 +1,26 @@
 /**
- * @file		w5200.c
- * @brief		W5200 Abstract Layer Source File
+ * @file		w5200/w5200.c
+ * @brief		W5200 HAL Source File.
+ * This is used by socket.c
  * @version	1.0
  * @date		2013/02/22
  * @par Revision
- *		2013/02/22 - 1.0 Release
+ *			2013/02/22 - 1.0 Release
  * @author	
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
- 
+
 //#define FILE_LOG_SILENCE
 #include "common/common.h"
 //#include "device/w5200/w5200.h"
 
 //static uint8 I_STATUS[TOTAL_SOCK_NUM];
-uint16 SMASK[TOTAL_SOCK_NUM]; /**< Variable for Tx buffer MASK in each channel */
-uint16 RMASK[TOTAL_SOCK_NUM]; /**< Variable for Rx buffer MASK in each channel */
-uint16 SSIZE[TOTAL_SOCK_NUM]; /**< Max Tx buffer size by each channel */
-uint16 RSIZE[TOTAL_SOCK_NUM]; /**< Max Rx buffer size by each channel */
-uint16 SBUFBASEADDRESS[TOTAL_SOCK_NUM]; /**< Tx buffer base address by each channel */
-uint16 RBUFBASEADDRESS[TOTAL_SOCK_NUM]; /**< Rx buffer base address by each channel */
+uint16 SMASK[TOTAL_SOCK_NUM]; //< Variable for Tx buffer MASK in each channel */
+uint16 RMASK[TOTAL_SOCK_NUM]; //< Variable for Rx buffer MASK in each channel */
+uint16 SSIZE[TOTAL_SOCK_NUM]; //< Max Tx buffer size by each channel */
+uint16 RSIZE[TOTAL_SOCK_NUM]; //< Max Rx buffer size by each channel */
+uint16 SBUFBASEADDRESS[TOTAL_SOCK_NUM]; //< Tx buffer base address by each channel */
+uint16 RBUFBASEADDRESS[TOTAL_SOCK_NUM]; //< Rx buffer base address by each channel */
 
 uint8 windowfull_retry_cnt[TOTAL_SOCK_NUM];
 
@@ -79,10 +80,9 @@ uint8  IINCHIP_SpiSendData(uint8 dat)
 }
 
 
- /**
+ /*
 @brief  This function writes the data into W5200 registers.
 */
-
 uint8 IINCHIP_WRITE(uint16 addr,uint8 data)
 {
   IINCHIP_ISR_DISABLE();                      // Interrupt Service Routine Disable
@@ -101,7 +101,8 @@ uint8 IINCHIP_WRITE(uint16 addr,uint8 data)
   IINCHIP_ISR_ENABLE();                       // Interrupt Service Routine Enable
   return 1;
 }
-/**
+ 
+/*
 @brief  This function reads the value from W5200 registers.
 */
 uint8 IINCHIP_READ(uint16 addr)
@@ -124,7 +125,7 @@ uint8 IINCHIP_READ(uint16 addr)
   return data;
 }
 
-/**
+/*
 @brief  This function writes into W5200 memory(Buffer)
 */ 
 uint16 IINCHIP_WRITE_BLOCK(uint16 addr,uint8* buf,uint16 len)
@@ -154,8 +155,7 @@ uint16 IINCHIP_WRITE_BLOCK(uint16 addr,uint8* buf,uint16 len)
   return len;
 }
 
-
-/**
+/*
 @brief  This function reads into W5200 memory(Buffer)
 */ 
 uint16 IINCHIP_READ_BLOCK(uint16 addr, uint8* buf,uint16 len)
@@ -183,8 +183,7 @@ uint16 IINCHIP_READ_BLOCK(uint16 addr, uint8* buf,uint16 len)
   return len;
 }
 
-
-/**
+/*
 @brief  This function sets up gateway IP address.
 @param addr a pointer to a 4 -byte array responsible to set the GW address.
 */ 
@@ -206,7 +205,7 @@ void getGWIP(uint8 * addr)
 }
 */
 
-/**
+/*
 @brief  It sets up SubnetMask address
 @param addr a pointer to a 4 -byte array responsible to set the SubnetMask address
 */ 
@@ -218,8 +217,7 @@ void setSUBR(uint8 *addr)
   IINCHIP_WRITE((WIZC_SUBR3),addr[3]);
 }
 
-
-/**
+/*
 @brief  This function sets up MAC address.
 @param addr a pointer to a 6 -byte array responsible to set the MAC address. 
 */ 
@@ -233,7 +231,7 @@ void setSHAR(uint8 *addr)
   IINCHIP_WRITE((WIZC_SHAR5),addr[5]);
 }
 
-/**
+/*
 @brief  This function sets up Source IP address.
 @param addr a pointer to a 4 -byte array responsible to set the Source IP address.
 */
@@ -245,7 +243,7 @@ void setSIPR(uint8 *addr)
   IINCHIP_WRITE((WIZC_SIPR3),addr[3]);
 }
 
-/**
+/*
 @brief  This function sets up Source IP address.
 */
 void getGAR(uint8 *addr)
@@ -296,7 +294,7 @@ void setMR(uint8 val)
   IINCHIP_WRITE(WIZC_MR,val);
 }
 
-/**
+/*
 @brief  This function gets Interrupt register in common register.
  */
 uint8 getIR(void)
@@ -305,11 +303,11 @@ uint8 getIR(void)
 }
 
 
-/**
+/*
  Retransmittion 
- **/
+ */
  
-/**
+/*
 @brief  This function sets up Retransmission time.
 
 If there is no response from the peer or delay in response then retransmission 
@@ -321,7 +319,7 @@ void setRTR(uint16 timeout)
   IINCHIP_WRITE(WIZC_RTR1, (uint8)(timeout & 0x00ff));
 }
 
-/**
+/*
 @brief  This function set the number of Retransmission.
 
 If there is no response from the peer or delay in response then recorded time 
@@ -335,7 +333,7 @@ void setRCR(uint8 retry)
 
 
 
-/**
+/*
 @brief  This function set the interrupt mask Enable/Disable appropriate Interrupt. ('1' : interrupt enable)
 
 If any bit in IMR is set as '0' then there is not interrupt signal though the bit is
@@ -346,7 +344,7 @@ void setIMR(uint8 mask)
   IINCHIP_WRITE(WIZC_IMR,mask); // must be setted 0x10.
 }
 
-/**
+/*
 @brief  This sets the maximum segment size of TCP in Active Mode), while in Passive Mode this is set by peer
 */
 void setSn_MSS(uint8 s, uint16 Sn_MSSR0)
@@ -361,7 +359,7 @@ void setSn_TTL(uint8 s, uint8 ttl)
 }
 
 
-/**
+/*
 @brief  These below function is used to setup the Protocol Field of IP Header when
     executing the IP Layer RAW mode.
 */
@@ -371,7 +369,7 @@ void setSn_PROTO(uint8 s, uint8 proto)
 }
 
 
-/**
+/*
 @brief  get socket interrupt status
 
 These below functions are used to read the Interrupt & Soket Status register
@@ -382,7 +380,7 @@ uint8 getSn_IR(uint8 s)
 }
 
 
-/**
+/*
 @brief   get socket status
 */
 uint8 getSn_SR(uint8 s)
@@ -391,7 +389,7 @@ uint8 getSn_SR(uint8 s)
 }
 
 
-/**
+/*
 @brief  get socket TX free buf size
 
 This gives free buffer size of transmit buffer. This is the data size that user can transmit.
@@ -414,7 +412,7 @@ uint16 getSn_TX_FSR(uint8 s)
 }
 
 
-/**
+/*
 @brief   get socket RX recv buf size
 
 This gives size of received data in receive buffer. 
@@ -436,7 +434,7 @@ uint16 getSn_RX_RSR(uint8 s)
 }
 
 
-/**
+/*
 @brief  This function is being called by send() and sendto() function also. for copy the data form application buffer to Transmite buffer of the chip.
 
 This function read the Tx write pointer register and after copy the data in buffer update the Tx write pointer
@@ -483,7 +481,7 @@ void send_data_processing(uint8 s, uint8 *data, uint16 len)
 }
 
 
-/**
+/*
 @brief  This function is being called by recv() also. This function is being used for copy the data form Receive buffer of the chip to application buffer.
 
 This function read the Rx read pointer register
@@ -503,7 +501,7 @@ void recv_data_processing(uint8 s, uint8 *data, uint16 len)
   ptr = IINCHIP_READ(Sn_RX_RD0(s));
   ptr = ((ptr & 0x00ff) << 8) + IINCHIP_READ(Sn_RX_RD0(s) + 1);
   
-  DBGA(" ISR_RX: rd_ptr : %.4x", ptr);
+  DBGA("ISR_RX: rd_ptr : %.4x", ptr);
 
   src_mask = (uint32)ptr & getIINCHIP_RxMASK(s);
   src_ptr = (uint8 *)(getIINCHIP_RxBASE(s) + src_mask);
@@ -543,12 +541,12 @@ void recv_data_ignore(uint8 s, uint16 len)
 
 // ToDo: Check & Remove ???
 
-/**
+/*
 @brief	Output destination IP address of appropriate channel
 @return 	32bit destination address (Host Ordering)
 */ 
 uint32 GetDestAddr(
-	uint8 s	/**< Channel number which try to get destination IP Address */
+	uint8 s	//< Channel number which try to get destination IP Address */
 	)
 {
 	uint32 addr=0;
@@ -561,12 +559,12 @@ uint32 GetDestAddr(
 	return addr;
 }
 
-/**
+/*
 @brief	Output destination port number of appropriate channel
 @return 	16bit destination port number
 */ 
 uint32 GetDestPort(
-	uint8 s	/**< Channel number which try to get destination port */
+	uint8 s	//< Channel number which try to get destination port */
 	)
 {
 	uint16 port;
@@ -588,13 +586,13 @@ uint8 CheckDestInLocal(uint32 destip)
 	return 0;
 }
 
-/**
+/*
 @brief	Get handle of socket which status is same to 'status'
 @return 	socket number
 */ 
 uint8 getSocket(
-	uint8 status, 	/**< socket's status to be found */
-	uint8 start			/**< base of socket to be found */
+	uint8 status, 	//< socket's status to be found */
+	uint8 start			//< base of socket to be found */
 	)
 {
 	uint8 i;

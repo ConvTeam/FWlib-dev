@@ -1,0 +1,5 @@
+<map id="GetNetInfo" name="GetNetInfo">
+<area shape="rect" id="node2" href="$group__dns__module.html#gac42982cd854842ec3eb003e199056fb7" title="Perform DNS Query." alt="" coords="144,5,227,32"/>
+<area shape="rect" id="node3" href="$group__sockutil__module.html#ga9450c06aa23693c33ade6e6e6f5cc5bb" title="Display Current Network Information." alt="" coords="136,56,235,83"/>
+<area shape="rect" id="node4" href="$group__sockutil__module.html#gace8135b882d24cef7d7d078d01dad4a6" title="Initialize Network." alt="" coords="283,56,373,83"/>
+</map>

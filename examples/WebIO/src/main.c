@@ -15,10 +15,8 @@ bool lb_tcp = FALSE, lb_udp = FALSE;
 
 static int8 mn_show_network(menu_ctrl mctrl, int8 *mbuf)
 {
-	wiz_NetInfo netinfo;
-
 	if(mctrl == MC_START) {
-		network_disp(&netinfo);
+		network_disp(NULL);
 	} else if(mctrl == MC_END) {
 
 	} else if(mctrl == MC_DATA) {
@@ -42,10 +40,10 @@ do {INPUT_GUIDE(name_v); \
 		addr_v[0], addr_v[1], addr_v[2], addr_v[3])
 #define SET_STAGE(cur_name_v, next_name_v, cur_addr_v, next_addr_v) \
 do {uint8 _tmp[4], _next[4]; \
-	if(next_addr_v) memcpy(_next, next_addr_v, 4); \
+	if(next_addr_v != NULL) memcpy(_next, next_addr_v, 4); \
 	if(mbuf[0] == 0) { \
 		stage++; \
-		if(next_addr_v) NEXT_GUIDE(next_name_v, _next); \
+		if(next_addr_v != NULL) NEXT_GUIDE(next_name_v, _next); \
 	} else { \
 		ret = ip_check((int8*)mbuf, _tmp); \
 		if(ret == RET_OK) { \
@@ -53,7 +51,7 @@ do {uint8 _tmp[4], _next[4]; \
 			stage++; \
 			SetNetInfo(&netinfo); \
 			SET_DONE_GUIDE(cur_name_v, cur_addr_v); \
-			if(next_addr_v) NEXT_GUIDE(next_name_v, _next); \
+			if(next_addr_v != NULL) NEXT_GUIDE(next_name_v, _next); \
 		} else { \
 			printf("wrong input(%s)\r\n\r\n", mbuf); \
 			INPUT_GUIDE(cur_name_v); \
@@ -344,17 +342,13 @@ int main(void)
 #define TCP_LISTEN_PORT	5000
 #define UDP_LISTEN_PORT	5000
 
-	int8 ret, root;
-//	uint32 tick = 0;
+	int8 root;
 
-	ret = platform_init();
-	if(ret != RET_OK) {
+	if(platform_init() != RET_OK) 
 		goto FAIL_TRAP;
-	}
 
-	ret = network_init(SOCK_DHCP, NULL, NULL);
-	if(ret != RET_OK) {
-		ERRA("network_init fail - ret(%d)", ret);
+	if(network_init(SOCK_DHCP, NULL, NULL) != RET_OK) {
+		ERR("network_init fail");
 		goto FAIL_TRAP;
 	}
 
@@ -391,12 +385,7 @@ int main(void)
 		menu_run();
 		if(lb_tcp) loopback_tcps(7, (uint16)TCP_LISTEN_PORT);
 		if(lb_udp) loopback_udp(7, (uint16)UDP_LISTEN_PORT);
-/*
-		if(wizpf_tick_elapse(tick) > 1000) {
-			wizpf_led_set(WIZ_LED3, VAL_TOG);
-			tick = wizpf_get_systick();
-		}
-*/
+
 		WebServer(SOCK_HTTP);
 	}
 

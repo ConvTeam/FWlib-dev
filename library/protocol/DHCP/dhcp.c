@@ -4,12 +4,10 @@
  * @version	1.0
  * @date		2013/02/22
  * @par Revision
- *		2013/02/22 - 1.0 Release
+ *			2013/02/22 - 1.0 Release
  * @author	modified by Mike Jeong
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
-
-#include "wizconfig.h"
 
 //#define FILE_LOG_SILENCE
 #include "common/common.h"
@@ -173,6 +171,12 @@ static bool dhcp_async = FALSE;
 static uint8  dhcp_run_cnt = 0;
 static uint32 dhcp_run_tick = 0;
 
+
+/**
+ * @addtogroup dhcp_module
+ * @{
+ */
+
 /**
  * Initialize DHCP module.
  * This should be called just one time at first time
@@ -181,7 +185,8 @@ static uint32 dhcp_run_tick = 0;
  * @param ip_update_hook Callback function for IP-update hooking
  * @param ip_conflict_hook Callback function for IP-conflict hooking (Not implemented yet)
  * @param def Default Address to set
- * @return @b RET_OK: Success \n @b RET_NOK: Error
+ * @return RET_OK: Success
+ * @return RET_NOK: Error
  */
 int8 dhcp_init(uint8 sock, void_func ip_update_hook, void_func ip_conflict_hook, wiz_NetInfo *def)
 {
@@ -207,11 +212,6 @@ int8 dhcp_init(uint8 sock, void_func ip_update_hook, void_func ip_conflict_hook,
 	di.sock = sock;
 	if(ip_update_hook) di.ip_update = ip_update_hook;
 	if(ip_conflict_hook) di.ip_conflict = ip_conflict_hook;
-	
-	ClsNetInfo(NI_IP_ADDR);
-	ClsNetInfo(NI_SN_MASK);
-	ClsNetInfo(NI_GW_ADDR);
-	ClsNetInfo(NI_DNS_ADDR);
 
 	// ToDo: Remove setting zero IP & SN (set at start func)
 
@@ -228,7 +228,8 @@ int8 dhcp_init(uint8 sock, void_func ip_update_hook, void_func ip_conflict_hook,
  * @param action The action you want to do. (@ref dhcp_action)
  * @param renew For returning renew time when DHCP be bound (NULL will be ignored)
  * @param rebind For returning rebind time when DHCP be bound (NULL will be ignored)
- * @return @b RET_OK: Success \n @b RET_NOK: Error
+ * @return RET_OK: Success
+ * @return RET_NOK: Error
  */
 int8 dhcp_manual(dhcp_action action, uint32 *renew, uint32 *rebind)	// blocking function
 {
@@ -308,7 +309,7 @@ dhcp_state dhcp_get_state(void)
  *		and be returned with address set formerly in it for reference
  *	- Member variable DHCP is not used (just ignored)
  * @see @ref wiz_NetInfo, @ref dhcp_get_storage
- * @warning You should update MAC address when chip MAC address is changed.
+ * @note You should update MAC address when chip MAC address is changed.
  *		\n If not, DHCP send packet will have wrong MAC address.
  */
 void dhcp_set_storage(wiz_NetInfo *net)	// Should be updated when MAC is changed
@@ -415,11 +416,13 @@ void dhcp_auto_start(void)
 	if(dhcp_alarm) alarm_set(10, dhcp_alarm_cb, 0);
 }
 
+/* @} */
+
 static void dhcp_alarm_cb(int8 arg)	// for DHCP auto mode
 {
 	if(dhcp_alarm == FALSE) return;
 	if(arg == 0) {
-		if(di.state == DHCP_STATE_IP_CHECK) {
+		if(di.state == DHCP_STATE_BOUND) {
 			alarm_set(wizpf_tick_conv(FALSE, di.renew_time), dhcp_alarm_cb, 1);
 			alarm_set(wizpf_tick_conv(FALSE, di.rebind_time), dhcp_alarm_cb, 2);
 		}
@@ -478,6 +481,10 @@ static void dhcp_run(void)
 	} else if(GetUDPSocketStatus(di.sock) == SOCKSTAT_CLOSED) {
 		if(udp_open_fail == TRUE && !IS_TIME_PASSED(dhcp_run_tick, DHCP_RETRY_DELAY)) 
 			goto RET_ALARM;
+		ClsNetInfo(NI_IP_ADDR);
+		ClsNetInfo(NI_SN_MASK);
+		ClsNetInfo(NI_GW_ADDR);
+		ClsNetInfo(NI_DNS_ADDR);
 		if(UDPOpen(di.sock, DHCP_CLIENT_PORT) == RET_OK) {
 			if(dhcp_async) sockwatch_open(di.sock, dhcp_async_cb);
 			udp_open_fail = FALSE;
@@ -593,9 +600,8 @@ static void dhcp_run(void)
 			SET_STATE(DHCP_STATE_BOUND);
 			SetNetInfo(&workinfo);
 			if(di.ip_update) di.ip_update();
-			LOGA("DHCP ok - New IP (%d.%d.%d.%d)", workinfo.ip[0], workinfo.ip[1], workinfo.ip[2], workinfo.ip[3]);
-			UDPClose(di.sock);
-			if(dhcp_async) sockwatch_close(di.sock);
+			LOGA("DHCP ok - New IP (%d.%d.%d.%d)", 
+				workinfo.ip[0], workinfo.ip[1], workinfo.ip[2], workinfo.ip[3]);
 		//} else {
 		//	SET_STATE(DHCP_STATE_INIT);
 		//	ERR("IP Addr conflicted - IP(%d.%d.%d.%d)", workinfo.ip[0], workinfo.ip[1], workinfo.ip[2], workinfo.ip[3]);
@@ -605,6 +611,8 @@ static void dhcp_run(void)
 		break;
 	case DHCP_STATE_BOUND:
 		di.action = DHCP_ACT_NONE;
+		UDPClose(di.sock);
+		if(dhcp_async) sockwatch_close(di.sock);
 		return; // alarm set is not needed
 	case DHCP_STATE_FAILED:
 		return; // alarm set is not needed
@@ -625,7 +633,7 @@ static void dhcp_fail(void)
 	memcpy(&workinfo, &storage, sizeof(storage));
 	memset(workinfo.mac, 0, 6);
 	SetNetInfo(&workinfo);
-	network_disp(&workinfo);
+	network_disp(NULL);
 	if(dhcp_alarm) 
 		alarm_set(DHCP_START_RETRY_DELAY, dhcp_alarm_cb, 0);
 	//send_checker_NB();
@@ -648,6 +656,7 @@ static int8 recv_handler(void)
 		return RET_NOK;
 	}
 
+	//DBGFUNC(print_dump(&dm, sizeof(dm)));	// For debugging received packet
 	DBGA("DHCP_SIP:%d.%d.%d.%d",di.srv_ip[0],di.srv_ip[1],di.srv_ip[2],di.srv_ip[3]);
 	DBGA("DHCP_RIP:%d.%d.%d.%d",di.srv_ip_real[0],di.srv_ip_real[1],di.srv_ip_real[2],di.srv_ip_real[3]);
 	DBGA("recv_ip:%d.%d.%d.%d",recv_ip[0],recv_ip[1],recv_ip[2],recv_ip[3]);

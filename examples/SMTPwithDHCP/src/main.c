@@ -26,17 +26,11 @@ bool lb_tcp = FALSE, lb_udp = FALSE;
 
 int32 main(void)
 {
-	int8 ret, root;
-	uint32 tick = 0;
-
-	ret = platform_init();
-	if(ret != RET_OK) {
+	if(platform_init() != RET_OK) 
 		goto FAIL_TRAP;
-	}
 
-	ret = network_init(SOCK_DHCP, NULL, NULL);
-	if(ret != RET_OK) {
-		ERRA("network_init fail - ret(%d)", ret);
+	if(network_init(SOCK_DHCP, NULL, NULL) != RET_OK) {
+		ERR("network_init fail");
 		goto FAIL_TRAP;
 	}
 
@@ -45,6 +39,9 @@ int32 main(void)
 	printf("-----------------------------------\r\n\r\n");
 
 	Delay_tick(2000);
+
+	{
+	int8 root;
 
 	menu_init();
 	root = menu_add("Network setting", 0, NULL);
@@ -57,6 +54,7 @@ int32 main(void)
 	menu_add("BASE64", root, mn_base64);
 	menu_add("eMail", root, mn_email);
 	//menu_print_tree();		// For Debug
+	}
 
 	dhcp_auto_start();
 
@@ -68,10 +66,7 @@ int32 main(void)
 		if(lb_tcp) loopback_tcps(7, (uint16)TCP_LISTEN_PORT);
 		if(lb_udp) loopback_udp(7, (uint16)UDP_LISTEN_PORT);
 
-		if(wizpf_tick_elapse(tick) > 1000) {	// running check
-			wizpf_led_set(WIZ_LED1, VAL_TOG);
-			tick = wizpf_get_systick();
-		}
+		wizpf_led_flicker(WIZ_LED1, 1000);	// check loop is running
 	}
 
 FAIL_TRAP:
@@ -81,10 +76,8 @@ FAIL_TRAP:
 
 static int8 mn_show_network(menu_ctrl mctrl, int8 *mbuf)
 {
-	wiz_NetInfo netinfo;
-
 	if(mctrl == MC_START) {
-		network_disp(&netinfo);
+		network_disp(NULL);
 	} else if(mctrl == MC_END) {
 
 	} else if(mctrl == MC_DATA) {
@@ -108,10 +101,10 @@ do {INPUT_GUIDE(name_v); \
 		addr_v[0], addr_v[1], addr_v[2], addr_v[3])
 #define SET_STAGE(cur_name_v, next_name_v, cur_addr_v, next_addr_v) \
 do {uint8 _tmp[4], _next[4]; \
-	if(next_addr_v) memcpy(_next, next_addr_v, 4); \
+	if(next_addr_v != NULL) memcpy(_next, next_addr_v, 4); \
 	if(mbuf[0] == 'n') { \
 		stage++; \
-		if(next_addr_v) NEXT_GUIDE(next_name_v, _next); \
+		if(next_addr_v != NULL) NEXT_GUIDE(next_name_v, _next); \
 	} else { \
 		ret = ip_check(mbuf, _tmp); \
 		if(ret == RET_OK) { \
@@ -119,7 +112,7 @@ do {uint8 _tmp[4], _next[4]; \
 			stage++; \
 			SetNetInfo(&netinfo); \
 			SET_DONE_GUIDE(cur_name_v, cur_addr_v); \
-			if(next_addr_v) NEXT_GUIDE(next_name_v, _next); \
+			if(next_addr_v != NULL) NEXT_GUIDE(next_name_v, _next); \
 		} else { \
 			printf("wrong input(%s)\r\n\r\n", mbuf); \
 			INPUT_GUIDE(cur_name_v); \
@@ -140,10 +133,10 @@ do {uint8 _tmp[4], _next[4]; \
 	} else if(mctrl == MC_DATA) {
 		switch(stage) {
 		case 0:
-			SET_STAGE("IP Address", "SN mask", netinfo.ip, netinfo.sn);
+			SET_STAGE("IP Address", "SN Mask", netinfo.ip, netinfo.sn);
 			break;
 		case 1:
-			SET_STAGE("SN mask", "GW Address", netinfo.sn, netinfo.gw);
+			SET_STAGE("SN Mask", "GW Address", netinfo.sn, netinfo.gw);
 			break;
 		case 2:
 			SET_STAGE("GW Address", "DNS Address", netinfo.gw, netinfo.dns);
@@ -338,7 +331,7 @@ static int8 mn_email(menu_ctrl mctrl, int8 *mbuf)
 		case 5:	// Message
 			ret = send_mail(SOCK_SMTP, (uint8*)sender, (uint8*)passwd, 
 				(uint8*)recipient, (uint8*)subject, (uint8*)mbuf, ip);
-			if(ret != 0) printf("mail send success\r\n");
+			if(ret == RET_OK) printf("mail send success\r\n");
 			else printf("mail send fail\r\n");
 			return RET_OK;
 		default: printf("wrong stage(%d)\r\n", stage);

@@ -4,7 +4,7 @@
  * @version	1.0
  * @date		2013/02/22
  * @par Revision
- *		2013/02/22 - 1.0 Release
+ *			2013/02/22 - 1.0 Release
  * @author	Mike Jeong
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
@@ -16,6 +16,7 @@
 
 
 /**
+ * @ingroup usermenu_module
  * Maximum number of User Menu Definition.
  * - If not set in the wizconfig.h, default value is 10.
  * - The more number, the more memory use.
@@ -26,6 +27,7 @@
 #endif
 
 /**
+ * @ingroup usermenu_module
  * Maximum Terminal Input Buffer Size.
  * - If not set in the wizconfig.h, default value is 100 Byte.
  * - The more size, the more memory use.
@@ -36,6 +38,7 @@
 #endif
 
 /**
+ * @ingroup usermenu_module
  * Menu Control Signal.
  * With this signal, Callback function can determine user action
  * @see @ref menu_func
@@ -47,11 +50,13 @@ typedef enum {
 } menu_ctrl;
 
 /**
+ * @ingroup usermenu_module
  * User Menu Callback Function Definition.
  * The function form with which a user menu function will be added to the menu
  * @param mctrl With this signal, Callback function can determine user action (@ref menu_ctrl)
  * @param mbuf The string buffer which user input
- * @return @b RET_OK: Return to parent menu \n @b RET_NOK: Stay current menu
+ * @return RET_OK: Return to parent menu
+ * @return RET_NOK: Stay current menu
  */
 typedef int8 (*menu_func)(menu_ctrl mctrl, int8 *mbuf);
 

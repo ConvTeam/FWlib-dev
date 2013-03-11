@@ -4,7 +4,7 @@
  * @version	1.0
  * @date		2013/02/22
  * @par Revision
- *		2013/02/22 - 1.0 Release
+ *			2013/02/22 - 1.0 Release
  * @author	Mike Jeong
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
@@ -93,7 +93,6 @@ struct atc_info {
 	atct tcmd;
 	int8 sendsock;
 	uint8 sendip[4];
-	uint8 sendflag[2];
 	uint16 sendport;
 	int8 sendbuf[WORK_BUF_SIZE+1];
 	int8 recvbuf[WORK_BUF_SIZE+1];
@@ -123,7 +122,7 @@ void act_nstat(int8 num);
 void act_nmac_q(void);
 void act_nmac_a(uint8 *mac);
 void act_nopen_q(void);
-void act_nopen_a(int8 type,  int8 save, uint16 sport, uint8 *dip, uint16 dport);
+void act_nopen_a(int8 type, uint16 sport, uint8 *dip, uint16 dport);
 void act_ncls(uint8 sock);
 int8 act_nsend_chk(uint8 sock, uint16 *len, uint8 *dip, uint16 *dport);
 void act_nsend(uint8 sock, int8 *buf, uint16 len, uint8 *dip, uint16 *dport);

@@ -1,10 +1,10 @@
 /**
  * @file		w5500/socket.c
- * @brief		TCP/IP Chip Device Driver Source File - For w5500
+ * @brief		Socket Driver Source File - For w5500
  * @version	1.0
  * @date		2013/02/27
  * @par Revision
- *		2013/02/27 - 1.0 Release
+ *			2013/02/27 - 1.0 Release
  * @author	
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
@@ -15,11 +15,11 @@
 
 
 extern uint8 I_STATUS[TOTAL_SOCK_NUM];
-//static uint16 RMASK[MAX_SOCK_NUM]; /**< Variable for Rx buffer MASK in each channel */ 
-extern uint16 SSIZE[TOTAL_SOCK_NUM]; /**< Max Tx buffer size by each channel */
-extern uint16 RSIZE[TOTAL_SOCK_NUM]; /**< Max Rx buffer size by each channel */
-//static uint16 SBUFBASEADDRESS[MAX_SOCK_NUM]; /**< Tx buffer base address by each channel */ 
-//static uint16 RBUFBASEADDRESS[MAX_SOCK_NUM]; /**< Rx buffer base address by each channel */ 
+//static uint16 RMASK[MAX_SOCK_NUM]; //< Variable for Rx buffer MASK in each channel */ 
+extern uint16 SSIZE[TOTAL_SOCK_NUM]; //< Max Tx buffer size by each channel */
+extern uint16 RSIZE[TOTAL_SOCK_NUM]; //< Max Rx buffer size by each channel */
+//static uint16 SBUFBASEADDRESS[MAX_SOCK_NUM]; //< Tx buffer base address by each channel */ 
+//static uint16 RBUFBASEADDRESS[MAX_SOCK_NUM]; //< Rx buffer base address by each channel */ 
 
 static uint8 DNS[4]={0};
 static dhcp_mode DHCP = NETINFO_STATIC;
@@ -30,21 +30,11 @@ static uint32 tcp_resend_elapse[TOTAL_SOCK_NUM] = {0,};
 static uint16 txrd_checker[TOTAL_SOCK_NUM];
 
 
-/**
- * Initialize the w5500 device
- * @param tx_size Tx socket buffer size array
- * @param rx_size Rx socket buffer size array
- */  
 void device_init(uint8 *tx_size, uint8 *rx_size)
 {
 	device_SW_reset();
 	device_mem_init(tx_size, rx_size);
 }
-
-
-/**
-@brief  This function is for resetting of the iinchip. Initializes the iinchip to work in whether DIRECT or INDIRECT mode
-*/ 
 
 void device_SW_reset(void)
 { 
@@ -52,110 +42,57 @@ void device_SW_reset(void)
 	DBGA("MR value is %02x",IINCHIP_READ_COMMON(WIZC_MR));
 }
 
-
-/**
-@brief  This function set the transmit & receive buffer size as per the channels is used
-Note for TMSR and RMSR bits are as follows\n
-bit 1-0 : memory size of channel #0 \n
-bit 3-2 : memory size of channel #1 \n
-bit 5-4 : memory size of channel #2 \n
-bit 7-6 : memory size of channel #3 \n
-bit 9-8 : memory size of channel #4 \n
-bit 11-10 : memory size of channel #5 \n
-bit 12-12 : memory size of channel #6 \n
-bit 15-14 : memory size of channel #7 \n
-Maximum memory size for Tx, Rx in the W5500 is 16K Bytes,\n
-In the range of 16KBytes, the memory size could be allocated dynamically by each channel.\n
-Be attentive to sum of memory size shouldn't exceed 8Kbytes\n
-and to data transmission and receiption from non-allocated channel may cause some problems.\n
-If the 16KBytes memory is already  assigned to centain channel, \n
-other 3 channels couldn't be used, for there's no available memory.\n
-If two 4KBytes memory are assigned to two each channels, \n
-other 2 channels couldn't be used, for there's no available memory.\n
-*/ 
-
-void device_mem_init(uint8 * tx_size, uint8 * rx_size)
+void device_mem_init(uint8 *tx_size, uint8 *rx_size)
 {
-  int16 i;
-  int16 ssum, rsum; //<-
-  DBG("device_mem_init()"); 
-  ssum = 0;
-  rsum = 0;
-  
-	for (i = 0 ; i < TOTAL_SOCK_NUM; i++)       // Set the size, masking and base address of Tx & Rx memory by each channel
+	int16 i, mul;
+	int16 ssum, rsum;
+
+	DBG("device_mem_init()");
+
+	ssum = 0;
+	rsum = 0;
+
+	for (i=0; i<TOTAL_SOCK_NUM; i++)	// Set the size, masking and base address of Tx & Rx memory by each channel
 	{
 		IINCHIP_WRITE_SOCKETREG( i, WIZS_TXMEM_SIZE, tx_size[i]);
 		IINCHIP_WRITE_SOCKETREG( i, WIZS_RXMEM_SIZE, rx_size[i]);
 
 		DBGA("tx_size[%d]: %d, Sn_TXMEM_SIZE = %d",i, tx_size[i], IINCHIP_READ_SOCKETREG( i, WIZS_TXMEM_SIZE));
 		DBGA("rx_size[%d]: %d, Sn_RXMEM_SIZE = %d",i, rx_size[i], IINCHIP_READ_SOCKETREG( i, WIZS_RXMEM_SIZE));
+
 		SSIZE[i] = (int16)(0);
 		RSIZE[i] = (int16)(0);
 
-		if (ssum <= 16384)
-		//if (ssum <= 8192)
-		{
-			switch( tx_size[i] )
-			{
-			case 1:
-				SSIZE[i] = (int16)(1024);
-				break;
-			case 2:
-				SSIZE[i] = (int16)(2048);
-				break;
-			case 4:
-				SSIZE[i] = (int16)(4096);
-				break;
-			case 8:
-				SSIZE[i] = (int16)(8192);
-				break;
+		if(ssum <= 16384) {	//if(ssum <= 8192)
 #if 1 //--4Channel사용시 적용 안됨 --20120522
-			case 16:
-				SSIZE[i] = (int16)(16384);
-				break;
-#endif//--4Channel사용시 적용 안됨 
-			default: // by Ssoo디폴트 값 2K --20120522
-				RSIZE[i] = (int16)(2048);
-				break;                        
-			}
+			if(tx_size[i]==1 || tx_size[i]==2 || tx_size[i]==4 || tx_size[i]==8 || tx_size[i]==16)
+#else
+			if(tx_size[i]==1 || tx_size[i]==2 || tx_size[i]==4 || tx_size[i]==8)
+#endif
+				mul = tx_size[i];
+			else mul = 2;	// by Ssoo Default 2K --20120522
+			SSIZE[i] = 0x400 * mul;
+			SMASK[i] = 0x400 * mul - 1;
+		}
+		if(rsum <= 16384) {	//if(rsum <= 8192)
+#if 1 //--4Channel사용시 적용 안됨 --20120522
+			if(rx_size[i]==1 || rx_size[i]==2 || rx_size[i]==4 || rx_size[i]==8 || rx_size[i]==16)
+#else
+			if(rx_size[i]==1 || rx_size[i]==2 || rx_size[i]==4 || rx_size[i]==8)
+#endif
+				mul = rx_size[i];
+			else mul = 2;	// by Ssoo Default 2K --20120522
+			RSIZE[i] = 0x400 * mul;
+			RMASK[i] = 0x400 * mul - 1;
 		}
 
-		if (rsum <= 16384)
-		//if (rsum <= 8192)                  
-		{
-			switch( rx_size[i] )
-			{
-			case 1:
-				RSIZE[i] = (int16)(1024);
-				break;
-			case 2:
-				RSIZE[i] = (int16)(2048);
-				break;
-			case 4:
-				RSIZE[i] = (int16)(4096);
-				break;
-			case 8:
-				RSIZE[i] = (int16)(8192);
-				break;
-#if 1 //--4Channel사용시 적용 안됨  --20120522
-			case 16:
-				RSIZE[i] = (int16)(16384);
-				break;
-#endif//--4Channel사용시 적용 안됨 
-			default: // by Ssoo디폴트 값 2K --20120522
-				RSIZE[i] = (int16)(2048);
-				break;
-			}
-		}
 		ssum += SSIZE[i];
 		rsum += RSIZE[i];
 
-//        if (i != 0)             // Sets base address of Tx and Rx memory for channel #1,#2,#3
-//    {
-//      SBUFBASEADDRESS[i] = SBUFBASEADDRESS[i-1] + SSIZE[i-1];
-//      RBUFBASEADDRESS[i] = RBUFBASEADDRESS[i-1] + RSIZE[i-1];
-//    }
-
+//		if (i != 0) {            // Sets base address of Tx and Rx memory for channel #1,#2,#3
+//			SBUFBASEADDRESS[i] = SBUFBASEADDRESS[i-1] + SSIZE[i-1];
+//			RBUFBASEADDRESS[i] = RBUFBASEADDRESS[i-1] + RSIZE[i-1];
+//		}
 	DBGA("ch = %d",i);
 	DBGA("SBUFBASEADDRESS = %d",(uint16)SBUFBASEADDRESS[i]);
 	DBGA("RBUFBASEADDRESS = %d",(uint16)RBUFBASEADDRESS[i]);
@@ -163,39 +100,34 @@ void device_mem_init(uint8 * tx_size, uint8 * rx_size)
 	DBGA("RSIZE = %d",RSIZE[i]);    
 	}
 }
-
-/**
-@brief	This function set the network information.
-*/  
-void SetNetInfo(wiz_NetInfo *ni)
+ 
+void SetNetInfo(wiz_NetInfo *netinfo)
 {
-	if(ni->mac[0] != 0x00 || ni->mac[1] != 0x00 || ni->mac[2] != 0x00 || 
-		ni->mac[3] != 0x00 || ni->mac[4] != 0x00 || ni->mac[5] != 0x00)
-		setSHAR(ni->mac);	// set local MAC address
-	if(ni->ip[0] != 0x00 || ni->ip[1] != 0x00 || ni->ip[2] != 0x00 || ni->ip[3] != 0x00)
-		setSIPR(ni->ip);	// set local IP address
-	if(ni->sn[0] != 0x00 || ni->sn[1] != 0x00 || ni->sn[2] != 0x00 || ni->sn[3] != 0x00)
-		setSUBR(ni->sn);	// set Subnet mask
-	if(ni->gw[0] != 0x00 || ni->gw[1] != 0x00 || ni->gw[2] != 0x00 || ni->gw[3] != 0x00)
-		setGAR(ni->gw);		// set Gateway address
-	if(ni->dns[0] != 0x00 || ni->dns[1] != 0x00 || ni->dns[2] != 0x00 || ni->dns[3] != 0x00){
-		DNS[0] = ni->dns[0];
-		DNS[1] = ni->dns[1];
-		DNS[2] = ni->dns[2];
-		DNS[3] = ni->dns[3];
+	if(netinfo->mac[0] != 0x00 || netinfo->mac[1] != 0x00 || netinfo->mac[2] != 0x00 || 
+		netinfo->mac[3] != 0x00 || netinfo->mac[4] != 0x00 || netinfo->mac[5] != 0x00)
+		setSHAR(netinfo->mac);							// set local MAC address
+	if(netinfo->ip[0] != 0x00 || netinfo->ip[1] != 0x00 || netinfo->ip[2] != 0x00 || 
+		netinfo->ip[3] != 0x00) setSIPR(netinfo->ip);	// set local IP address
+	if(netinfo->sn[0] != 0x00 || netinfo->sn[1] != 0x00 || netinfo->sn[2] != 0x00 || 
+		netinfo->sn[3] != 0x00) setSUBR(netinfo->sn);	// set Subnet mask
+	if(netinfo->gw[0] != 0x00 || netinfo->gw[1] != 0x00 || netinfo->gw[2] != 0x00 || 
+		netinfo->gw[3] != 0x00) setGAR(netinfo->gw);	// set Gateway address
+	if(netinfo->dns[0] != 0x00 || netinfo->dns[1] != 0x00 || netinfo->dns[2] != 0x00 || 
+		netinfo->dns[3] != 0x00){
+		DNS[0] = netinfo->dns[0];
+		DNS[1] = netinfo->dns[1];
+		DNS[2] = netinfo->dns[2];
+		DNS[3] = netinfo->dns[3];
 	}
 
-	if(ni->dhcp != 0) DHCP = ni->dhcp;
+	if(netinfo->dhcp != 0) DHCP = netinfo->dhcp;
 }
 
-/**
- * Clear specific device address to all zero.
- * @param member the member variable of @ref netinfo_member which means each of @ref wiz_NetInfo struct member.
- */ 
 void ClsNetInfo(netinfo_member member)
 {
 	uint8 zero[6] = {0,};
 
+	DBGA("Reset Address(%d)", member);
 	switch(member) {
 	//case NI_MAC_ADDR:	// If need, uncomment
 	//	setSHAR(zero);
@@ -216,10 +148,7 @@ void ClsNetInfo(netinfo_member member)
 		ERRA("wrong member value (%d)", member);
 	}
 }
-
-/**
-@brief	This function get the network information.
-*/  
+ 
 void GetNetInfo(wiz_NetInfo *netinfo)
 {
 	getSHAR(netinfo->mac); // get local MAC address
@@ -233,20 +162,12 @@ void GetNetInfo(wiz_NetInfo *netinfo)
 	netinfo->dhcp = DHCP;
 }
 
-/**
-@brief	This function get the Destination network information for UDP
-@return 	None.
-*/
 void GetDstInfo(uint8 s, uint8 *dstip, uint16 *dstport)
 {
 	getDIPR(s, dstip);
 	getDPORT(s, dstport);
 }
-
-/**
-@brief	This function set the network option.
-@return 	None.
-*/  
+ 
 void SetSocketOption(uint8 option_type, uint16 option_value)
 {
 	switch(option_type){
@@ -263,11 +184,7 @@ void SetSocketOption(uint8 option_type, uint16 option_value)
 		break;
 	}
 }
-
-/**
-@brief	This function get the TCP socket status.
-@return 	TCP socket status.
-*/  
+ 
 int8 GetTCPSocketStatus(uint8 s)
 {
 	if(s > TOTAL_SOCK_NUM) {
@@ -296,10 +213,6 @@ int8 GetTCPSocketStatus(uint8 s)
 	}
 }
 
-/**
-@brief	This function get the UDP socket status.
-@return 	UDP socket status.
-*/  
 int8 GetUDPSocketStatus(uint8 s)
 {
 	if(s > TOTAL_SOCK_NUM) {
@@ -323,28 +236,16 @@ int8 GetUDPSocketStatus(uint8 s)
 	}
 }
 
-/**
-@brief	This Socket function get the TX free buffer size.
-@return 	size of TX free buffer size.
-*/  
 uint16 GetSocketTxFreeBufferSize(uint8 s)
 {
 	return getSn_TX_FSR(s); // get socket TX free buf size
 }
 
-/**
-@brief	This Socket function get the RX recv buffer size.
-@return 	size of RX recv buffer size.
-*/  
 uint16 GetSocketRxRecvBufferSize(uint8 s)
 {
 	return getSn_RX_RSR(s); // get socket RX recv buf size
 }
 
-/**
-@brief	This Socket function open TCP server socket.
-@return 	1 - success, 0 - fail.
-*/  
 int8 TCPServerOpen(uint8 s, uint16 port)
 {
 	if(s > TOTAL_SOCK_NUM) {
@@ -359,7 +260,6 @@ int8 TCPServerOpen(uint8 s, uint16 port)
 	}
 
 	TCPClose(s);
-	
 	//IINCHIP_WRITE(Sn_MR(s),Sn_MR_TCP);
 	//IINCHIP_WRITE(Sn_PORT0(s),(uint8)((port & 0xff00) >> 8));
 	//IINCHIP_WRITE((Sn_PORT0(s) + 1),(uint8)(port & 0x00ff));
@@ -373,14 +273,13 @@ int8 TCPServerOpen(uint8 s, uint16 port)
 	IINCHIP_WRITE_SOCKETREG(s, WIZS_CR, Sn_CR_OPEN);  // run sockinit Sn_CR
 	while(IINCHIP_READ_SOCKETREG(s, WIZS_CR));        // wait to process the command...
 	DBGA("Sn_SR = %.2x , Protocol = %.2x", IINCHIP_READ_SOCKETREG(s, WIZS_SR), IINCHIP_READ_SOCKETREG(s, WIZS_MR));
-        
 
 	//if (IINCHIP_READ(Sn_SR(s)) != SOCK_INIT) {
 		//DBGA("wrong status(%d)", IINCHIP_READ(Sn_SR(s)));
 		if(IINCHIP_READ_SOCKETREG(s, WIZS_SR) != SOCK_INIT) {
 		DBGA("wrong status(%d)", IINCHIP_READ_SOCKETREG(s, WIZS_SR)); 
 		return SOCKERR_WRONG_STATUS;
-	} else {                
+	} else {
 		//IINCHIP_WRITE(Sn_CR(s),Sn_CR_LISTEN);
 		//while(IINCHIP_READ(Sn_CR(s)));	          // wait to process the command...
 		IINCHIP_WRITE_SOCKETREG(s, WIZS_CR, Sn_CR_LISTEN);
@@ -390,10 +289,6 @@ int8 TCPServerOpen(uint8 s, uint16 port)
 	return RET_OK;
 }
 
-/**
-@brief	This Socket function open TCP client socket.
-@return 	1 - success, 0 - fail.
-*/
 int8 TCPClientOpen(uint8 s, uint16 sport, uint8 *dip, uint16 dport)
 {
 	int8 ret;
@@ -428,7 +323,6 @@ int8 TCPCltOpenNB(uint8 s, uint16 sport, uint8 *dip, uint16 dport)
 	}
 
 	TCPClose(s);
-        
 	//IINCHIP_WRITE(Sn_MR(s),Sn_MR_TCP);
 	//IINCHIP_WRITE(Sn_PORT0(s),(uint8)((sport & 0xff00) >> 8));
 	//IINCHIP_WRITE((Sn_PORT0(s) + 1),(uint8)(sport & 0x00ff));
@@ -514,47 +408,6 @@ int8 TCPConnChk(uint8 s)
 	return SOCKERR_BUSY;
 }
 
-/**
-@brief	This Socket function open UDP socket.
-@return 	1 - success, 0 - fail.
-*/  
-int8 UDPOpen(uint8 s, uint16 port)
-{
-	if(s > TOTAL_SOCK_NUM) {
-		ERRA("wrong socket number(%d)", s);
-		return SOCKERR_NOT_UDP;
-	} else DBG("start");
-
-	if (port == 0) {	// if don't set the source port, set local_port number.
-		if(local_port == 0xffff) local_port = 0xc000;
-		else local_port++;
-		port = local_port;
-	}
-
-	UDPClose(s);
-        
-	//IINCHIP_WRITE(Sn_MR(s),Sn_MR_UDP);
-	//IINCHIP_WRITE(Sn_PORT0(s),(uint8)((port & 0xff00) >> 8));
-	//IINCHIP_WRITE((Sn_PORT0(s) + 1),(uint8)(port & 0x00ff));
-	//IINCHIP_WRITE(Sn_CR(s),Sn_CR_OPEN); // run sockinit Sn_CR
-	//while(IINCHIP_READ(Sn_CR(s)));	// wait to process the command...
-	//DBGA("Sn_SR = %.2x , Protocol = %.2x", IINCHIP_READ(Sn_SR(s)), IINCHIP_READ(Sn_MR(s)));
-
-	IINCHIP_WRITE_SOCKETREG(s, WIZS_MR, Sn_MR_UDP);
-	IINCHIP_WRITE_SOCKETREG(s, WIZS_PORT0 + 0, (uint8)((port & 0xff00) >> 8));
-	IINCHIP_WRITE_SOCKETREG(s, WIZS_PORT0 + 1, (uint8)(port & 0x00ff));
-	IINCHIP_WRITE_SOCKETREG(s, WIZS_CR, Sn_CR_OPEN);  // run sockinit Sn_CR
-	while(IINCHIP_READ_SOCKETREG(s, WIZS_CR));        // wait to process the command...
-	DBGA("Sn_SR = %.2x , Protocol = %.2x", IINCHIP_READ_SOCKETREG(s, WIZS_SR), IINCHIP_READ_SOCKETREG(s, WIZS_MR));
-
-	return RET_OK;
-}
-
-
-/**
-@brief	This function close the TCP socket and parameter is "s" which represent the socket number
-@return 	1 - success, 0 - fail.
-*/ 
 int8 TCPClose(uint8 s)
 {
 	int8 ret;
@@ -642,38 +495,12 @@ END_OK:
 	return RET_OK;
 }
 
-/**
-@brief	This function close the UDP socket and parameter is "s" which represent the socket number
-@return 	1 - success, 0 - fail.
-*/ 
-int8 UDPClose(uint8 s)
-{
-	if(s > TOTAL_SOCK_NUM) {
-		ERRA("wrong socket number(%d)", s);
-		return SOCKERR_NOT_UDP;
-	} else DBG("start");
-
-	//IINCHIP_WRITE(Sn_CR(s),Sn_CR_CLOSE);
-	//while(IINCHIP_READ(Sn_CR(s)));                // wait to process the command...
-	//IINCHIP_WRITE(Sn_IR(s), 0xFF);	        // interrupt all clear
-
-	IINCHIP_WRITE_SOCKETREG(s, WIZS_CR, Sn_CR_CLOSE);
-	while(IINCHIP_READ_SOCKETREG(s, WIZS_CR));      // wait to process the command...
-	IINCHIP_WRITE_SOCKETREG(s, WIZS_IR, 0xFF);	// interrupt all clear
-	
-	return RET_OK;
-}
-
-/**
-@brief	This function used to send the data in TCP mode
-@return	1 for success else 0.
-*/ 
-int32 TCPSend(uint8 s, const int8 *src, uint16 len)
+int32 TCPSend(uint8 s, const int8 *buf, uint16 len)
 {
 	int32 ret;
 
 	while(1) {
-		ret = TCPSendNB(s, src, len);
+		ret = TCPSendNB(s, buf, len);
 		if(ret == RET_OK) break;
 		if(ret != SOCKERR_BUSY) return ret;
 	}
@@ -686,7 +513,7 @@ int32 TCPSend(uint8 s, const int8 *src, uint16 len)
 	return ret;
 }
 
-int8 TCPSendNB(uint8 s, const int8 *src, uint16 len)
+int8 TCPSendNB(uint8 s, const int8 *buf, uint16 len)
 {
 	uint8 status = 0;
 
@@ -710,7 +537,7 @@ int8 TCPSendNB(uint8 s, const int8 *src, uint16 len)
 	if(len > getIINCHIP_TxMAX(s)) len = getIINCHIP_TxMAX(s); // check size not to exceed MAX size.
 	if(GetSocketTxFreeBufferSize(s) < len) return SOCKERR_BUSY;
 
-	send_data_processing(s, (uint8*)src, len);	// copy data
+	send_data_processing(s, (uint8*)buf, len);	// copy data
         
 	//txrd_checker[s] = IINCHIP_READ(Sn_TX_RD0(s));
 	//txrd_checker[s] = (txrd_checker[s] << 8) + IINCHIP_READ(Sn_TX_RD0(s) + 1);
@@ -727,10 +554,6 @@ int8 TCPSendNB(uint8 s, const int8 *src, uint16 len)
 	return RET_OK;
 }
 
-/**
-@brief	This function used to send the data in TCP mode
-@return	1 for success else 0.
-*/ 
 int32 TCPReSend(uint8 s)
 {
 	int32 ret;
@@ -813,12 +636,6 @@ int32 TCPSendCHK(uint8 s)
 	else return (0xffff - txrd_checker[s]) + txrd + 1;
 }
 
-/**
-@brief	This function is an application I/F function which is used to receive the data in TCP mode.
-		It continues to wait for data as much as the application wants to receive.
-		
-@return	received data size for success else -1.
-*/ 
 int32 TCPRecv(uint8 s, int8 *buf, uint16 len)
 {
 	uint8 status = 0;
@@ -832,7 +649,7 @@ int32 TCPRecv(uint8 s, int8 *buf, uint16 len)
 		return SOCKERR_WRONG_ARG;
 	}
 
-	RSR_len = GetSocketRxRecvBufferSize(s);	// Check Receive Buffer of W5500
+	RSR_len = GetSocketRxRecvBufferSize(s);	// Check Receive Buffer
 	if(RSR_len == 0){
 		status = getSn_SR(s);
 		if(status == SOCK_CLOSED) return SOCKERR_CLOSED;
@@ -854,12 +671,56 @@ int32 TCPRecv(uint8 s, int8 *buf, uint16 len)
 	return RSR_len;
 }
 
-/**
-@brief	This function is an application I/F function which is used to send the data for other then TCP mode. 
-		Unlike TCP transmission, The peer's destination address and the port is needed.
-		
-@return	This function return send data size for success else -1.
-*/ 
+int8 UDPOpen(uint8 s, uint16 port)
+{
+	if(s > TOTAL_SOCK_NUM) {
+		ERRA("wrong socket number(%d)", s);
+		return SOCKERR_NOT_UDP;
+	} else DBG("start");
+
+	if (port == 0) {	// if don't set the source port, set local_port number.
+		if(local_port == 0xffff) local_port = 0xc000;
+		else local_port++;
+		port = local_port;
+	}
+
+	UDPClose(s);
+        
+	//IINCHIP_WRITE(Sn_MR(s),Sn_MR_UDP);
+	//IINCHIP_WRITE(Sn_PORT0(s),(uint8)((port & 0xff00) >> 8));
+	//IINCHIP_WRITE((Sn_PORT0(s) + 1),(uint8)(port & 0x00ff));
+	//IINCHIP_WRITE(Sn_CR(s),Sn_CR_OPEN); // run sockinit Sn_CR
+	//while(IINCHIP_READ(Sn_CR(s)));	// wait to process the command...
+	//DBGA("Sn_SR = %.2x , Protocol = %.2x", IINCHIP_READ(Sn_SR(s)), IINCHIP_READ(Sn_MR(s)));
+
+	IINCHIP_WRITE_SOCKETREG(s, WIZS_MR, Sn_MR_UDP);
+	IINCHIP_WRITE_SOCKETREG(s, WIZS_PORT0 + 0, (uint8)((port & 0xff00) >> 8));
+	IINCHIP_WRITE_SOCKETREG(s, WIZS_PORT0 + 1, (uint8)(port & 0x00ff));
+	IINCHIP_WRITE_SOCKETREG(s, WIZS_CR, Sn_CR_OPEN);  // run sockinit Sn_CR
+	while(IINCHIP_READ_SOCKETREG(s, WIZS_CR));        // wait to process the command...
+	DBGA("Sn_SR = %.2x , Protocol = %.2x", IINCHIP_READ_SOCKETREG(s, WIZS_SR), IINCHIP_READ_SOCKETREG(s, WIZS_MR));
+
+	return RET_OK;
+}
+
+int8 UDPClose(uint8 s)
+{
+	if(s > TOTAL_SOCK_NUM) {
+		ERRA("wrong socket number(%d)", s);
+		return SOCKERR_NOT_UDP;
+	} else DBG("start");
+
+	//IINCHIP_WRITE(Sn_CR(s),Sn_CR_CLOSE);
+	//while(IINCHIP_READ(Sn_CR(s)));                // wait to process the command...
+	//IINCHIP_WRITE(Sn_IR(s), 0xFF);	        // interrupt all clear
+
+	IINCHIP_WRITE_SOCKETREG(s, WIZS_CR, Sn_CR_CLOSE);
+	while(IINCHIP_READ_SOCKETREG(s, WIZS_CR));      // wait to process the command...
+	IINCHIP_WRITE_SOCKETREG(s, WIZS_IR, 0xFF);	// interrupt all clear
+
+	return RET_OK;
+}
+
 int32 UDPSend(uint8 s, const int8 *buf, uint16 len, uint8 *addr, uint16 port)
 {
 	int32 ret = 0;
@@ -961,12 +822,6 @@ int8 UDPSendCHK(uint8 s)
 	return RET_OK;
 }
 
-/**
-@brief	This function is an application I/F function which is used to receive the data in other then
-	TCP mode. This function is used to receive UDP and MAC_RAW mode, and handle the header as well. 
-	
-@return	This function return received data size for success else -1.
-*/ 
 int32 UDPRecv(uint8 s, int8 *buf, uint16 len, uint8 *addr, uint16 *port)
 {
 	uint8 prebuf[8], status = 0;
@@ -995,13 +850,13 @@ int32 UDPRecv(uint8 s, int8 *buf, uint16 len, uint8 *addr, uint16 *port)
                 
 		IINCHIP_WRITE_SOCKETREG(s, WIZS_CR, Sn_CR_RECV);
 		while(IINCHIP_READ_SOCKETREG(s, WIZS_CR));    
-                
+
 		return SOCKERR_NOT_SPECIFIED;
 	} else {
 		recv_data_processing(s, prebuf, 8);
 		//IINCHIP_WRITE(Sn_CR(s), Sn_CR_RECV);	// 데이터를 처리한 후 이것을 해줘야 적용됨
 		IINCHIP_WRITE_SOCKETREG(s, WIZS_CR, Sn_CR_RECV);	// 데이터를 처리한 후 이것을 해줘야 적용됨
-                
+
 		if(addr) {		// read peer's IP address, port number.
 			addr[0] = prebuf[0];
 			addr[1] = prebuf[1];
@@ -1090,11 +945,6 @@ int32 UDPRecv(uint8 s, int8 *buf, uint16 len, uint8 *addr, uint16 *port)
 
 
 #if 0
-
-/**
-@brief   This Socket function initialize the channel in perticular mode, and set the port and wait for W5500 done it.
-@return  1 for sucess else 0.
-*/  
 uint8 socket(uint8 s, uint8 protocol, uint16 port, uint8 flag)
 {
    uint8 ret;
@@ -1131,10 +981,6 @@ uint8 socket(uint8 s, uint8 protocol, uint16 port, uint8 flag)
    return ret;
 }
 
-
-/**
-@brief   This function close the socket and parameter is "s" which represent the socket number
-*/ 
 void close(uint8 s)
 {
 #ifdef __DEF_IINCHIP_DBG__
@@ -1151,11 +997,6 @@ void close(uint8 s)
    IINCHIP_WRITE_SOCKETREG( s, WIZS_IR , 0xFF);
 }
 
-
-/**
-@brief   This function established  the connection for the channel in passive (server) mode. This function waits for the request from the peer.
-@return  1 for success else 0.
-*/ 
 uint8 listen(uint8 s)
 {
    uint8 ret;
@@ -1180,14 +1021,7 @@ uint8 listen(uint8 s)
    }
    return ret;
 }
-
-
-/**
-@brief   This function established  the connection for the channel in Active (client) mode. 
-      This function waits for the untill the connection is established.
-      
-@return  1 for success else 0.
-*/ 
+ 
 uint8 connect(uint8 s, uint8 * addr, uint16 port)
 {
    uint8 ret;
@@ -1227,12 +1061,6 @@ uint8 connect(uint8 s, uint8 * addr, uint16 port)
    return ret;
 }
 
-
-
-/**
-@brief   This function used for disconnect the socket and parameter is "s" which represent the socket number
-@return  1 for success else 0.
-*/ 
 void disconnect(uint8 s)
 {
 #ifdef __DEF_IINCHIP_DBG__
@@ -1246,11 +1074,6 @@ void disconnect(uint8 s)
    /* ------- */
 }
 
-
-/**
-@brief   This function used to send the data in TCP mode
-@return  1 for success else 0.
-*/ 
 #define __FERRSIZE_PRINF__
 #ifdef __FERRSIZE_PRINF__
 //uint16 pre_freesize = 0;
@@ -1319,14 +1142,6 @@ uint16 send(uint8 s, const uint8 * buf, uint16 len)
    return ret;
 }
 
-
-
-/**
-@brief   This function is an application I/F function which is used to receive the data in TCP mode.
-      It continues to wait for data as much as the application wants to receive.
-      
-@return  received data size for success else -1.
-*/ 
 uint16 recv(uint8 s, uint8 * buf, uint16 len)
 {
    uint16 ret=0;
@@ -1345,13 +1160,6 @@ uint16 recv(uint8 s, uint8 * buf, uint16 len)
    return ret;
 }
 
-
-/**
-@brief   This function is an application I/F function which is used to send the data for other then TCP mode. 
-      Unlike TCP transmission, The peer's destination address and the port is needed.
-      
-@return  This function return send data size for success else -1.
-*/
 uint16 sendto(uint8 s, const uint8 * buf, uint16 len, uint8 * addr, uint16 port)
 {
    uint16 ret=0;
@@ -1409,13 +1217,6 @@ printf("\r\nDestination IP : %d.%d.%d.%d", addr[0],addr[1],addr[2],addr[3]);
    return ret;
 }
 
-
-/**
-@brief   This function is an application I/F function which is used to receive the data in other then
-   TCP mode. This function is used to receive UDP, IP_RAW and MAC_RAW mode, and handle the header as well. 
-   
-@return  This function return received data size for success else -1.
-*/ 
 uint16 recvfrom(uint8 s, uint8 * buf, uint16 len, uint8 * addr, uint16 *port)
 {
    uint8 head[8];

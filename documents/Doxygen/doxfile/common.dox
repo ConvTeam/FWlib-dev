@@ -1,14 +1,5 @@
 
 /**
- * @typedef WIZ_LOG_LEVEL
- * Log level which is set at wizconfig.h. default value is 2.
- * - 0: Log Disabled
- * - 1: Error Log
- * - 2: Error Log + Normal Log
- * - 3: Error Log + Normal Log + Debug Log
- */
-
-/**
  * @def ERR
  * Print Error Log without parameter (+CRLF).
  * - Add "\r\n" automatically at last.

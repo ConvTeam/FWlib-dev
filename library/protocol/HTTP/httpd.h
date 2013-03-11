@@ -1,6 +1,12 @@
 /**
- @file		httpd.h
- @brief 		Define Constants and fucntions associated with HTTP protocol.
+ * @file		httpd.h
+ * @brief		Define Constants and fucntions associated with HTTP protocol.
+ * @version	1.0
+ * @date		2013/
+ * @par Revision
+ *			2013/ - 1.0 Release
+ * @author	
+ * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
 
 #ifndef	__HTTPD_H__
@@ -69,7 +75,7 @@
 
 #define MAX_URI_SIZE	1460//(TX_RX_MAX_BUF_SIZE/2 - sizeof(char)*2)		
 
-/**
+/*
  @brief 	Structure of HTTP REQUEST 
  */
 typedef struct _st_http_request

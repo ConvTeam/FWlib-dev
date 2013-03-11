@@ -11,17 +11,11 @@
 
 int32 main(void)
 {
-	int8 ret;
-	uint32 tick = 0;
-
-	ret = platform_init();
-	if(ret != RET_OK) {
+	if(platform_init() != RET_OK) 
 		goto FAIL_TRAP;
-	}
 
-	ret = network_init(0, NULL, NULL);
-	if(ret != RET_OK) {
-		ERRA("network_init fail - ret(%d)", ret);
+	if(network_init(0, NULL, NULL) != RET_OK) {
+		ERR("network_init fail");
 		goto FAIL_TRAP;
 	}
 
@@ -34,20 +28,17 @@ int32 main(void)
 	Delay_tick(2000);	// prevent first send fail
 	
 	// ToDo: Modules Initialization
-	// ex) dhcp_auto_start();
+	// Ex) dhcp_auto_start();
 	//     atc_init();
 
 	while(1) {
 	
 		// ToDo: Modules Run
-		// ex) atc_run();
+		// Ex) atc_run();
 		//     alarm_run();
 		//     sockwatch_run();
 
-		if(wizpf_tick_elapse(tick) > 1000) {	// running check
-			wizpf_led_set(WIZ_LED1, VAL_TOG);
-			tick = wizpf_get_systick();
-		}
+		wizpf_led_flicker(WIZ_LED1, 1000);	// check loop is running
 	}
 
 FAIL_TRAP:

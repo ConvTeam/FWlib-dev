@@ -1,0 +1,6 @@
+<map id="UDPClose" name="UDPClose">
+<area shape="rect" id="node2" href="$group__dns__module.html#gac42982cd854842ec3eb003e199056fb7" title="Perform DNS Query." alt="" coords="148,5,231,32"/>
+<area shape="rect" id="node3" href="$group__loopback__module.html#gac779ef4ac5cdfdf9d7d711c81a4be9d2" title="Start TCP Loopback Test (Device Side)." alt="" coords="136,56,243,83"/>
+<area shape="rect" id="node4" href="$group__loopback__module.html#ga0be6f5b3a3a6ac20d4c0d72b2d7dd692" title="Start UDP Loopback Test (Device Side)." alt="" coords="138,107,241,133"/>
+<area shape="rect" id="node5" href="$group__socket__module.html#ga3e6b2faaff8da10b841683b65c1e99c2" title="Open a UDP socket." alt="" coords="149,157,229,184"/>
+</map>

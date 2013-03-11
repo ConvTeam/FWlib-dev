@@ -1,10 +1,10 @@
 /**
  * @file		socket.h
- * @brief		TCP/IP Chip Device Driver Header File - Common
+ * @brief		Socket Driver Header File - Common
  * @version	1.0
  * @date		2013/02/22
  * @par Revision
- *		2013/02/22 - 1.0 Release
+ *			2013/02/22 - 1.0 Release
  * @author	modified by Mike Jeong
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
@@ -14,7 +14,7 @@
 
 //#include "common/common.h"
 
-
+//******  Doxygen Description is moved to doxygen document folder *****
 #define SOCKSTAT_CLOSED			-1
 #define SOCKSTAT_INIT			0
 #define SOCKSTAT_LISTEN			1
@@ -53,15 +53,15 @@ typedef enum {	// 0 is not used (zero means just ignore dhcp config this time)
 } dhcp_mode;
 
 /**
- * Indicate member variable of @ref wiz_NetInfo.
+ * Indicate the member variable of @ref wiz_NetInfo.
  * This is used as a param of @ref ClsNetInfo function.
  */
 typedef enum {
-	//NI_MAC_ADDR,	// If need, uncomment
-	NI_IP_ADDR,
-	NI_SN_MASK,
-	NI_GW_ADDR,
-	NI_DNS_ADDR
+	//NI_MAC_ADDR,	//< Indicate MAC Address	// Uncomment if needed
+	NI_IP_ADDR,		///< Indicate IP Address
+	NI_SN_MASK,		///< Indicate Subnet Mask
+	NI_GW_ADDR,		///< Indicate Gateway Address
+	NI_DNS_ADDR		///< Indicate DNS Address
 } netinfo_member;
 
 /**
@@ -74,43 +74,42 @@ typedef struct wiz_NetInfo_t
 	uint8 ip[4];		///< IPv4 Address variable
 	uint8 sn[4];		///< Subnet Mask variable
 	uint8 gw[4];		///< Gateway Address variable
-	uint8 dns[4];		///< DNS Address variable
+	uint8 dns[4];		///< DNS Server Address variable
 	dhcp_mode dhcp;		///< DHCP mode variable (See:@ref dhcp_mode)
 } wiz_NetInfo;
 
-
-void device_init(uint8 *tx_size, uint8 *rx_size);
-void device_SW_reset(void);
-void device_mem_init(uint8 *tx_size, uint8 *rx_size);
-void SetNetInfo(wiz_NetInfo *netinfo);
-void ClsNetInfo(netinfo_member member);
-void GetNetInfo(wiz_NetInfo *netinfo);
-void GetDstInfo(uint8 s, uint8 *dstip, uint16 *dstport);
-void SetSocketOption(uint8 option_type, uint16 option_value);
-int8 GetTCPSocketStatus(uint8 s);
-int8 GetUDPSocketStatus(uint8 s);
+void   device_init(uint8 *tx_size, uint8 *rx_size);
+void   device_SW_reset(void);
+void   device_mem_init(uint8 *tx_size, uint8 *rx_size);
+void   SetNetInfo(wiz_NetInfo *netinfo);
+void   ClsNetInfo(netinfo_member member);
+void   GetNetInfo(wiz_NetInfo *netinfo);
+void   GetDstInfo(uint8 s, uint8 *dstip, uint16 *dstport);
+void   SetSocketOption(uint8 option_type, uint16 option_value);
+int8   GetTCPSocketStatus(uint8 s);
+int8   GetUDPSocketStatus(uint8 s);
 uint16 GetSocketTxFreeBufferSize(uint8 s);
 uint16 GetSocketRxRecvBufferSize(uint8 s);
 
-int8 TCPServerOpen(uint8 s, uint16 port);
-int8 TCPClientOpen(uint8 s, uint16 sport, uint8 *dip, uint16 dport);
-int8 TCPCltOpenNB(uint8 s, uint16 sport, uint8 *dip, uint16 dport);
-int8 TCPConnChk(uint8 s);
-int8 UDPOpen(uint8 s, uint16 port);
-int8 TCPClose(uint8 s);
-int8 TCPCloseNB(uint8 s);
-int8 TCPCloseCHK(uint8 s);
-int8 TCPClsRcvCHK(uint8 s);
-int8 UDPClose(uint8 s);
-int32 TCPSend(uint8 s, const int8 *src, uint16 len);
-int8 TCPSendNB(uint8 s, const int8 *src, uint16 len);
+int8  TCPServerOpen(uint8 s, uint16 port);
+int8  TCPClientOpen(uint8 s, uint16 sport, uint8 *dip, uint16 dport);
+int8  TCPCltOpenNB(uint8 s, uint16 sport, uint8 *dip, uint16 dport);
+int8  TCPConnChk(uint8 s);
+int8  TCPClose(uint8 s);
+int8  TCPCloseNB(uint8 s);
+int8  TCPCloseCHK(uint8 s);
+int8  TCPClsRcvCHK(uint8 s);
+int32 TCPSend(uint8 s, const int8 *buf, uint16 len);
+int8  TCPSendNB(uint8 s, const int8 *buf, uint16 len);
 int32 TCPReSend(uint8 s);
-int8 TCPReSendNB(uint8 s);
+int8  TCPReSendNB(uint8 s);
 int32 TCPSendCHK(uint8 s);
 int32 TCPRecv(uint8 s, int8 *buf, uint16 len);
+int8  UDPOpen(uint8 s, uint16 port);
+int8  UDPClose(uint8 s);
 int32 UDPSend(uint8 s, const int8 *buf, uint16 len, uint8 *addr, uint16 port);
 int32 UDPSendNB(uint8 s, const int8 *buf, uint16 len, uint8 *addr, uint16 port);
-int8 UDPSendCHK(uint8 s);
+int8  UDPSendCHK(uint8 s);
 int32 UDPRecv(uint8 s, int8 *buf, uint16 len, uint8 *addr, uint16 *port);
 
 

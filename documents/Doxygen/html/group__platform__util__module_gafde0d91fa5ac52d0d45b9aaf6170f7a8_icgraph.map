@@ -1,0 +1,10 @@
+<map id="wizpf_get_systick" name="wizpf_get_systick">
+<area shape="rect" id="node2" href="$group__dns__module.html#gac42982cd854842ec3eb003e199056fb7" title="Perform DNS Query." alt="" coords="200,5,283,32"/>
+<area shape="rect" id="node3" href="$group__socket__module.html#ga8cb97f25e88e081d01ed0522d0a1f8e4" title="Close a TCP socket without blocking." alt="" coords="192,56,291,83"/>
+<area shape="rect" id="node4" href="$group__socket__module.html#gafa9fd0c446156b08e996f114c6ffb4f4" title="Re&#45;Send the data in TCP mode without blocking." alt="" coords="354,157,465,184"/>
+<area shape="rect" id="node5" href="$group__alarm__module.html#ga14105c4aea676330e480847be327908e" title="Add Alarm event to the waiting queue." alt="" coords="202,107,281,133"/>
+<area shape="rect" id="node7" href="$group__alarm__module.html#gac97e5a582bdd4ca3f7c0eb0f5ffba0db" title="Alarm Module Handler." alt="" coords="370,259,449,285"/>
+<area shape="rect" id="node8" href="$group__platform__util__module.html#gae8b37727d3006c2965d7c50c7cf48c38" title="Calculate Elapsed time (or Remaining time) [+]value is Elapsed&#45;time, [&#45;]value is Remaining&#45;time." alt="" coords="179,208,303,235"/>
+<area shape="rect" id="node6" href="$group__dhcp__module.html#ga37e675ded052fb75d9bedea133f5e1aa" title="DHCP Auto mode (alarm mode) start function." alt="" coords="352,107,467,133"/>
+<area shape="rect" id="node9" href="$group__socket__module.html#gae284b2640e59a1ce3be2a62c628896e0" title="Check if a TCP Socket is closed." alt="" coords="356,208,463,235"/>
+</map>

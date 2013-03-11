@@ -1,11 +1,12 @@
 /**
  * @file		common.h
  * @brief		Library Common Header File.
- * This header file influence on all library area directly
+ * This header file influence on all library area directly.
+ *
  * @version	1.0
  * @date		2013/02/22
  * @par Revision
- *		2013/02/22 - 1.0 Release
+ *			2013/02/22 - 1.0 Release
  * @author	Mike Jeong
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
@@ -105,7 +106,6 @@
 
 	#include "stm32f10x.h"
 	#include "host/wizspi.h"
-	#define MAX_TICK_ELAPSE	0x7FFFFFFF	// Maximum elapse time you can set
 
 #endif
 
@@ -280,9 +280,13 @@
 #if (WIZ_LOG_LEVEL > 2) && !defined(FILE_LOG_SILENCE)
 #define DBGCRTC(cond_v, fmt) do { if(cond_v) {ERR(fmt); while(1); } } while(0)
 #define DBGCRTCA(cond_v, fmt, ...) do { if(cond_v) {ERRA(fmt, __VA_ARGS__); while(1); } } while(0)
+#define DBGDUMP(data_p, len_v) print_dump(data_p, len_v)
+#define DBGFUNC(func_p) func_p
 #else
 #define DBGCRTC(cond_v, fmt)
 #define DBGCRTCA(cond_v, fmt, ...)
+#define DBGDUMP(data_p, len_v)
+#define DBGFUNC(func_p)
 #endif
 
 #if (WIZ_LOG_LEVEL > 0) && !defined(FILE_LOG_SILENCE)

@@ -1,0 +1,5 @@
+<map id="Network Interface" name="Network Interface">
+<area shape="rect" id="node3" href="$group__netdev__con__module.html" title="Network Device Control." alt="" coords="176,5,283,32"/>
+<area shape="rect" id="node2" href="$group__socket__module.html" title="Socket Interface." alt="" coords="198,56,261,83"/>
+<area shape="rect" id="node4" href="$group__sockutil__module.html" title="Socket Utility." alt="" coords="195,107,264,133"/>
+</map>
