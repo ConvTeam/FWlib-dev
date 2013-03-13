@@ -297,7 +297,7 @@
           <state>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x</state>
           <state>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc</state>
           <state>$PROJ_DIR$\..\src</state>
-          <state>$PROJ_DIR$\..\STM32F1xx</state>
+          <state>$PROJ_DIR$\..\src-STM32F1xx</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1195,7 +1195,7 @@
           <state>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x</state>
           <state>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc</state>
           <state>$PROJ_DIR$\..\src</state>
-          <state>$PROJ_DIR$\..\STM32F1xx</state>
+          <state>$PROJ_DIR$\..\src-STM32F1xx</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -2093,7 +2093,7 @@
           <state>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\CMSIS\CM3\DeviceSupport\ST\STM32F10x</state>
           <state>$PROJ_DIR$\..\..\..\library\host\STM32F10x\stmlib\STM32F10x_StdPeriph_Driver\inc</state>
           <state>$PROJ_DIR$\..\src</state>
-          <state>$PROJ_DIR$\..\STM32F1xx</state>
+          <state>$PROJ_DIR$\..\src-STM32F1xx</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -2933,15 +2933,15 @@
   <group>
     <name>User</name>
     <group>
-      <name>STM32F1xx</name>
+      <name>src-STM32F1xx</name>
       <file>
-        <name>$PROJ_DIR$\..\STM32F1xx\stm32f10x_conf.h</name>
+        <name>$PROJ_DIR$\..\src-STM32F1xx\stm32f10x_conf.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\STM32F1xx\stm32f10x_it.c</name>
+        <name>$PROJ_DIR$\..\src-STM32F1xx\stm32f10x_it.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\STM32F1xx\stm32f10x_it.h</name>
+        <name>$PROJ_DIR$\..\src-STM32F1xx\stm32f10x_it.h</name>
       </file>
     </group>
     <file>
