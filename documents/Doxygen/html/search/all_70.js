@@ -39,5 +39,5 @@ var searchData=
   ['ptype_5fmpeg',['PTYPE_MPEG',['../httpd_8h.html#a72633e5da78ca7511de7b8db7b9c0a53',1,'httpd.h']]],
   ['ptype_5fpdf',['PTYPE_PDF',['../httpd_8h.html#a88ab0022287d6bba216aee3bfbd7bbd1',1,'httpd.h']]],
   ['ptype_5ftext',['PTYPE_TEXT',['../httpd_8h.html#a75938d598ef45e1615800ed71e6aaa97',1,'httpd.h']]],
-  ['putchar',['putchar',['../group__usart__module.html#ga07036e93939040c563e862a6a31b65bc',1,'putchar(int ch):&#160;wizplatform.c'],['../group__usart__module.html#ga2f35cbf92133c4ddebd98362b4154f0f',1,'PUTCHAR():&#160;wizplatform.h']]]
+  ['putchar',['PUTCHAR',['../group__usart__module.html#ga2f35cbf92133c4ddebd98362b4154f0f',1,'PUTCHAR():&#160;wizplatform.h'],['../group__usart__module.html#ga07036e93939040c563e862a6a31b65bc',1,'putchar(int ch):&#160;wizplatform.c']]]
 ];
