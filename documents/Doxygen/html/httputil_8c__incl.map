@@ -1,12 +1,18 @@
 <map id="httputil.c" name="httputil.c">
-<area shape="rect" id="node2" href="$httputil_8h.html" title="protocol/HTTP/httputil.h" alt="" coords="355,80,513,107"/>
-<area shape="rect" id="node3" href="$httpd_8h.html" title="Define Constants and fucntions associated with HTTP protocol." alt="" coords="473,155,620,181"/>
-<area shape="rect" id="node4" href="$common_8h.html" title="Library Common Header File." alt="" coords="414,229,551,256"/>
-<area shape="rect" id="node5" href="$wizconfig_8h.html" title="User Configuration Header File Templete." alt="" coords="21,304,107,331"/>
-<area shape="rect" id="node11" href="$util_8h.html" title="Common Utility Function Set Source File." alt="" coords="485,304,589,331"/>
-<area shape="rect" id="node12" href="$socket_8h.html" title="Socket Driver Header File &#45; Common." alt="" coords="613,304,725,331"/>
-<area shape="rect" id="node13" href="$sockutil_8h.html" title="Socket Utility Header File." alt="" coords="750,304,868,331"/>
-<area shape="rect" id="node14" href="$wizplatform_8h.html" title="Platform Utility Common Header File." alt="" coords="893,304,1019,331"/>
-<area shape="rect" id="node15" href="$dhcp_8h.html" title="DHCP Protocol Module Header File." alt="" coords="1043,304,1193,331"/>
-<area shape="rect" id="node6" href="$types_8h.html" title="Common Type Definition Header File." alt="" coords="5,379,123,405"/>
+<area shape="rect" id="node2" href="$httputil_8h.html" title="protocol/HTTP/httputil.h" alt="" coords="1077,80,1235,107"/>
+<area shape="rect" id="node3" href="$httpd_8h.html" title="Define Constants and fucntions associated with HTTP protocol." alt="" coords="1194,155,1341,181"/>
+<area shape="rect" id="node4" href="$common_8h.html" title="Library Common Header File." alt="" coords="1135,229,1272,256"/>
+<area shape="rect" id="node5" href="$wizconfig_8h.html" title="User Configuration Header File Templete." alt="" coords="21,312,107,339"/>
+<area shape="rect" id="node7" href="$w5200__evb_8h.html" title="W5200 Evaluation Board Header File." alt="" coords="131,305,279,346"/>
+<area shape="rect" id="node8" href="$w7200__evb_8h.html" title="W7200 Evaluation Board Header File." alt="" coords="303,305,451,346"/>
+<area shape="rect" id="node9" href="$w5500__evb_8h.html" title="W5500 Evaluation Board Header File." alt="" coords="475,305,623,346"/>
+<area shape="rect" id="node11" href="$wizspi_8h.html" title="SPI Adaptation Layer Common Header File." alt="" coords="765,312,864,339"/>
+<area shape="rect" id="node12" href="$w5200_8h.html" title="W5200 HAL Header File." alt="" coords="889,312,1039,339"/>
+<area shape="rect" id="node13" href="$w5500_8h.html" title="W5500 HAL Header File." alt="" coords="1063,312,1213,339"/>
+<area shape="rect" id="node18" href="$util_8h.html" title="Common Utility Function Set Source File." alt="" coords="1592,312,1696,339"/>
+<area shape="rect" id="node19" href="$socket_8h.html" title="Socket Driver Header File &#45; Common." alt="" coords="1720,312,1832,339"/>
+<area shape="rect" id="node20" href="$sockutil_8h.html" title="Socket Utility Header File." alt="" coords="1857,312,1975,339"/>
+<area shape="rect" id="node21" href="$wizplatform_8h.html" title="Platform Utility Common Header File." alt="" coords="1999,312,2125,339"/>
+<area shape="rect" id="node22" href="$dhcp_8h.html" title="DHCP Protocol Module Header File." alt="" coords="2150,312,2300,339"/>
+<area shape="rect" id="node6" href="$types_8h.html" title="Common Type Definition Header File." alt="" coords="5,395,123,421"/>
 </map>

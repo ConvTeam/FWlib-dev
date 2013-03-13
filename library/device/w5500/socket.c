@@ -72,7 +72,6 @@ void device_mem_init(uint8 *tx_size, uint8 *rx_size)
 				mul = tx_size[i];
 			else mul = 2;	// by Ssoo Default 2K --20120522
 			SSIZE[i] = 0x400 * mul;
-			SMASK[i] = 0x400 * mul - 1;
 		}
 		if(rsum <= 16384) {	//if(rsum <= 8192)
 #if 1 //--4Channel사용시 적용 안됨 --20120522
@@ -83,7 +82,6 @@ void device_mem_init(uint8 *tx_size, uint8 *rx_size)
 				mul = rx_size[i];
 			else mul = 2;	// by Ssoo Default 2K --20120522
 			RSIZE[i] = 0x400 * mul;
-			RMASK[i] = 0x400 * mul - 1;
 		}
 
 		ssum += SSIZE[i];

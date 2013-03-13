@@ -40,11 +40,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
-      <li><a href="examples.html"><span>Examples</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -99,6 +97,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p>Library Common Header File.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="wizconfig_8h_source.html">wizconfig.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="w5200__evb_8h_source.html">host/STM32F10x/WIZ_W5200/w5200_evb.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="w7200__evb_8h_source.html">host/STM32F10x/WIZ_W7200/w7200_evb.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="w5500__evb_8h_source.html">host/STM32F10x/WIZ_W5500/w5500_evb.h</a>&quot;</code><br/>
+<code>#include &quot;stm32f10x.h&quot;</code><br/>
+<code>#include &quot;<a class="el" href="wizspi_8h_source.html">host/wizspi.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="w5200_8h_source.html">device/w5200/w5200.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="w5500_8h_source.html">device/w5500/w5500.h</a>&quot;</code><br/>
 <code>#include &lt;stdio.h&gt;</code><br/>
 <code>#include &lt;stdlib.h&gt;</code><br/>
 <code>#include &lt;string.h&gt;</code><br/>
@@ -113,7 +118,7 @@ Include dependency graph for common.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="common_8h__incl.png" border="0" usemap="#common_8h" alt=""/></div>
 <map name="common_8h" id="common_8h">
-<area shape="rect" id="node2" href="wizconfig_8h.html" title="User Configuration Header File Templete." alt="" coords="21,80,107,107"/><area shape="rect" id="node8" href="util_8h.html" title="Common Utility Function Set Source File." alt="" coords="485,80,589,107"/><area shape="rect" id="node9" href="socket_8h.html" title="Socket Driver Header File &#45; Common." alt="" coords="613,80,725,107"/><area shape="rect" id="node10" href="sockutil_8h.html" title="Socket Utility Header File." alt="" coords="750,80,868,107"/><area shape="rect" id="node11" href="wizplatform_8h.html" title="Platform Utility Common Header File." alt="" coords="893,80,1019,107"/><area shape="rect" id="node12" href="dhcp_8h.html" title="DHCP Protocol Module Header File." alt="" coords="1043,80,1193,107"/><area shape="rect" id="node3" href="types_8h.html" title="Common Type Definition Header File." alt="" coords="5,155,123,181"/></map>
+<area shape="rect" id="node2" href="wizconfig_8h.html" title="User Configuration Header File Templete." alt="" coords="21,88,107,115"/><area shape="rect" id="node4" href="w5200__evb_8h.html" title="W5200 Evaluation Board Header File." alt="" coords="131,81,279,122"/><area shape="rect" id="node5" href="w7200__evb_8h.html" title="W7200 Evaluation Board Header File." alt="" coords="303,81,451,122"/><area shape="rect" id="node6" href="w5500__evb_8h.html" title="W5500 Evaluation Board Header File." alt="" coords="475,81,623,122"/><area shape="rect" id="node8" href="wizspi_8h.html" title="SPI Adaptation Layer Common Header File." alt="" coords="765,88,864,115"/><area shape="rect" id="node9" href="w5200_8h.html" title="W5200 HAL Header File." alt="" coords="889,88,1039,115"/><area shape="rect" id="node10" href="w5500_8h.html" title="W5500 HAL Header File." alt="" coords="1063,88,1213,115"/><area shape="rect" id="node15" href="util_8h.html" title="Common Utility Function Set Source File." alt="" coords="1592,88,1696,115"/><area shape="rect" id="node16" href="socket_8h.html" title="Socket Driver Header File &#45; Common." alt="" coords="1720,88,1832,115"/><area shape="rect" id="node17" href="sockutil_8h.html" title="Socket Utility Header File." alt="" coords="1857,88,1975,115"/><area shape="rect" id="node18" href="wizplatform_8h.html" title="Platform Utility Common Header File." alt="" coords="1999,88,2125,115"/><area shape="rect" id="node19" href="dhcp_8h.html" title="DHCP Protocol Module Header File." alt="" coords="2150,88,2300,115"/><area shape="rect" id="node3" href="types_8h.html" title="Common Type Definition Header File." alt="" coords="5,171,123,197"/></map>
 </div>
 </div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
@@ -127,28 +132,28 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a2c8795bf302bc8ba6197f288f9c10909"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#a2c8795bf302bc8ba6197f288f9c10909">ERR</a>(fmt)&#160;&#160;&#160;do { printf(&quot;### ERROR ### %s(%d): &quot;fmt&quot;\r\n&quot;, __FUNCTION__, __LINE__); } while(0)</td></tr>
+<tr class="memitem:a2c8795bf302bc8ba6197f288f9c10909"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#a2c8795bf302bc8ba6197f288f9c10909">ERR</a>(fmt)</td></tr>
 <tr class="memdesc:a2c8795bf302bc8ba6197f288f9c10909"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print Error Log without parameter (+CRLF).  <a href="#a2c8795bf302bc8ba6197f288f9c10909">More...</a><br/></td></tr>
 <tr class="separator:a2c8795bf302bc8ba6197f288f9c10909"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40746bcbe4433dc673000743de05fbf9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#a40746bcbe4433dc673000743de05fbf9">ERRA</a>(fmt,...)&#160;&#160;&#160;do { printf(&quot;### ERROR ### %s(%d): &quot;fmt&quot;\r\n&quot;, __FUNCTION__, __LINE__, __VA_ARGS__); } while(0)</td></tr>
+<tr class="memitem:a40746bcbe4433dc673000743de05fbf9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#a40746bcbe4433dc673000743de05fbf9">ERRA</a>(fmt,...)</td></tr>
 <tr class="memdesc:a40746bcbe4433dc673000743de05fbf9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print Error Log with parameter (+CRLF).  <a href="#a40746bcbe4433dc673000743de05fbf9">More...</a><br/></td></tr>
 <tr class="separator:a40746bcbe4433dc673000743de05fbf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a94d4eaec42283f22e47ead419622c548"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#a94d4eaec42283f22e47ead419622c548">ERRF</a>(fmt)&#160;&#160;&#160;do { printf(&quot;### ERROR ### %s(%d): &quot;fmt, __FUNCTION__, __LINE__); } while(0)</td></tr>
+<tr class="memitem:a94d4eaec42283f22e47ead419622c548"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#a94d4eaec42283f22e47ead419622c548">ERRF</a>(fmt)</td></tr>
 <tr class="memdesc:a94d4eaec42283f22e47ead419622c548"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print Error Log without parameter (No CRLF).  <a href="#a94d4eaec42283f22e47ead419622c548">More...</a><br/></td></tr>
 <tr class="separator:a94d4eaec42283f22e47ead419622c548"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a729749929c20e9547a0f32017f46ad7f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#a729749929c20e9547a0f32017f46ad7f">ERRFA</a>(fmt,...)&#160;&#160;&#160;do { printf(&quot;### ERROR ### %s(%d): &quot;fmt, __FUNCTION__, __LINE__, __VA_ARGS__); } while(0)</td></tr>
+<tr class="memitem:a729749929c20e9547a0f32017f46ad7f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#a729749929c20e9547a0f32017f46ad7f">ERRFA</a>(fmt,...)</td></tr>
 <tr class="memdesc:a729749929c20e9547a0f32017f46ad7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print Error Log with parameter (No CRLF).  <a href="#a729749929c20e9547a0f32017f46ad7f">More...</a><br/></td></tr>
 <tr class="separator:a729749929c20e9547a0f32017f46ad7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e7ceaf2fc0053fdb0754bc29e4c2764"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#a7e7ceaf2fc0053fdb0754bc29e4c2764">LOG</a>(fmt)&#160;&#160;&#160;do { printf(fmt&quot;\r\n&quot;); } while(0)</td></tr>
+<tr class="memitem:a7e7ceaf2fc0053fdb0754bc29e4c2764"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#a7e7ceaf2fc0053fdb0754bc29e4c2764">LOG</a>(fmt)</td></tr>
 <tr class="memdesc:a7e7ceaf2fc0053fdb0754bc29e4c2764"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print Error Log without parameter (+CRLF).  <a href="#a7e7ceaf2fc0053fdb0754bc29e4c2764">More...</a><br/></td></tr>
 <tr class="separator:a7e7ceaf2fc0053fdb0754bc29e4c2764"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2b0dce22c9039851aa5ed240d1f3f122"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#a2b0dce22c9039851aa5ed240d1f3f122">LOGA</a>(fmt,...)&#160;&#160;&#160;do { printf(fmt&quot;\r\n&quot;, __VA_ARGS__); } while(0)</td></tr>
+<tr class="memitem:a2b0dce22c9039851aa5ed240d1f3f122"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#a2b0dce22c9039851aa5ed240d1f3f122">LOGA</a>(fmt,...)</td></tr>
 <tr class="memdesc:a2b0dce22c9039851aa5ed240d1f3f122"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print Error Log with parameter (+CRLF).  <a href="#a2b0dce22c9039851aa5ed240d1f3f122">More...</a><br/></td></tr>
 <tr class="separator:a2b0dce22c9039851aa5ed240d1f3f122"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a75a59fb4fd71ac37993e56ce03b09627"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#a75a59fb4fd71ac37993e56ce03b09627">LOGF</a>(fmt)&#160;&#160;&#160;do { printf(fmt); } while(0)</td></tr>
+<tr class="memitem:a75a59fb4fd71ac37993e56ce03b09627"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#a75a59fb4fd71ac37993e56ce03b09627">LOGF</a>(fmt)</td></tr>
 <tr class="memdesc:a75a59fb4fd71ac37993e56ce03b09627"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print Error Log without parameter (No CRLF).  <a href="#a75a59fb4fd71ac37993e56ce03b09627">More...</a><br/></td></tr>
 <tr class="separator:a75a59fb4fd71ac37993e56ce03b09627"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca412038de0ca1c43b697eb4293c672f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#aca412038de0ca1c43b697eb4293c672f">LOGFA</a>(fmt,...)&#160;&#160;&#160;do { printf(fmt, __VA_ARGS__); } while(0)</td></tr>
+<tr class="memitem:aca412038de0ca1c43b697eb4293c672f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#aca412038de0ca1c43b697eb4293c672f">LOGFA</a>(fmt,...)</td></tr>
 <tr class="memdesc:aca412038de0ca1c43b697eb4293c672f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print Error Log with parameter (No CRLF).  <a href="#aca412038de0ca1c43b697eb4293c672f">More...</a><br/></td></tr>
 <tr class="separator:aca412038de0ca1c43b697eb4293c672f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9cb9f97e49f3360cd66660882bfd139e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="common_8h.html#a9cb9f97e49f3360cd66660882bfd139e">DBG</a>(fmt)</td></tr>
@@ -247,8 +252,7 @@ Macros</h2></td></tr>
 <li>If PRINT_TIME_LOG is defined, it print also Systick value.</li>
 </ul>
 <p>Ex) DBGA("Debug Log - Return Value (%d)", ret); </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="dns_8c-example.html#a0">dns.c</a>.</dd>
-</dl>
+
 </div>
 </div>
 <a class="anchor" id="a3fbfba0795a11aea6842a5c72ed932cc"></a>
@@ -396,11 +400,13 @@ Macros</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">fmt</td><td>)</td>
-          <td>&#160;&#160;&#160;do { printf(&quot;### ERROR ### %s(%d): &quot;fmt&quot;\r\n&quot;, __FUNCTION__, __LINE__); } while(0)</td>
+          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { printf(<span class="stringliteral">&quot;### ERROR ### [%5d.%03d] %s(%d): &quot;</span>fmt<span class="stringliteral">&quot;\r\n&quot;</span>, \</div>
+<div class="line">    <a class="code" href="group__platform__util__module.html#gafde0d91fa5ac52d0d45b9aaf6170f7a8" title="Get current SysTick.">wizpf_get_systick</a>()/1000, <a class="code" href="group__platform__util__module.html#gafde0d91fa5ac52d0d45b9aaf6170f7a8" title="Get current SysTick.">wizpf_get_systick</a>()%1000, __FUNCTION__, __LINE__); } <span class="keywordflow">while</span>(0)</div>
+</div><!-- fragment -->
 <p>Print Error Log without parameter (+CRLF). </p>
 <ul>
 <li>Add "\r\n" automatically at last.</li>
@@ -430,11 +436,13 @@ Macros</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;do { printf(&quot;### ERROR ### %s(%d): &quot;fmt&quot;\r\n&quot;, __FUNCTION__, __LINE__, __VA_ARGS__); } while(0)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { printf(<span class="stringliteral">&quot;### ERROR ### [%5d.%03d] %s(%d): &quot;</span>fmt<span class="stringliteral">&quot;\r\n&quot;</span>, \</div>
+<div class="line">    <a class="code" href="group__platform__util__module.html#gafde0d91fa5ac52d0d45b9aaf6170f7a8" title="Get current SysTick.">wizpf_get_systick</a>()/1000, <a class="code" href="group__platform__util__module.html#gafde0d91fa5ac52d0d45b9aaf6170f7a8" title="Get current SysTick.">wizpf_get_systick</a>()%1000, __FUNCTION__, __LINE__, __VA_ARGS__); } <span class="keywordflow">while</span>(0)</div>
+</div><!-- fragment -->
 <p>Print Error Log with parameter (+CRLF). </p>
 <ul>
 <li>Add "\r\n" automatically at last.</li>
@@ -454,11 +462,13 @@ Macros</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">fmt</td><td>)</td>
-          <td>&#160;&#160;&#160;do { printf(&quot;### ERROR ### %s(%d): &quot;fmt, __FUNCTION__, __LINE__); } while(0)</td>
+          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { printf(<span class="stringliteral">&quot;### ERROR ### [%5d.%03d] %s(%d): &quot;</span>fmt, \</div>
+<div class="line">    <a class="code" href="group__platform__util__module.html#gafde0d91fa5ac52d0d45b9aaf6170f7a8" title="Get current SysTick.">wizpf_get_systick</a>()/1000, <a class="code" href="group__platform__util__module.html#gafde0d91fa5ac52d0d45b9aaf6170f7a8" title="Get current SysTick.">wizpf_get_systick</a>()%1000, __FUNCTION__, __LINE__); } <span class="keywordflow">while</span>(0)</div>
+</div><!-- fragment -->
 <p>Print Error Log without parameter (No CRLF). </p>
 <ul>
 <li>Does not add "\r\n" automatically at last.</li>
@@ -488,11 +498,13 @@ Macros</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;do { printf(&quot;### ERROR ### %s(%d): &quot;fmt, __FUNCTION__, __LINE__, __VA_ARGS__); } while(0)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { printf(<span class="stringliteral">&quot;### ERROR ### [%5d.%03d] %s(%d): &quot;</span>fmt, \</div>
+<div class="line">    <a class="code" href="group__platform__util__module.html#gafde0d91fa5ac52d0d45b9aaf6170f7a8" title="Get current SysTick.">wizpf_get_systick</a>()/1000, <a class="code" href="group__platform__util__module.html#gafde0d91fa5ac52d0d45b9aaf6170f7a8" title="Get current SysTick.">wizpf_get_systick</a>()%1000, __FUNCTION__, __LINE__, __VA_ARGS__); } <span class="keywordflow">while</span>(0)</div>
+</div><!-- fragment -->
 <p>Print Error Log with parameter (No CRLF). </p>
 <ul>
 <li>Does not add "\r\n" automatically at last.</li>
@@ -512,11 +524,13 @@ Macros</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">fmt</td><td>)</td>
-          <td>&#160;&#160;&#160;do { printf(fmt&quot;\r\n&quot;); } while(0)</td>
+          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { printf(<span class="stringliteral">&quot;[%5d.%03d] &quot;</span>fmt<span class="stringliteral">&quot;\r\n&quot;</span>, \</div>
+<div class="line">    <a class="code" href="group__platform__util__module.html#gafde0d91fa5ac52d0d45b9aaf6170f7a8" title="Get current SysTick.">wizpf_get_systick</a>()/1000, <a class="code" href="group__platform__util__module.html#gafde0d91fa5ac52d0d45b9aaf6170f7a8" title="Get current SysTick.">wizpf_get_systick</a>()%1000); } <span class="keywordflow">while</span>(0)</div>
+</div><!-- fragment -->
 <p>Print Error Log without parameter (+CRLF). </p>
 <ul>
 <li>Add "\r\n" automatically at last.</li>
@@ -545,11 +559,13 @@ Macros</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;do { printf(fmt&quot;\r\n&quot;, __VA_ARGS__); } while(0)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { printf(<span class="stringliteral">&quot;[%5d.%03d] &quot;</span>fmt<span class="stringliteral">&quot;\r\n&quot;</span>, \</div>
+<div class="line">    <a class="code" href="group__platform__util__module.html#gafde0d91fa5ac52d0d45b9aaf6170f7a8" title="Get current SysTick.">wizpf_get_systick</a>()/1000, <a class="code" href="group__platform__util__module.html#gafde0d91fa5ac52d0d45b9aaf6170f7a8" title="Get current SysTick.">wizpf_get_systick</a>()%1000, __VA_ARGS__); } <span class="keywordflow">while</span>(0)</div>
+</div><!-- fragment -->
 <p>Print Error Log with parameter (+CRLF). </p>
 <ul>
 <li>Add "\r\n" automatically at last.</li>
@@ -568,11 +584,13 @@ Macros</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">fmt</td><td>)</td>
-          <td>&#160;&#160;&#160;do { printf(fmt); } while(0)</td>
+          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { printf(<span class="stringliteral">&quot;[%5d.%03d] &quot;</span>fmt, \</div>
+<div class="line">    <a class="code" href="group__platform__util__module.html#gafde0d91fa5ac52d0d45b9aaf6170f7a8" title="Get current SysTick.">wizpf_get_systick</a>()/1000, <a class="code" href="group__platform__util__module.html#gafde0d91fa5ac52d0d45b9aaf6170f7a8" title="Get current SysTick.">wizpf_get_systick</a>()%1000); } <span class="keywordflow">while</span>(0)</div>
+</div><!-- fragment -->
 <p>Print Error Log without parameter (No CRLF). </p>
 <ul>
 <li>Does not add "\r\n" automatically at last.</li>
@@ -601,11 +619,13 @@ Macros</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;do { printf(fmt, __VA_ARGS__); } while(0)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { printf(<span class="stringliteral">&quot;[%5d.%03d] &quot;</span>fmt, \</div>
+<div class="line">    <a class="code" href="group__platform__util__module.html#gafde0d91fa5ac52d0d45b9aaf6170f7a8" title="Get current SysTick.">wizpf_get_systick</a>()/1000, <a class="code" href="group__platform__util__module.html#gafde0d91fa5ac52d0d45b9aaf6170f7a8" title="Get current SysTick.">wizpf_get_systick</a>()%1000, __VA_ARGS__); } <span class="keywordflow">while</span>(0)</div>
+</div><!-- fragment -->
 <p>Print Error Log with parameter (No CRLF). </p>
 <ul>
 <li>Does not add "\r\n" automatically at last.</li>
@@ -663,7 +683,7 @@ Macros</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Mar 10 2013 15:02:26 for WIZlib Library API by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Mar 13 2013 16:12:39 for WIZlib Library API by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>
