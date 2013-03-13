@@ -97,16 +97,6 @@
 #define TS_WAIT_ACK                 (0x02)
 #define TS_DISABLE                  (0x01)
 
-#define TESTREG                     (0x0050)
-#define TESTREG_VAL10               (0x0051)
-#define TESTREG_VAL11               (0x0052)
-#define TESTREG_VAL12               (0x0053)
-#define TESTREG_VAL13               (0x0054)
-#define TESTREG_VAL20               (0x0055)
-#define TESTREG_VAL21               (0x0056)
-#define TESTREG_VAL22               (0x0057)
-#define TESTREG_VAL23               (0x0058)
-
 /* MODE register values */
 #define MR_RST                       0x80     //< reset */
 #define MR_WOL                       0x20     //< Wake on Lan */

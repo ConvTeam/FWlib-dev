@@ -1,7 +1,7 @@
 <map id="TCPClose" name="TCPClose">
 <area shape="rect" id="node2" href="$group__loopback__module.html#gac779ef4ac5cdfdf9d7d711c81a4be9d2" title="Start TCP Loopback Test (Device Side)." alt="" coords="137,5,244,32"/>
 <area shape="rect" id="node3" href="$group__loopback__module.html#ga0be6f5b3a3a6ac20d4c0d72b2d7dd692" title="Start UDP Loopback Test (Device Side)." alt="" coords="139,56,242,83"/>
-<area shape="rect" id="node4" href="$group__smtp__module.html#ga71875dc3dd69c9a4e5c737f31ec56958" title="Send email." alt="" coords="150,107,231,133"/>
+<area shape="rect" id="node4" href="$group__smtp__module.html#gae035a2a9cc5497c0aca441d517ded735" title="Send email." alt="" coords="150,107,231,133"/>
 <area shape="rect" id="node5" href="$group__socket__module.html#gacc84fa8230ba975699944f24720c85a1" title="Open a TCP server socket." alt="" coords="133,157,248,184"/>
 <area shape="rect" id="node6" href="$group__socket__module.html#ga2474ec069c1afa196d195ff6ba81b837" title="Open a TCP client socket without blocking." alt="" coords="135,208,247,235"/>
 <area shape="rect" id="node7" href="$group__socket__module.html#ga0793098604d1b99f3cd0981af3f65e92" title="Check if TCP Send action completed." alt="" coords="139,259,243,285"/>

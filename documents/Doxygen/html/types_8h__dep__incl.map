@@ -1,6 +1,6 @@
 <map id="types.h" name="types.h">
-<area shape="rect" id="node2" href="$wizconfig_8h.html" title="User Configuration Header File Templete." alt="" coords="938,80,1024,107"/>
-<area shape="rect" id="node3" href="$common_8h.html" title="Library Common Header File." alt="" coords="940,155,1023,181"/>
+<area shape="rect" id="node2" href="$wizconfig_8h.html" title="User Configuration Header File Templete." alt="" coords="993,80,1079,107"/>
+<area shape="rect" id="node3" href="$common_8h.html" title="Library Common Header File." alt="" coords="995,155,1077,181"/>
 <area shape="rect" id="node4" href="$atcmd_8h.html" title="AT Command Module &#45; Interface Part Header File." alt="" coords="5,229,75,256"/>
 <area shape="rect" id="node6" href="$cmdrun_8h.html" title="AT Command Module &#45; Implementation Part Header File." alt="" coords="99,229,175,256"/>
 <area shape="rect" id="node8" href="$loopback_8h.html" title="Loopback Test Module Header File." alt="" coords="200,229,285,256"/>

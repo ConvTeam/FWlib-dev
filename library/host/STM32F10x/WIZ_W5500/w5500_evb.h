@@ -5,7 +5,7 @@
  * @date		2013/02/27
  * @par Revision
  *			2013/02/27 - 1.0 Release
- * @author
+ * @author	Mike Jeong
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
 
@@ -38,10 +38,10 @@
 
 // GPIO PIN Definition - Platform Specific
 
-#define LED1_PORT			GPIOB		// ??		///< 1st LED Port
-#define LED1_PIN			GPIO_Pin_0	// ??		///< 1st LED Pin
-#define LED2_PORT			GPIOB		// ??		///< 2nd LED Port
-#define LED2_PIN			GPIO_Pin_1	// ??		///< 2nd LED Pin
+#define LED1_PORT			GPIOA			///< 1st LED Port
+#define LED1_PIN			GPIO_Pin_0		///< 1st LED Pin
+#define LED2_PORT			GPIOA			///< 2nd LED Port
+#define LED2_PIN			GPIO_Pin_1		///< 2nd LED Pin
 //#define LED3_PORT			
 //#define LED3_PIN			
 //#define LED4_PORT			
@@ -83,12 +83,12 @@
 #define SPI2_MOSI_PORT		GPIOB			///< 2nd SPI MOSI Port
 #define SPI2_MOSI_PIN		GPIO_Pin_15		///< 2nd SPI MOSI Pin
 
-#define WIZ_INT_PORT		GPIOB		// ??			///< Network Device Interrupt Port
-#define WIZ_INT_PIN			GPIO_Pin_0	// ??			///< Network Device Interrupt Pin
-#define WIZ_RESET_PORT		GPIOB		// For w5500 FPGA Board			///< Network Device Reset Port
-#define WIZ_RESET_PIN		GPIO_Pin_11	// For w5500 FPGA Board			///< Network Device Reset Pin
-#define WIZ_PWDN_PORT		GPIOB		// ??			///< Network Device PowerDown Port
-#define WIZ_PWDN_PIN		GPIO_Pin_6	// ??			///< Network Device PowerDown Pin
+#define WIZ_INT_PORT		GPIOB			///< Network Device Interrupt Port
+#define WIZ_INT_PIN			GPIO_Pin_0		///< Network Device Interrupt Pin
+#define WIZ_RESET_PORT		GPIOB			///< Network Device Reset Port
+#define WIZ_RESET_PIN		GPIO_Pin_8		///< Network Device Reset Pin
+#define WIZ_PWDN_PORT		GPIOB			///< Network Device PowerDown Port
+#define WIZ_PWDN_PIN		GPIO_Pin_9		///< Network Device PowerDown Pin
 
 #endif //_W5500_EVB
 

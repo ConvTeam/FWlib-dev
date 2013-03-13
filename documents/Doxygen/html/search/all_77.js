@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['wizlib_20user_20guide',['WIZlib User Guide',['../index.html',1,'']]],
   ['socket_2ec',['socket.c',['../w5200_2socket_8c.html',1,'']]],
   ['socket_2ec',['socket.c',['../w5500_2socket_8c.html',1,'']]],
   ['w5200_2ec',['w5200.c',['../w5200_8c.html',1,'']]],
