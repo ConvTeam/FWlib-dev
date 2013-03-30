@@ -42,6 +42,10 @@
  * @ingroup network_module
  * Socket Utility.
  * 
+ * @defgroup sockwatch_module Sockwatch
+ * @ingroup network_module
+ * Socket Watch Module.
+ * 
  * @defgroup protocol_module Network Protocols
  * -.
  * Network Protocols.

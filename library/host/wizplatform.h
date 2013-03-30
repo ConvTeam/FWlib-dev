@@ -16,24 +16,82 @@
 
 
 /**
- * @ingroup usart_module
- * Indicate the USART index number
+ * @addtogroup usart_module
+ * @{
  */
+/** Indicate the USART index number */
 typedef enum {
-	WIZ_USART1,	///< Indicate the 1st USART
-	WIZ_USART2,	///< Indicate the 2nd USART
-	WIZ_USART3	///< Indicate the 3rd USART
+	WIZ_USART1,				///< Indicate the 1st USART
+	WIZ_USART2,				///< Indicate the 2nd USART
+	//WIZ_USART3				//< Indicate the 3rd USART
 } wizpf_usart;
+
+/** Indicate the USART Baud Rate */
+typedef enum usart_baudrate_t {
+	UBR_110 = 110,			///< Baudrate 110 bps
+	UBR_300 = 300,			///< Baudrate 300 bps
+	UBR_600 = 600,			///< Baudrate 600 bps
+	UBR_1200 = 1200,		///< Baudrate 1200 bps
+	UBR_2400 = 2400,		///< Baudrate 2400 bps
+	UBR_4800 = 4800,		///< Baudrate 4800 bps
+	UBR_9600 = 9600,		///< Baudrate 9600 bps
+	UBR_14400 = 14400,		///< Baudrate 14400 bps
+	UBR_19200 = 19200,		///< Baudrate 19200 bps
+	UBR_38400 = 38400,		///< Baudrate 38400 bps
+	UBR_57600 = 57600,		///< Baudrate 57600 bps
+	UBR_115200 = 115200,	///< Baudrate 115200 bps
+	UBR_230400 = 230400,	///< Baudrate 230400 bps
+	UBR_460800 = 460800,	///< Baudrate 460800 bps
+	UBR_921600 = 921600		///< Baudrate 921600 bps
+} usart_baudrate;
+
+/** Indicate the USART Word Length */
+typedef enum usart_wordlen_t {
+	UWL_8,					///< Word Length 8 bit
+	UWL_9					///< Word Length 9 bit
+} usart_wordlen;
+
+/** Indicate the USART Stop Bit */
+typedef enum usart_stopbit_t {
+	UST_0d5 ,				///< Stop bit 0.5 bit
+	UST_1 ,					///< Stop bit 1 bit
+	UST_1d5 ,				///< Stop bit 1.5 bit
+	UST_2					///< Stop bit 2 bit
+} usart_stopbit;
+
+/** Indicate the USART Parity Bit */
+typedef enum usart_parity_t {
+	UPB_NO,					///< No Parity
+	UPB_EVEN,				///< Even Parity
+	UPB_ODD					///< Odd Parity
+} usart_parity;
+
+/** Indicate the USART Flow Control */
+typedef enum usart_flowcon_t {
+	UFC_NO ,				///< No Flow Control
+	UFC_HW					///< RTS+CTS Flow Control
+	//UFC_SW ,				//< Xon/Xoff Flow Control
+} usart_flowcon;
+
+/** USART Parameter struct used by @ref wizpf_usart_init */
+typedef struct usart_param_t {
+	uint32 baudrate;				///< Baud Rate (bps in decimal value, of @ref usart_baudrate_t)
+	usart_wordlen wordlen;			///< Word Length (of @ref usart_wordlen_t)
+	usart_stopbit stopbit;			///< Stop Bit (of @ref usart_stopbit_t)
+	usart_parity parity;			///< Parity Bit (of @ref usart_parity_t)
+	usart_flowcon flowcon;			///< Flow Control (of @ref usart_flowcon_t)
+} usart_param;
+/* @} */
 
 /**
  * @ingroup platform_util_module
  * Indicate the LED index number
  */
 typedef enum {
-	WIZ_LED1,	///< Indicate the 1st LED
-	WIZ_LED2,	///< Indicate the 2nd LED
-	WIZ_LED3,	///< Indicate the 3rd LED
-	WIZ_LED4	///< Indicate the 4th LED
+	WIZ_LED1,				///< Indicate the 1st LED
+	WIZ_LED2,				///< Indicate the 2nd LED
+	WIZ_LED3,				///< Indicate the 3rd LED
+	WIZ_LED4				///< Indicate the 4th LED
 } wizpf_led;
 
 /**
@@ -41,31 +99,31 @@ typedef enum {
  * Indicate the GPIO mode
  */
 typedef enum {
-	WIZ_GPIO_IN_FLOAT,		///< Indicate Floating Input
-	WIZ_GPIO_IN_PULLUP,		///< Indicate Pulled up Input
-	WIZ_GPIO_IN_PULLDOWN,	///< Indicate Pulled down Input
-	WIZ_GPIO_OUT_PUSHPULL,	///< Indicate Push-Pull Output
-	WIZ_GPIO_OUT_OPENDRAIN,	///< Indicate Open-Drain Output
-} wizpf_gpio_mode;
+	GMOD_IN_FLOAT,			///< Indicate Floating Input
+	GMOD_IN_PULLUP,			///< Indicate Pulled up Input
+	GMOD_IN_PULLDOWN,		///< Indicate Pulled down Input
+	GMOD_OUT_PUSHPULL,		///< Indicate Push-Pull Output
+	GMOD_OUT_OPENDRAIN,		///< Indicate Open-Drain Output
+} gpio_mode;
 
 /**
- * @def PUTCHAR
+ * @def WIZPF_USART_SET_PARAM
  * @ingroup usart_module
- * Define the compiler independent function which put character.
- * @def GETCHAR
- * @ingroup usart_module
- * Define the compiler independent function which get character.
+ * Set USART Parameters to @ref usart_param_t pointer
+ * @param param_p USART Parameter struct pointer
+ * @param br_e Baud Rate to set (@ref usart_baudrate_t)
+ * @param wl_e Word Length to set (@ref usart_wordlen_t)
+ * @param sb_e Stop Bit to set (@ref usart_stopbit_t)
+ * @param pb_e Parity Bit to set (@ref usart_parity_t)
+ * @param fc_e Flow Control to set (@ref usart_flowcon_t)
  */
-#ifdef COMPILER_IAR_EWARM
-#define PUTCHAR(ch_v)		putchar(ch_v)
-#define GETCHAR()			getchar()
-#elif COMPILER_GCC_ARM
-#define PUTCHAR(ch_v)		// ToDo
-#define GETCHAR()			// ToDo
-#else // for doxygen
-#define PUTCHAR(ch_v)
-#define GETCHAR()
-#endif
+#define WIZPF_USART_SET_PARAM(param_p, br_e, wl_e, sb_e, pb_e, fc_e) do { \
+	(param_p)->baudrate = br_e; \
+	(param_p)->wordlen = wl_e; \
+	(param_p)->stopbit = sb_e; \
+	(param_p)->parity = pb_e; \
+	(param_p)->flowcon = fc_e; \
+} while(0)
 
 /**
  * @def wizpf_led_flicker
@@ -83,9 +141,9 @@ typedef enum {
 } while(0)
 
 
-int8 platform_init(void);
-int8 wizpf_uart_init(wizpf_usart usart);
-int8 wizpf_gpio_init(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin, wizpf_gpio_mode mode);
+int8 platform_init(usart_param *up);
+int8 wizpf_usart_init(wizpf_usart usart, usart_param *param);
+int8 wizpf_gpio_init(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin, gpio_mode mode);
 int8 wizpf_gpio_set(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin, int8 value);
 int8 wizpf_gpio_get(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin);
 int8 wizpf_timer_init(void);
@@ -105,7 +163,11 @@ void Delay_us(uint8 time_us);
 void Delay_ms(uint16 time_ms);
 void Delay_tick(uint32 tick);
 
-int32 getchar_nonblk(void);
+
+int32 getc_nonblk(wizpf_usart usart);
+int32 putc(int32 ch, wizpf_usart usart);
+int32 getc(wizpf_usart usart);
+void change_std_usart(wizpf_usart usart);
 
 #endif //_WIZPLATFORM_H
 

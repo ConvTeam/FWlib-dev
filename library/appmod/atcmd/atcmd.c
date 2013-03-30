@@ -130,7 +130,7 @@ void atc_run(void)
 	static uint8 buflen = 0;
 	//static bool prompt = TRUE;
 
-	recv_char = (int8)getchar_nonblk();
+	recv_char = (int8)getc_nonblk(WIZ_USART1);
 	if(recv_char == RET_NOK) return; // 입력 값 없는 경우		printf("RECV: 0x%x\r\n", recv_char);
 
 	if(atci.sendsock != VAL_NONE)
@@ -152,7 +152,7 @@ void atc_run(void)
 	}
 	//if(prompt == FALSE) {
 	//	prompt = TRUE;
-	//	PUTCHAR('>');
+	//	putc('>', WIZ_USART1);
 	//}
 
 	if(isgraph(recv_char) == 0)	// 제어 문자 처리
@@ -177,16 +177,16 @@ void atc_run(void)
 		case 0x1b:	// ESC					printf("<ESC>\r\n");
 			Delay_ms(5);	// For receiving rest key. (this is for the users using terminal, so little delay doesn't matter)
 			{
-				int8 sec_char = (int8)getchar_nonblk();
-				int8 trd_char = (int8)getchar_nonblk();				//printf("s(%x),t(%x)", sec_char, trd_char);
+				int8 sec_char = (int8)getc_nonblk(WIZ_USART1);
+				int8 trd_char = (int8)getc_nonblk(WIZ_USART1);				//printf("s(%x),t(%x)", sec_char, trd_char);
 				if(sec_char == '[') {
 					switch(trd_char) {
 					case 'A': //printf("<U>\r\n"); 
 						if(curcnt >= prevcnt) break;			// 최대 히스토리 수를 넘기면 break
 						if(curidx == -1) curidx = previdx;		// 처음 누르는 경우 현제 idx값 지정
-						for(i=0; i<buflen; i++) if(atci.echo) PUTCHAR('\b');	// 입력화면 삭제
-						for(i=0; i<buflen; i++) if(atci.echo) PUTCHAR(' ');	// 입력화면 삭제
-						for(i=0; i<buflen; i++) if(atci.echo) PUTCHAR('\b');	// 입력화면 삭제
+						for(i=0; i<buflen; i++) if(atci.echo) putc('\b', WIZ_USART1);	// 입력화면 삭제
+						for(i=0; i<buflen; i++) if(atci.echo) putc(' ', WIZ_USART1);	// 입력화면 삭제
+						for(i=0; i<buflen; i++) if(atci.echo) putc('\b', WIZ_USART1);	// 입력화면 삭제
 						if(curidx == 0) curidx = PREVBUF_LAST;	// 직전 값 지정
 						else curidx--;
 						curcnt++;				//printf("##%d, %d$$\r\n", curidx, prevlen);Delay_ms(5);printf("##%s$$\r\n", prevbuf[curidx]);Delay_ms(5);
@@ -198,9 +198,9 @@ void atc_run(void)
 						break;
 					case 'B': //printf("<D>\r\n"); 
 						if(curcnt <= 0) break;			// 처음이면 break
-						for(i=0; i<buflen; i++) if(atci.echo) PUTCHAR('\b');	// 입력화면 삭제
-						for(i=0; i<buflen; i++) if(atci.echo) PUTCHAR(' ');	// 입력화면 삭제
-						for(i=0; i<buflen; i++) if(atci.echo) PUTCHAR('\b');	// 입력화면 삭제
+						for(i=0; i<buflen; i++) if(atci.echo) putc('\b', WIZ_USART1);	// 입력화면 삭제
+						for(i=0; i<buflen; i++) if(atci.echo) putc(' ', WIZ_USART1);	// 입력화면 삭제
+						for(i=0; i<buflen; i++) if(atci.echo) putc('\b', WIZ_USART1);	// 입력화면 삭제
 						if(curidx == PREVBUF_LAST) curidx = 0;	// 다음 값 지정
 						else curidx++;
 						curcnt--;				//printf("##%d, %d$$\r\n", curidx, prevlen);Delay_ms(5);printf("##%s$$\r\n", prevbuf[curidx]);Delay_ms(5);
@@ -233,7 +233,7 @@ void atc_run(void)
 	else if(buflen < ATCMD_BUF_SIZE-1)		// -1 이유 : 0 이 하나 필요하므로 
 	{
 		termbuf[buflen++] = (uint8)recv_char;	//termbuf[buflen] = 0;
-		if(atci.echo) PUTCHAR(recv_char);						//printf(" termbuf(%c, %s)\r\n", recv_char, termbuf);
+		if(atci.echo) putc(recv_char, WIZ_USART1);						//printf(" termbuf(%c, %s)\r\n", recv_char, termbuf);
 	}//else { printf("input buffer stuffed\r\n"); }
 
 	if(recv_char != 0x0a || buflen == 0) return; 	//LOGA("Command: %d, %s\r\n", buflen, termbuf);
