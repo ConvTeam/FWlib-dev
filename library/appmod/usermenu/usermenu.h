@@ -15,6 +15,8 @@
 #include "common/common.h"
 
 
+#define RET_ROOT		2
+
 /**
  * @ingroup usermenu_module
  * Maximum number of User Menu Definition.
@@ -64,6 +66,7 @@ void menu_init(void);
 void menu_print_tree(void);
 int8 menu_add(int8 *desc, int8 parent, menu_func mfunc);
 void menu_run(void);
+void menu_disp(void);
 
 
 #endif	//_USERMENU_H

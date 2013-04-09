@@ -2,41 +2,49 @@
 /**
  * @addtogroup usart_module
  * @{
- */
-
-/**
- * @fn int8 wizpf_uart_init(wizpf_usart usart)
- * @ingroup usart_module
- * Initialize USART Peripheral Device.
  *
+ * @fn int8 wizpf_usart_init(wizpf_usart usart, usart_param *param)
+ * Initialize USART Peripheral Device.
  * @param usart USART index number (@ref wizpf_usart)
+ * @param param USART Parameters to set (@ref usart_param)
  * @return RET_OK: Success
  * @return RET_NOK: Error
- */
-/**
- * @fn int32 getchar_nonblk(void)
+ *
+ * @fn int32 getc_nonblk(wizpf_usart usart)
  * Get one character from USART1 (None-Blocking).
- *
+ * @param usart USART index number to get (@ref wizpf_usart)
  * @return Input Character
- */
-/**
- * @fn int putchar(int ch)
- * Put one character to USART1.
- * This is used by EWARM compiler as Standard IO Function.
  *
+ * @fn int32 putc(int32 ch, wizpf_usart usart)
+ * Put one character to the USART you want.
+ * @param ch Character to put
+ * @param usart USART index number to put (@ref wizpf_usart)
+ * @return Put character (same with 'ch' parameter)
+ *
+ * @fn int32 getc(wizpf_usart usart)
+ * Get one character from the USART you want.
+ * @param usart USART index number to get (@ref wizpf_usart)
+ * @return Input Character
+ *
+ * @fn void change_std_usart(wizpf_usart usart)
+ * Change Standard USART to another.
+ * If you want to use printf to print string to the USART which is not standard,\n
+ * you should change Standard USART through this function.
+ * @param usart USART index number to set (@ref wizpf_usart)
+ * 
+ * @fn int putchar(int ch)
+ * Put one character to Standard USART.
+ * This is used by EWARM compiler as Standard IO Function.
  * @param ch Character to put
  * @return Put character (same with 'ch' parameter)
- */
-/**
- * @fn int getchar(void)
- * Get one character from USART1.
- * This is used by EWARM compiler as Standard IO Function.
  *
+ * @fn int getchar(void)
+ * Get one character from Standard USART.
+ * This is used by EWARM compiler as Standard IO Function.
  * @return Input Character
+ *
+ * @}
  */
-
-/* @} */
-
 
 
 /**
@@ -45,12 +53,12 @@
  */
 
 /**
- * @fn int8 wizpf_gpio_init(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin, wizpf_gpio_mode mode)
+ * @fn int8 wizpf_gpio_init(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin, gpio_mode mode)
  * GPIO configuration.
  *
  * @param GPIOx GPIO The GPIO struct to configure (Ref. platform specific header file)
  * @param GPIO_Pin The Pin number to configure (Ref. platform specific header file)
- * @param mode The mode to configure (@ref wizpf_gpio_mode)
+ * @param mode The mode to configure (@ref gpio_mode)
  * @return RET_OK: Success
  * @return RET_NOK: Error
  */
@@ -105,12 +113,13 @@
  */
 
 /**
- * @fn int8 platform_init(void)
+ * @fn int8 platform_init(usart_param *up)
  * Initialize Platform.
  * 
  * This function should be called in the main function.
  * If not, you have to handle network initialization manually.
  * 
+ * @param up USART Parameter Struct for USART1 Init
  * @return RET_OK: Success
  * @return RET_NOK: Error
  */

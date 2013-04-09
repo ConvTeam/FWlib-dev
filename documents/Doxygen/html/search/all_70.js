@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['parity',['parity',['../structusart__param__t.html#a54ee74546c133115e46dc1a64fee2fb8',1,'usart_param_t']]],
   ['parse_5fhttp_5frequest',['parse_http_request',['../httpd_8c.html#a21dc26996f612ce23a3c0a3d2616e92a',1,'parse_http_request(st_http_request *request, char *buf):&#160;httpd.c'],['../httpd_8h.html#ac61d8d3dc7b90efe08224b91f8f440b1',1,'parse_http_request(st_http_request *, char *):&#160;httpd.c']]],
   ['peripheral_20driver',['Peripheral Driver',['../group__peripheral__module.html',1,'']]],
   ['pin0',['PIN0',['../w5200__evb_8h.html#a8909e4cc8d1f05aeb73943042144abdf',1,'PIN0():&#160;w5200_evb.h'],['../w5500__evb_8h.html#a8909e4cc8d1f05aeb73943042144abdf',1,'PIN0():&#160;w5500_evb.h'],['../w7200__evb_8h.html#a8909e4cc8d1f05aeb73943042144abdf',1,'PIN0():&#160;w7200_evb.h']]],
@@ -18,7 +19,7 @@ var searchData=
   ['pin7',['PIN7',['../w5200__evb_8h.html#af4d3f80395907ab4999773479f1aecf1',1,'PIN7():&#160;w5200_evb.h'],['../w5500__evb_8h.html#af4d3f80395907ab4999773479f1aecf1',1,'PIN7():&#160;w5500_evb.h'],['../w7200__evb_8h.html#af4d3f80395907ab4999773479f1aecf1',1,'PIN7():&#160;w7200_evb.h']]],
   ['pin8',['PIN8',['../w5200__evb_8h.html#a7a07dac6b9e43e034a3962e9b527c5d3',1,'PIN8():&#160;w5200_evb.h'],['../w5500__evb_8h.html#a7a07dac6b9e43e034a3962e9b527c5d3',1,'PIN8():&#160;w5500_evb.h'],['../w7200__evb_8h.html#a7a07dac6b9e43e034a3962e9b527c5d3',1,'PIN8():&#160;w7200_evb.h']]],
   ['pin9',['PIN9',['../w5200__evb_8h.html#aa5ff146675609a313f316327dec3939d',1,'PIN9():&#160;w5200_evb.h'],['../w5500__evb_8h.html#aa5ff146675609a313f316327dec3939d',1,'PIN9():&#160;w5500_evb.h'],['../w7200__evb_8h.html#aa5ff146675609a313f316327dec3939d',1,'PIN9():&#160;w7200_evb.h']]],
-  ['platform_5finit',['platform_init',['../group__platform__util__module.html#gafc3928c86d77e2fb74e7c7c1c8c2fc14',1,'platform_init(void):&#160;wizplatform.c'],['../group__platform__util__module.html#gafc3928c86d77e2fb74e7c7c1c8c2fc14',1,'platform_init(void):&#160;wizplatform.c'],['../group__platform__util__module.html#gafc3928c86d77e2fb74e7c7c1c8c2fc14',1,'platform_init(void):&#160;wizplatform.c'],['../group__platform__util__module.html#gafc3928c86d77e2fb74e7c7c1c8c2fc14',1,'platform_init(void):&#160;wizplatform.c']]],
+  ['platform_5finit',['platform_init',['../group__platform__util__module.html#ga91578a7f579e546349fad0f4be724c11',1,'platform_init(usart_param *up):&#160;wizplatform.c'],['../group__platform__util__module.html#ga91578a7f579e546349fad0f4be724c11',1,'platform_init(usart_param *up):&#160;wizplatform.c'],['../group__platform__util__module.html#ga91578a7f579e546349fad0f4be724c11',1,'platform_init(usart_param *up):&#160;wizplatform.c'],['../group__platform__util__module.html#ga91578a7f579e546349fad0f4be724c11',1,'platform_init(usart_param *up):&#160;wizplatform.c']]],
   ['platform_20module',['Platform Module',['../group__platform__module.html',1,'']]],
   ['platform_20utility',['Platform Utility',['../group__platform__util__module.html',1,'']]],
   ['platform_5fw5200_5fevb',['PLATFORM_W5200_EVB',['../wizconfig_8h.html#a80cf8f823653135335d81f23932e47ad',1,'wizconfig.h']]],
@@ -39,5 +40,6 @@ var searchData=
   ['ptype_5fmpeg',['PTYPE_MPEG',['../httpd_8h.html#a72633e5da78ca7511de7b8db7b9c0a53',1,'httpd.h']]],
   ['ptype_5fpdf',['PTYPE_PDF',['../httpd_8h.html#a88ab0022287d6bba216aee3bfbd7bbd1',1,'httpd.h']]],
   ['ptype_5ftext',['PTYPE_TEXT',['../httpd_8h.html#a75938d598ef45e1615800ed71e6aaa97',1,'httpd.h']]],
-  ['putchar',['PUTCHAR',['../group__usart__module.html#ga2f35cbf92133c4ddebd98362b4154f0f',1,'PUTCHAR():&#160;wizplatform.h'],['../group__usart__module.html#ga07036e93939040c563e862a6a31b65bc',1,'putchar(int ch):&#160;wizplatform.c']]]
+  ['putc',['putc',['../group__usart__module.html#ga6f8cfdbe7ef1b8507a2755b103f4d004',1,'putc(int ch, USART_TypeDef *USARTx):&#160;wizplatform.c'],['../group__usart__module.html#ga6f8cfdbe7ef1b8507a2755b103f4d004',1,'putc(int ch, USART_TypeDef *USARTx):&#160;wizplatform.c'],['../group__usart__module.html#ga6f8cfdbe7ef1b8507a2755b103f4d004',1,'putc(int ch, USART_TypeDef *USARTx):&#160;wizplatform.c'],['../group__usart__module.html#ga6f8cfdbe7ef1b8507a2755b103f4d004',1,'putc(int ch, USART_TypeDef *USARTx):&#160;wizplatform.c']]],
+  ['putchar',['putchar',['../group__usart__module.html#ga07036e93939040c563e862a6a31b65bc',1,'wizplatform.c']]]
 ];

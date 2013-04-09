@@ -11,7 +11,7 @@
 
 int32 main(void)
 {
-	if(platform_init() != RET_OK) 
+	if(platform_init(NULL) != RET_OK) 
 		goto FAIL_TRAP;
 
 	if(network_init(0, NULL, NULL) != RET_OK) {

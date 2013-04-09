@@ -1,4 +1,0 @@
-<map id="TCPRecv" name="TCPRecv">
-<area shape="rect" id="node2" href="$group__loopback__module.html#gac779ef4ac5cdfdf9d7d711c81a4be9d2" title="Start TCP Loopback Test (Device Side)." alt="" coords="128,5,235,32"/>
-<area shape="rect" id="node3" href="$group__smtp__module.html#gae035a2a9cc5497c0aca441d517ded735" title="Send email." alt="" coords="141,56,222,83"/>
-</map>

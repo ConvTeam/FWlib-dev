@@ -185,9 +185,8 @@ void TIM3_IRQHandler(void)
 * Output         : None
 * Return         : None
 *******************************************************************************/
-void USART2_IRQHandler(void)
-{
-
-}
+//void USART2_IRQHandler(void)	// moved to wizplatform.c
+//{
+//}
 
 /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
