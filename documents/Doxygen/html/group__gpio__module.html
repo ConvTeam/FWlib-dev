@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.3.1"/>
-<title>WIZlib Library API: GPIO Driver</title>
+<title>WIZlib Library: GPIO Driver</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -23,10 +23,10 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="wiznet_logo.jpg"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">WIZlib Library API
+   <div id="projectname">WIZlib Library
    &#160;<span id="projectnumber">ver 1.0</span>
    </div>
-   <div id="projectbrief">WIZlib Library API User Menual</div>
+   <div id="projectbrief">WIZlib Library User Menual</div>
   </td>
  </tr>
  </tbody>
@@ -87,34 +87,26 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p>Platform independent GPIO driver.  
 <a href="#details">More...</a></p>
-<div class="dynheader">
-Collaboration diagram for GPIO Driver:</div>
-<div class="dyncontent">
-<center><table><tr><td><img src="group__gpio__module.png" border="0" alt="" usemap="#group____gpio____module"/>
-<map name="group____gpio____module" id="group____gpio____module">
-<area shape="rect" id="node2" href="group__peripheral__module.html" title="&#45;." alt="" coords="6,5,122,32"/></map>
-</td></tr></table></center>
-</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:ga10457022393bde4acad9082588317ac3"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__gpio__module.html#ga10457022393bde4acad9082588317ac3">wizpf_gpio_mode</a> { <br/>
-&#160;&#160;<a class="el" href="group__gpio__module.html#gga10457022393bde4acad9082588317ac3a29cbcbfcfcdc7948f32090b8166703d0">WIZ_GPIO_IN_FLOAT</a>, 
-<a class="el" href="group__gpio__module.html#gga10457022393bde4acad9082588317ac3acca2bbe6fa732e1c518bea1cc3de427b">WIZ_GPIO_IN_PULLUP</a>, 
-<a class="el" href="group__gpio__module.html#gga10457022393bde4acad9082588317ac3ad73187e5dd95b6df15b184a9409d32e8">WIZ_GPIO_IN_PULLDOWN</a>, 
-<a class="el" href="group__gpio__module.html#gga10457022393bde4acad9082588317ac3a6c1117b066d569ebd1d6d6735f99b088">WIZ_GPIO_OUT_PUSHPULL</a>, 
+<tr class="memitem:ga620d533a2ccc5296d2f6c8b95bf89fe1"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__gpio__module.html#ga620d533a2ccc5296d2f6c8b95bf89fe1">gpio_mode</a> { <br/>
+&#160;&#160;<a class="el" href="group__gpio__module.html#gga620d533a2ccc5296d2f6c8b95bf89fe1a71c190e0843d36cf39e565f6dfed0d37">GMOD_IN_FLOAT</a>, 
+<a class="el" href="group__gpio__module.html#gga620d533a2ccc5296d2f6c8b95bf89fe1ab00c96ecea9b678360108dd506c9b821">GMOD_IN_PULLUP</a>, 
+<a class="el" href="group__gpio__module.html#gga620d533a2ccc5296d2f6c8b95bf89fe1a68ed372c00af73b11ffcde1302762f72">GMOD_IN_PULLDOWN</a>, 
+<a class="el" href="group__gpio__module.html#gga620d533a2ccc5296d2f6c8b95bf89fe1a0039eefc6db2dd56e7a616f0733cbf08">GMOD_OUT_PUSHPULL</a>, 
 <br/>
-&#160;&#160;<a class="el" href="group__gpio__module.html#gga10457022393bde4acad9082588317ac3a5e509d5a430b12a482d73d0a0d801d80">WIZ_GPIO_OUT_OPENDRAIN</a>
+&#160;&#160;<a class="el" href="group__gpio__module.html#gga620d533a2ccc5296d2f6c8b95bf89fe1a0325acea936be333eddadfc43a86e793">GMOD_OUT_OPENDRAIN</a>
 <br/>
  }</td></tr>
-<tr class="memdesc:ga10457022393bde4acad9082588317ac3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicate the GPIO mode.  <a href="group__gpio__module.html#ga10457022393bde4acad9082588317ac3">More...</a><br/></td></tr>
-<tr class="separator:ga10457022393bde4acad9082588317ac3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:ga620d533a2ccc5296d2f6c8b95bf89fe1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicate the GPIO mode.  <a href="group__gpio__module.html#ga620d533a2ccc5296d2f6c8b95bf89fe1">More...</a><br/></td></tr>
+<tr class="separator:ga620d533a2ccc5296d2f6c8b95bf89fe1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga569e56b7d7b3c580117c5b41c0264ba0"><td class="memItemLeft" align="right" valign="top">int8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__gpio__module.html#ga569e56b7d7b3c580117c5b41c0264ba0">wizpf_gpio_init</a> (GPIO_TypeDef *GPIOx, uint16 GPIO_Pin, <a class="el" href="group__gpio__module.html#ga10457022393bde4acad9082588317ac3">wizpf_gpio_mode</a> mode)</td></tr>
-<tr class="memdesc:ga569e56b7d7b3c580117c5b41c0264ba0"><td class="mdescLeft">&#160;</td><td class="mdescRight">GPIO configuration.  <a href="#ga569e56b7d7b3c580117c5b41c0264ba0">More...</a><br/></td></tr>
-<tr class="separator:ga569e56b7d7b3c580117c5b41c0264ba0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9e9db15db8c0d41b8b97bf91df85a04e"><td class="memItemLeft" align="right" valign="top">int8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__gpio__module.html#ga9e9db15db8c0d41b8b97bf91df85a04e">wizpf_gpio_init</a> (GPIO_TypeDef *GPIOx, uint16 GPIO_Pin, <a class="el" href="group__gpio__module.html#ga620d533a2ccc5296d2f6c8b95bf89fe1">gpio_mode</a> mode)</td></tr>
+<tr class="memdesc:ga9e9db15db8c0d41b8b97bf91df85a04e"><td class="mdescLeft">&#160;</td><td class="mdescRight">GPIO configuration.  <a href="#ga9e9db15db8c0d41b8b97bf91df85a04e">More...</a><br/></td></tr>
+<tr class="separator:ga9e9db15db8c0d41b8b97bf91df85a04e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9e8436302dfa82d21b8370d36802c072"><td class="memItemLeft" align="right" valign="top">int8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__gpio__module.html#ga9e8436302dfa82d21b8370d36802c072">wizpf_gpio_set</a> (GPIO_TypeDef *GPIOx, uint16 GPIO_Pin, int8 value)</td></tr>
 <tr class="memdesc:ga9e8436302dfa82d21b8370d36802c072"><td class="mdescLeft">&#160;</td><td class="mdescRight">GPIO Set.  <a href="#ga9e8436302dfa82d21b8370d36802c072">More...</a><br/></td></tr>
 <tr class="separator:ga9e8436302dfa82d21b8370d36802c072"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -125,36 +117,36 @@ Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Platform independent GPIO driver. </p>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
-<a class="anchor" id="ga10457022393bde4acad9082588317ac3"></a>
+<a class="anchor" id="ga620d533a2ccc5296d2f6c8b95bf89fe1"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="group__gpio__module.html#ga10457022393bde4acad9082588317ac3">wizpf_gpio_mode</a></td>
+          <td class="memname">enum <a class="el" href="group__gpio__module.html#ga620d533a2ccc5296d2f6c8b95bf89fe1">gpio_mode</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Indicate the GPIO mode. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="gga10457022393bde4acad9082588317ac3a29cbcbfcfcdc7948f32090b8166703d0"></a>WIZ_GPIO_IN_FLOAT</em>&nbsp;</td><td class="fielddoc">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><em><a class="anchor" id="gga620d533a2ccc5296d2f6c8b95bf89fe1a71c190e0843d36cf39e565f6dfed0d37"></a>GMOD_IN_FLOAT</em>&nbsp;</td><td class="fielddoc">
 <p>Indicate Floating Input. </p>
 </td></tr>
-<tr><td class="fieldname"><em><a class="anchor" id="gga10457022393bde4acad9082588317ac3acca2bbe6fa732e1c518bea1cc3de427b"></a>WIZ_GPIO_IN_PULLUP</em>&nbsp;</td><td class="fielddoc">
+<tr><td class="fieldname"><em><a class="anchor" id="gga620d533a2ccc5296d2f6c8b95bf89fe1ab00c96ecea9b678360108dd506c9b821"></a>GMOD_IN_PULLUP</em>&nbsp;</td><td class="fielddoc">
 <p>Indicate Pulled up Input. </p>
 </td></tr>
-<tr><td class="fieldname"><em><a class="anchor" id="gga10457022393bde4acad9082588317ac3ad73187e5dd95b6df15b184a9409d32e8"></a>WIZ_GPIO_IN_PULLDOWN</em>&nbsp;</td><td class="fielddoc">
+<tr><td class="fieldname"><em><a class="anchor" id="gga620d533a2ccc5296d2f6c8b95bf89fe1a68ed372c00af73b11ffcde1302762f72"></a>GMOD_IN_PULLDOWN</em>&nbsp;</td><td class="fielddoc">
 <p>Indicate Pulled down Input. </p>
 </td></tr>
-<tr><td class="fieldname"><em><a class="anchor" id="gga10457022393bde4acad9082588317ac3a6c1117b066d569ebd1d6d6735f99b088"></a>WIZ_GPIO_OUT_PUSHPULL</em>&nbsp;</td><td class="fielddoc">
+<tr><td class="fieldname"><em><a class="anchor" id="gga620d533a2ccc5296d2f6c8b95bf89fe1a0039eefc6db2dd56e7a616f0733cbf08"></a>GMOD_OUT_PUSHPULL</em>&nbsp;</td><td class="fielddoc">
 <p>Indicate Push-Pull Output. </p>
 </td></tr>
-<tr><td class="fieldname"><em><a class="anchor" id="gga10457022393bde4acad9082588317ac3a5e509d5a430b12a482d73d0a0d801d80"></a>WIZ_GPIO_OUT_OPENDRAIN</em>&nbsp;</td><td class="fielddoc">
+<tr><td class="fieldname"><em><a class="anchor" id="gga620d533a2ccc5296d2f6c8b95bf89fe1a0325acea936be333eddadfc43a86e793"></a>GMOD_OUT_OPENDRAIN</em>&nbsp;</td><td class="fielddoc">
 <p>Indicate Open-Drain Output. </p>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="wizplatform_8h_source.html#l00043">43</a> of file <a class="el" href="wizplatform_8h_source.html">wizplatform.h</a>.</p>
+<p>Definition at line <a class="el" href="wizplatform_8h_source.html#l00101">101</a> of file <a class="el" href="wizplatform_8h_source.html">wizplatform.h</a>.</p>
 
 </div>
 </div>
@@ -198,11 +190,11 @@ VAL_LOW: Current GPIO value is 'Low' </dd>
 <dd>
 RET_NOK: Error </dd></dl>
 
-<p>Definition at line <a class="el" href="_w_i_z___w5200_2wizplatform_8c_source.html#l00178">178</a> of file <a class="el" href="_w_i_z___w5200_2wizplatform_8c_source.html">WIZ_W5200/wizplatform.c</a>.</p>
+<p>Definition at line <a class="el" href="_w_i_z___w5200_2wizplatform_8c_source.html#l00237">237</a> of file <a class="el" href="_w_i_z___w5200_2wizplatform_8c_source.html">WIZ_W5200/wizplatform.c</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ga569e56b7d7b3c580117c5b41c0264ba0"></a>
+<a class="anchor" id="ga9e9db15db8c0d41b8b97bf91df85a04e"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -221,7 +213,7 @@ RET_NOK: Error </dd></dl>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__gpio__module.html#ga10457022393bde4acad9082588317ac3">wizpf_gpio_mode</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="group__gpio__module.html#ga620d533a2ccc5296d2f6c8b95bf89fe1">gpio_mode</a>&#160;</td>
           <td class="paramname"><em>mode</em>&#160;</td>
         </tr>
         <tr>
@@ -237,7 +229,7 @@ RET_NOK: Error </dd></dl>
   <table class="params">
     <tr><td class="paramname">GPIOx</td><td>GPIO The GPIO struct to configure (Ref. platform specific header file) </td></tr>
     <tr><td class="paramname">GPIO_Pin</td><td>The Pin number to configure (Ref. platform specific header file) </td></tr>
-    <tr><td class="paramname">mode</td><td>The mode to configure (<a class="el" href="group__gpio__module.html#ga10457022393bde4acad9082588317ac3">wizpf_gpio_mode</a>) </td></tr>
+    <tr><td class="paramname">mode</td><td>The mode to configure (<a class="el" href="group__gpio__module.html#ga620d533a2ccc5296d2f6c8b95bf89fe1">gpio_mode</a>) </td></tr>
   </table>
   </dd>
 </dl>
@@ -245,7 +237,7 @@ RET_NOK: Error </dd></dl>
 <dd>
 RET_NOK: Error </dd></dl>
 
-<p>Definition at line <a class="el" href="_w_i_z___w5200_2wizplatform_8c_source.html#l00141">141</a> of file <a class="el" href="_w_i_z___w5200_2wizplatform_8c_source.html">WIZ_W5200/wizplatform.c</a>.</p>
+<p>Definition at line <a class="el" href="_w_i_z___w5200_2wizplatform_8c_source.html#l00200">200</a> of file <a class="el" href="_w_i_z___w5200_2wizplatform_8c_source.html">WIZ_W5200/wizplatform.c</a>.</p>
 
 </div>
 </div>
@@ -293,14 +285,14 @@ RET_NOK: Error </dd></dl>
 <dd>
 RET_NOK: Error </dd></dl>
 
-<p>Definition at line <a class="el" href="_w_i_z___w5200_2wizplatform_8c_source.html#l00173">173</a> of file <a class="el" href="_w_i_z___w5200_2wizplatform_8c_source.html">WIZ_W5200/wizplatform.c</a>.</p>
+<p>Definition at line <a class="el" href="_w_i_z___w5200_2wizplatform_8c_source.html#l00232">232</a> of file <a class="el" href="_w_i_z___w5200_2wizplatform_8c_source.html">WIZ_W5200/wizplatform.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Mar 13 2013 16:12:41 for WIZlib Library API by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Mar 20 2013 21:46:21 for WIZlib Library by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

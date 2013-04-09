@@ -15,7 +15,7 @@
 //#include "common/common.h"
 
 /**
- * @addtogroup sockutil_module
+ * @addtogroup sockwatch_module
  * @{
  * @def WATCH_SOCK_UDP_SEND
  * Indicate that 'UDP SEND' completion of this socket has to be watched.

@@ -26,7 +26,7 @@ bool lb_tcp = FALSE, lb_udp = FALSE;
 
 int32 main(void)
 {
-	if(platform_init() != RET_OK) 
+	if(platform_init(NULL) != RET_OK) 
 		goto FAIL_TRAP;
 
 	if(network_init(SOCK_DHCP, NULL, NULL) != RET_OK) {

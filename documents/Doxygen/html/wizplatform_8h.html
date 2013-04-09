@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.3.1"/>
-<title>WIZlib Library API: wizplatform.h File Reference</title>
+<title>WIZlib Library: wizplatform.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -23,10 +23,10 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="wiznet_logo.jpg"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">WIZlib Library API
+   <div id="projectname">WIZlib Library
    &#160;<span id="projectnumber">ver 1.0</span>
    </div>
-   <div id="projectbrief">WIZlib Library API User Menual</div>
+   <div id="projectbrief">WIZlib Library User Menual</div>
   </td>
  </tr>
  </tbody>
@@ -88,7 +88,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
 <a href="#define-members">Macros</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
@@ -98,38 +100,104 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p>Platform Utility Common Header File.  
 <a href="#details">More...</a></p>
-<div class="textblock"><div class="dynheader">
-This graph shows which files directly or indirectly include this file:</div>
-<div class="dyncontent">
-<div class="center"><img src="wizplatform_8h__dep__incl.png" border="0" usemap="#wizplatform_8hdep" alt=""/></div>
-<map name="wizplatform_8hdep" id="wizplatform_8hdep">
-<area shape="rect" id="node2" href="common_8h.html" title="Library Common Header File." alt="" coords="995,80,1077,107"/><area shape="rect" id="node3" href="atcmd_8h.html" title="AT Command Module &#45; Interface Part Header File." alt="" coords="5,155,75,181"/><area shape="rect" id="node5" href="cmdrun_8h.html" title="AT Command Module &#45; Implementation Part Header File." alt="" coords="99,155,175,181"/><area shape="rect" id="node7" href="loopback_8h.html" title="Loopback Test Module Header File." alt="" coords="200,155,285,181"/><area shape="rect" id="node9" href="usermenu_8h.html" title="User Menu (Terminal) Module Header File." alt="" coords="309,155,400,181"/><area shape="rect" id="node11" href="util_8c.html" title="Common Utility Function Set Header File." alt="" coords="424,155,475,181"/><area shape="rect" id="node12" href="sockutil_8c.html" title="Socket Utility Source File." alt="" coords="499,155,577,181"/><area shape="rect" id="node13" href="w5200_2socket_8c.html" title="Socket Driver Source File &#45; For w5200." alt="" coords="603,155,675,181"/><area shape="rect" id="node14" href="w5200_8c.html" title="W5200 HAL Source File." alt="" coords="699,155,769,181"/><area shape="rect" id="node15" href="w5500_2socket_8c.html" title="Socket Driver Source File &#45; For w5500." alt="" coords="795,155,867,181"/><area shape="rect" id="node16" href="w5500_8c.html" title="W5500 HAL Source File." alt="" coords="891,155,961,181"/><area shape="rect" id="node17" href="_w_i_z___w5200_2wizplatform_8c.html" title="Platform Specific Source File &#45; For W5200 Evaluation Board." alt="" coords="987,155,1085,181"/><area shape="rect" id="node18" href="_w_i_z___w5500_2wizplatform_8c.html" title="Platform Specific Source File &#45; For W5500 Evaluation Board." alt="" coords="1109,155,1208,181"/><area shape="rect" id="node19" href="_w_i_z___w7200_2wizplatform_8c.html" title="Platform Specific Source File &#45; For W7200 Evaluation Board." alt="" coords="1232,155,1331,181"/><area shape="rect" id="node20" href="wizspi_8h.html" title="SPI Adaptation Layer Common Header File." alt="" coords="1355,155,1424,181"/><area shape="rect" id="node22" href="dhcp_8c.html" title="DHCP Protocol Module Source File." alt="" coords="1448,155,1509,181"/><area shape="rect" id="node23" href="dns_8h.html" title="DNS Protocol Module Header File." alt="" coords="1534,155,1588,181"/><area shape="rect" id="node25" href="httpd_8c.html" title="functions associated http processing" alt="" coords="1614,229,1676,256"/><area shape="rect" id="node26" href="httpd_8h.html" title="Define Constants and fucntions associated with HTTP protocol." alt="" coords="1665,155,1727,181"/><area shape="rect" id="node27" href="httputil_8h.html" title="httputil.h" alt="" coords="1704,229,1776,256"/><area shape="rect" id="node29" href="smtp_8h.html" title="SMTP (Simple Mail Transfer Protocol) Module Header File." alt="" coords="1803,155,1865,181"/><area shape="rect" id="node4" href="atcmd_8c.html" title="AT Command Module &#45; Interface Part Source File." alt="" coords="5,229,75,256"/><area shape="rect" id="node6" href="cmdrun_8c.html" title="AT Command Module &#45; Implementation Part Source File." alt="" coords="99,229,175,256"/><area shape="rect" id="node8" href="loopback_8c.html" title="Loopback Test Module Source File." alt="" coords="200,229,285,256"/><area shape="rect" id="node10" href="usermenu_8c.html" title="User Menu (Terminal) Module Source File." alt="" coords="309,229,400,256"/><area shape="rect" id="node21" href="wizspi_8c.html" title="SPI Adaptation Layer Source File &#45; For STM32F10x." alt="" coords="1355,229,1424,256"/><area shape="rect" id="node24" href="dns_8c.html" title="DNS Protocol Module Source File." alt="" coords="1534,229,1588,256"/><area shape="rect" id="node28" href="httputil_8c.html" title="httputil.c" alt="" coords="1704,304,1776,331"/><area shape="rect" id="node30" href="smtp_8c.html" title="SMTP (Simple Mail Transfer Protocol) Module Source File." alt="" coords="1803,229,1865,256"/></map>
-</div>
-</div>
+
 <p><a href="wizplatform_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structusart__param__t.html">usart_param_t</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">USART Parameter struct used by <a class="el" href="group__usart__module.html#gae87c49058cd8c5581502daa957d19d61">wizpf_usart_init</a>.  <a href="structusart__param__t.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:ga2f35cbf92133c4ddebd98362b4154f0f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga2f35cbf92133c4ddebd98362b4154f0f"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__usart__module.html#ga2f35cbf92133c4ddebd98362b4154f0f">PUTCHAR</a>(ch_v)</td></tr>
-<tr class="memdesc:ga2f35cbf92133c4ddebd98362b4154f0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define the compiler independent function which put character. <br/></td></tr>
-<tr class="separator:ga2f35cbf92133c4ddebd98362b4154f0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga23596fe6473b0f59d4a582d5dd3dfc71"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga23596fe6473b0f59d4a582d5dd3dfc71"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__usart__module.html#ga23596fe6473b0f59d4a582d5dd3dfc71">GETCHAR</a>()</td></tr>
-<tr class="memdesc:ga23596fe6473b0f59d4a582d5dd3dfc71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define the compiler independent function which get character. <br/></td></tr>
-<tr class="separator:ga23596fe6473b0f59d4a582d5dd3dfc71"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5648f77b833e073a0c157e01821546f9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__usart__module.html#ga5648f77b833e073a0c157e01821546f9">WIZPF_USART_SET_PARAM</a>(param_p, br_e, wl_e, sb_e, pb_e, fc_e)</td></tr>
+<tr class="memdesc:ga5648f77b833e073a0c157e01821546f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set USART Parameters to <a class="el" href="structusart__param__t.html">usart_param_t</a> pointer.  <a href="group__usart__module.html#ga5648f77b833e073a0c157e01821546f9">More...</a><br/></td></tr>
+<tr class="separator:ga5648f77b833e073a0c157e01821546f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab5ea99f9c7233dd806923dd6a7db35f0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__platform__util__module.html#gab5ea99f9c7233dd806923dd6a7db35f0">wizpf_led_flicker</a>(led_v, interval_v)</td></tr>
 <tr class="memdesc:gab5ea99f9c7233dd806923dd6a7db35f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flicker a LED for debug with some interval.  <a href="group__platform__util__module.html#gab5ea99f9c7233dd806923dd6a7db35f0">More...</a><br/></td></tr>
 <tr class="separator:gab5ea99f9c7233dd806923dd6a7db35f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:ga5cde14d849664dcf471be1cbf4200db3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga5cde14d849664dcf471be1cbf4200db3"></a>
+typedef enum <a class="el" href="group__usart__module.html#ga3586893f520fd53bf55308bd172cbb6f">usart_baudrate_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__usart__module.html#ga5cde14d849664dcf471be1cbf4200db3">usart_baudrate</a></td></tr>
+<tr class="memdesc:ga5cde14d849664dcf471be1cbf4200db3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicate the USART Baud Rate. <br/></td></tr>
+<tr class="separator:ga5cde14d849664dcf471be1cbf4200db3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3d2104ad1ae9a1d6cf48fa5e97c6728b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga3d2104ad1ae9a1d6cf48fa5e97c6728b"></a>
+typedef enum <a class="el" href="group__usart__module.html#ga088a15d4c43f59cd73ecaed9ebc98a5a">usart_wordlen_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__usart__module.html#ga3d2104ad1ae9a1d6cf48fa5e97c6728b">usart_wordlen</a></td></tr>
+<tr class="memdesc:ga3d2104ad1ae9a1d6cf48fa5e97c6728b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicate the USART Word Length. <br/></td></tr>
+<tr class="separator:ga3d2104ad1ae9a1d6cf48fa5e97c6728b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga30c89a16e425642fc5f913afbdb665a0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga30c89a16e425642fc5f913afbdb665a0"></a>
+typedef enum <a class="el" href="group__usart__module.html#ga7b7721f25c67e0f6fdb8fc6198fae3c9">usart_stopbit_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__usart__module.html#ga30c89a16e425642fc5f913afbdb665a0">usart_stopbit</a></td></tr>
+<tr class="memdesc:ga30c89a16e425642fc5f913afbdb665a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicate the USART Stop Bit. <br/></td></tr>
+<tr class="separator:ga30c89a16e425642fc5f913afbdb665a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga55e4f42dac740fa189333cf4fec1e8ff"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga55e4f42dac740fa189333cf4fec1e8ff"></a>
+typedef enum <a class="el" href="group__usart__module.html#ga0251d137a3f1586a0694a14efebf7f1e">usart_parity_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__usart__module.html#ga55e4f42dac740fa189333cf4fec1e8ff">usart_parity</a></td></tr>
+<tr class="memdesc:ga55e4f42dac740fa189333cf4fec1e8ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicate the USART Parity Bit. <br/></td></tr>
+<tr class="separator:ga55e4f42dac740fa189333cf4fec1e8ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8c58fa707edc241b7f6767b8cd5fbbf4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga8c58fa707edc241b7f6767b8cd5fbbf4"></a>
+typedef enum <a class="el" href="group__usart__module.html#ga64a1c9efbb9a718c45889efec88841aa">usart_flowcon_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__usart__module.html#ga8c58fa707edc241b7f6767b8cd5fbbf4">usart_flowcon</a></td></tr>
+<tr class="memdesc:ga8c58fa707edc241b7f6767b8cd5fbbf4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicate the USART Flow Control. <br/></td></tr>
+<tr class="separator:ga8c58fa707edc241b7f6767b8cd5fbbf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad9696159c56572d9d3658454de507245"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gad9696159c56572d9d3658454de507245"></a>
+typedef struct <a class="el" href="structusart__param__t.html">usart_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__usart__module.html#gad9696159c56572d9d3658454de507245">usart_param</a></td></tr>
+<tr class="memdesc:gad9696159c56572d9d3658454de507245"><td class="mdescLeft">&#160;</td><td class="mdescRight">USART Parameter struct used by <a class="el" href="group__usart__module.html#gae87c49058cd8c5581502daa957d19d61">wizpf_usart_init</a>. <br/></td></tr>
+<tr class="separator:gad9696159c56572d9d3658454de507245"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:gad5567b1d409ca72f2aa592f76e673874"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__usart__module.html#gad5567b1d409ca72f2aa592f76e673874">wizpf_usart</a> { <a class="el" href="group__usart__module.html#ggad5567b1d409ca72f2aa592f76e673874ab7839cd014d5d38fee678aab1ee3bc82">WIZ_USART1</a>, 
-<a class="el" href="group__usart__module.html#ggad5567b1d409ca72f2aa592f76e673874a868ce6724e9fa7e14ec72eec56a82583">WIZ_USART2</a>, 
-<a class="el" href="group__usart__module.html#ggad5567b1d409ca72f2aa592f76e673874a0404ae61eb9373b40b63c41c7cbb75e0">WIZ_USART3</a>
+<a class="el" href="group__usart__module.html#ggad5567b1d409ca72f2aa592f76e673874a868ce6724e9fa7e14ec72eec56a82583">WIZ_USART2</a>
  }</td></tr>
 <tr class="memdesc:gad5567b1d409ca72f2aa592f76e673874"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicate the USART index number.  <a href="group__usart__module.html#gad5567b1d409ca72f2aa592f76e673874">More...</a><br/></td></tr>
 <tr class="separator:gad5567b1d409ca72f2aa592f76e673874"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3586893f520fd53bf55308bd172cbb6f"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__usart__module.html#ga3586893f520fd53bf55308bd172cbb6f">usart_baudrate_t</a> { <br/>
+&#160;&#160;<a class="el" href="group__usart__module.html#gga3586893f520fd53bf55308bd172cbb6fa715e78be9a85b934aecc8a6a0118731b">UBR_110</a> = 110, 
+<a class="el" href="group__usart__module.html#gga3586893f520fd53bf55308bd172cbb6fae4961f6a7d177134b147ffa4d2e6a65d">UBR_300</a> = 300, 
+<a class="el" href="group__usart__module.html#gga3586893f520fd53bf55308bd172cbb6fa3ddf80e028a1ecbc87d48910985ab867">UBR_600</a> = 600, 
+<a class="el" href="group__usart__module.html#gga3586893f520fd53bf55308bd172cbb6faaccd4e4dc6d441cd6ffea77a9f187c49">UBR_1200</a> = 1200, 
+<br/>
+&#160;&#160;<a class="el" href="group__usart__module.html#gga3586893f520fd53bf55308bd172cbb6fa5b23a6e2c4ec1eaf6a0aa791df28fb3a">UBR_2400</a> = 2400, 
+<a class="el" href="group__usart__module.html#gga3586893f520fd53bf55308bd172cbb6fa01ccd3176cbf7676979a8993a71e4a0d">UBR_4800</a> = 4800, 
+<a class="el" href="group__usart__module.html#gga3586893f520fd53bf55308bd172cbb6fabc84085bbaa23db32078ba0fbd476b9b">UBR_9600</a> = 9600, 
+<a class="el" href="group__usart__module.html#gga3586893f520fd53bf55308bd172cbb6fac0d58f98e044eb694ff979bd3d373023">UBR_14400</a> = 14400, 
+<br/>
+&#160;&#160;<a class="el" href="group__usart__module.html#gga3586893f520fd53bf55308bd172cbb6fae15a87010ed6a7e3db614a1fbd96de3d">UBR_19200</a> = 19200, 
+<a class="el" href="group__usart__module.html#gga3586893f520fd53bf55308bd172cbb6fa145819b1c6adc5efdbf5a406ce738c4a">UBR_38400</a> = 38400, 
+<a class="el" href="group__usart__module.html#gga3586893f520fd53bf55308bd172cbb6fa473e038ca3f343876f5503d9c98d2139">UBR_57600</a> = 57600, 
+<a class="el" href="group__usart__module.html#gga3586893f520fd53bf55308bd172cbb6fa95a81ddbfe44afd158c124908d546387">UBR_115200</a> = 115200, 
+<br/>
+&#160;&#160;<a class="el" href="group__usart__module.html#gga3586893f520fd53bf55308bd172cbb6fafef62db7aa19d1c4ab035a841e3ff4f9">UBR_230400</a> = 230400, 
+<a class="el" href="group__usart__module.html#gga3586893f520fd53bf55308bd172cbb6fa79f23ee4da6a37453614740a453cee20">UBR_460800</a> = 460800, 
+<a class="el" href="group__usart__module.html#gga3586893f520fd53bf55308bd172cbb6fab190185932b34c46178cc039b748bb7d">UBR_921600</a> = 921600
+<br/>
+ }</td></tr>
+<tr class="memdesc:ga3586893f520fd53bf55308bd172cbb6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicate the USART Baud Rate.  <a href="group__usart__module.html#ga3586893f520fd53bf55308bd172cbb6f">More...</a><br/></td></tr>
+<tr class="separator:ga3586893f520fd53bf55308bd172cbb6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga088a15d4c43f59cd73ecaed9ebc98a5a"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__usart__module.html#ga088a15d4c43f59cd73ecaed9ebc98a5a">usart_wordlen_t</a> { <a class="el" href="group__usart__module.html#gga088a15d4c43f59cd73ecaed9ebc98a5aaf2a99b7d263a23fc0df19eb27c6e4a82">UWL_8</a>, 
+<a class="el" href="group__usart__module.html#gga088a15d4c43f59cd73ecaed9ebc98a5aa1c7738d5dbd11f0517dfcc4c2dc9bf8a">UWL_9</a>
+ }</td></tr>
+<tr class="memdesc:ga088a15d4c43f59cd73ecaed9ebc98a5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicate the USART Word Length.  <a href="group__usart__module.html#ga088a15d4c43f59cd73ecaed9ebc98a5a">More...</a><br/></td></tr>
+<tr class="separator:ga088a15d4c43f59cd73ecaed9ebc98a5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7b7721f25c67e0f6fdb8fc6198fae3c9"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__usart__module.html#ga7b7721f25c67e0f6fdb8fc6198fae3c9">usart_stopbit_t</a> { <a class="el" href="group__usart__module.html#gga7b7721f25c67e0f6fdb8fc6198fae3c9aa5382b879371f35b767f4756fc12a5be">UST_0d5</a>, 
+<a class="el" href="group__usart__module.html#gga7b7721f25c67e0f6fdb8fc6198fae3c9af0212abe2a6e2b51379274c3cf82b0d4">UST_1</a>, 
+<a class="el" href="group__usart__module.html#gga7b7721f25c67e0f6fdb8fc6198fae3c9a6af6ee82f93f4a6cd2b311f8a972b677">UST_1d5</a>, 
+<a class="el" href="group__usart__module.html#gga7b7721f25c67e0f6fdb8fc6198fae3c9a17e5a8be845f1ed0bedb4e2e335398f5">UST_2</a>
+ }</td></tr>
+<tr class="memdesc:ga7b7721f25c67e0f6fdb8fc6198fae3c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicate the USART Stop Bit.  <a href="group__usart__module.html#ga7b7721f25c67e0f6fdb8fc6198fae3c9">More...</a><br/></td></tr>
+<tr class="separator:ga7b7721f25c67e0f6fdb8fc6198fae3c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0251d137a3f1586a0694a14efebf7f1e"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__usart__module.html#ga0251d137a3f1586a0694a14efebf7f1e">usart_parity_t</a> { <a class="el" href="group__usart__module.html#gga0251d137a3f1586a0694a14efebf7f1ead435d499afdbaffde526efa4f6325f9c">UPB_NO</a>, 
+<a class="el" href="group__usart__module.html#gga0251d137a3f1586a0694a14efebf7f1ea017db479e60cb8fe79cd0f2b044b4445">UPB_EVEN</a>, 
+<a class="el" href="group__usart__module.html#gga0251d137a3f1586a0694a14efebf7f1ea3735f920e990410801525bfc7269b07d">UPB_ODD</a>
+ }</td></tr>
+<tr class="memdesc:ga0251d137a3f1586a0694a14efebf7f1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicate the USART Parity Bit.  <a href="group__usart__module.html#ga0251d137a3f1586a0694a14efebf7f1e">More...</a><br/></td></tr>
+<tr class="separator:ga0251d137a3f1586a0694a14efebf7f1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga64a1c9efbb9a718c45889efec88841aa"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__usart__module.html#ga64a1c9efbb9a718c45889efec88841aa">usart_flowcon_t</a> { <a class="el" href="group__usart__module.html#gga64a1c9efbb9a718c45889efec88841aaac13da11f3fb9efd6d1f14430e5f4e62c">UFC_NO</a>, 
+<a class="el" href="group__usart__module.html#gga64a1c9efbb9a718c45889efec88841aaa797c8b18f86b994083dd37623a6c9986">UFC_HW</a>
+ }</td></tr>
+<tr class="memdesc:ga64a1c9efbb9a718c45889efec88841aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicate the USART Flow Control.  <a href="group__usart__module.html#ga64a1c9efbb9a718c45889efec88841aa">More...</a><br/></td></tr>
+<tr class="separator:ga64a1c9efbb9a718c45889efec88841aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga44ebb4d3ca7fa929da1cd8844abe3e5a"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__platform__util__module.html#ga44ebb4d3ca7fa929da1cd8844abe3e5a">wizpf_led</a> { <a class="el" href="group__platform__util__module.html#gga44ebb4d3ca7fa929da1cd8844abe3e5aa0f1f71968e9c232921ce14f734f2614c">WIZ_LED1</a>, 
 <a class="el" href="group__platform__util__module.html#gga44ebb4d3ca7fa929da1cd8844abe3e5aae4cee561650dd04394eab8f263a309f3">WIZ_LED2</a>, 
 <a class="el" href="group__platform__util__module.html#gga44ebb4d3ca7fa929da1cd8844abe3e5aa185111175a1c9288f8a1c81d4a0bac3c">WIZ_LED3</a>, 
@@ -137,29 +205,29 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:ga44ebb4d3ca7fa929da1cd8844abe3e5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicate the LED index number.  <a href="group__platform__util__module.html#ga44ebb4d3ca7fa929da1cd8844abe3e5a">More...</a><br/></td></tr>
 <tr class="separator:ga44ebb4d3ca7fa929da1cd8844abe3e5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga10457022393bde4acad9082588317ac3"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__gpio__module.html#ga10457022393bde4acad9082588317ac3">wizpf_gpio_mode</a> { <br/>
-&#160;&#160;<a class="el" href="group__gpio__module.html#gga10457022393bde4acad9082588317ac3a29cbcbfcfcdc7948f32090b8166703d0">WIZ_GPIO_IN_FLOAT</a>, 
-<a class="el" href="group__gpio__module.html#gga10457022393bde4acad9082588317ac3acca2bbe6fa732e1c518bea1cc3de427b">WIZ_GPIO_IN_PULLUP</a>, 
-<a class="el" href="group__gpio__module.html#gga10457022393bde4acad9082588317ac3ad73187e5dd95b6df15b184a9409d32e8">WIZ_GPIO_IN_PULLDOWN</a>, 
-<a class="el" href="group__gpio__module.html#gga10457022393bde4acad9082588317ac3a6c1117b066d569ebd1d6d6735f99b088">WIZ_GPIO_OUT_PUSHPULL</a>, 
+<tr class="memitem:ga620d533a2ccc5296d2f6c8b95bf89fe1"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__gpio__module.html#ga620d533a2ccc5296d2f6c8b95bf89fe1">gpio_mode</a> { <br/>
+&#160;&#160;<a class="el" href="group__gpio__module.html#gga620d533a2ccc5296d2f6c8b95bf89fe1a71c190e0843d36cf39e565f6dfed0d37">GMOD_IN_FLOAT</a>, 
+<a class="el" href="group__gpio__module.html#gga620d533a2ccc5296d2f6c8b95bf89fe1ab00c96ecea9b678360108dd506c9b821">GMOD_IN_PULLUP</a>, 
+<a class="el" href="group__gpio__module.html#gga620d533a2ccc5296d2f6c8b95bf89fe1a68ed372c00af73b11ffcde1302762f72">GMOD_IN_PULLDOWN</a>, 
+<a class="el" href="group__gpio__module.html#gga620d533a2ccc5296d2f6c8b95bf89fe1a0039eefc6db2dd56e7a616f0733cbf08">GMOD_OUT_PUSHPULL</a>, 
 <br/>
-&#160;&#160;<a class="el" href="group__gpio__module.html#gga10457022393bde4acad9082588317ac3a5e509d5a430b12a482d73d0a0d801d80">WIZ_GPIO_OUT_OPENDRAIN</a>
+&#160;&#160;<a class="el" href="group__gpio__module.html#gga620d533a2ccc5296d2f6c8b95bf89fe1a0325acea936be333eddadfc43a86e793">GMOD_OUT_OPENDRAIN</a>
 <br/>
  }</td></tr>
-<tr class="memdesc:ga10457022393bde4acad9082588317ac3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicate the GPIO mode.  <a href="group__gpio__module.html#ga10457022393bde4acad9082588317ac3">More...</a><br/></td></tr>
-<tr class="separator:ga10457022393bde4acad9082588317ac3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:ga620d533a2ccc5296d2f6c8b95bf89fe1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicate the GPIO mode.  <a href="group__gpio__module.html#ga620d533a2ccc5296d2f6c8b95bf89fe1">More...</a><br/></td></tr>
+<tr class="separator:ga620d533a2ccc5296d2f6c8b95bf89fe1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:gafc3928c86d77e2fb74e7c7c1c8c2fc14"><td class="memItemLeft" align="right" valign="top">int8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__platform__util__module.html#gafc3928c86d77e2fb74e7c7c1c8c2fc14">platform_init</a> (void)</td></tr>
-<tr class="memdesc:gafc3928c86d77e2fb74e7c7c1c8c2fc14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize Platform.  <a href="group__platform__util__module.html#gafc3928c86d77e2fb74e7c7c1c8c2fc14">More...</a><br/></td></tr>
-<tr class="separator:gafc3928c86d77e2fb74e7c7c1c8c2fc14"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad6db3ef8be0e2b082d9de1a4b26b1b02"><td class="memItemLeft" align="right" valign="top">int8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__usart__module.html#gad6db3ef8be0e2b082d9de1a4b26b1b02">wizpf_uart_init</a> (<a class="el" href="group__usart__module.html#gad5567b1d409ca72f2aa592f76e673874">wizpf_usart</a> usart)</td></tr>
-<tr class="memdesc:gad6db3ef8be0e2b082d9de1a4b26b1b02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize USART Peripheral Device.  <a href="group__usart__module.html#gad6db3ef8be0e2b082d9de1a4b26b1b02">More...</a><br/></td></tr>
-<tr class="separator:gad6db3ef8be0e2b082d9de1a4b26b1b02"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga569e56b7d7b3c580117c5b41c0264ba0"><td class="memItemLeft" align="right" valign="top">int8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__gpio__module.html#ga569e56b7d7b3c580117c5b41c0264ba0">wizpf_gpio_init</a> (GPIO_TypeDef *GPIOx, uint16 GPIO_Pin, <a class="el" href="group__gpio__module.html#ga10457022393bde4acad9082588317ac3">wizpf_gpio_mode</a> mode)</td></tr>
-<tr class="memdesc:ga569e56b7d7b3c580117c5b41c0264ba0"><td class="mdescLeft">&#160;</td><td class="mdescRight">GPIO configuration.  <a href="group__gpio__module.html#ga569e56b7d7b3c580117c5b41c0264ba0">More...</a><br/></td></tr>
-<tr class="separator:ga569e56b7d7b3c580117c5b41c0264ba0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga91578a7f579e546349fad0f4be724c11"><td class="memItemLeft" align="right" valign="top">int8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__platform__util__module.html#ga91578a7f579e546349fad0f4be724c11">platform_init</a> (<a class="el" href="group__usart__module.html#gad9696159c56572d9d3658454de507245">usart_param</a> *up)</td></tr>
+<tr class="memdesc:ga91578a7f579e546349fad0f4be724c11"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize Platform.  <a href="group__platform__util__module.html#ga91578a7f579e546349fad0f4be724c11">More...</a><br/></td></tr>
+<tr class="separator:ga91578a7f579e546349fad0f4be724c11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae87c49058cd8c5581502daa957d19d61"><td class="memItemLeft" align="right" valign="top">int8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__usart__module.html#gae87c49058cd8c5581502daa957d19d61">wizpf_usart_init</a> (<a class="el" href="group__usart__module.html#gad5567b1d409ca72f2aa592f76e673874">wizpf_usart</a> usart, <a class="el" href="group__usart__module.html#gad9696159c56572d9d3658454de507245">usart_param</a> *param)</td></tr>
+<tr class="memdesc:gae87c49058cd8c5581502daa957d19d61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize USART Peripheral Device.  <a href="group__usart__module.html#gae87c49058cd8c5581502daa957d19d61">More...</a><br/></td></tr>
+<tr class="separator:gae87c49058cd8c5581502daa957d19d61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9e9db15db8c0d41b8b97bf91df85a04e"><td class="memItemLeft" align="right" valign="top">int8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__gpio__module.html#ga9e9db15db8c0d41b8b97bf91df85a04e">wizpf_gpio_init</a> (GPIO_TypeDef *GPIOx, uint16 GPIO_Pin, <a class="el" href="group__gpio__module.html#ga620d533a2ccc5296d2f6c8b95bf89fe1">gpio_mode</a> mode)</td></tr>
+<tr class="memdesc:ga9e9db15db8c0d41b8b97bf91df85a04e"><td class="mdescLeft">&#160;</td><td class="mdescRight">GPIO configuration.  <a href="group__gpio__module.html#ga9e9db15db8c0d41b8b97bf91df85a04e">More...</a><br/></td></tr>
+<tr class="separator:ga9e9db15db8c0d41b8b97bf91df85a04e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9e8436302dfa82d21b8370d36802c072"><td class="memItemLeft" align="right" valign="top">int8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__gpio__module.html#ga9e8436302dfa82d21b8370d36802c072">wizpf_gpio_set</a> (GPIO_TypeDef *GPIOx, uint16 GPIO_Pin, int8 value)</td></tr>
 <tr class="memdesc:ga9e8436302dfa82d21b8370d36802c072"><td class="mdescLeft">&#160;</td><td class="mdescRight">GPIO Set.  <a href="group__gpio__module.html#ga9e8436302dfa82d21b8370d36802c072">More...</a><br/></td></tr>
 <tr class="separator:ga9e8436302dfa82d21b8370d36802c072"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -212,9 +280,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
 <tr class="memitem:ga48d014e129962d4bcb11748606318670"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__platform__util__module.html#ga48d014e129962d4bcb11748606318670">Delay_tick</a> (uint32 tick)</td></tr>
 <tr class="memdesc:ga48d014e129962d4bcb11748606318670"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tick Delay Function.  <a href="group__platform__util__module.html#ga48d014e129962d4bcb11748606318670">More...</a><br/></td></tr>
 <tr class="separator:ga48d014e129962d4bcb11748606318670"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga8780ee8ef61d2f12f92179a43720ec86"><td class="memItemLeft" align="right" valign="top">int32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__usart__module.html#ga8780ee8ef61d2f12f92179a43720ec86">getchar_nonblk</a> (void)</td></tr>
-<tr class="memdesc:ga8780ee8ef61d2f12f92179a43720ec86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get one character from USART1 (None-Blocking).  <a href="group__usart__module.html#ga8780ee8ef61d2f12f92179a43720ec86">More...</a><br/></td></tr>
-<tr class="separator:ga8780ee8ef61d2f12f92179a43720ec86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac2f896bf40bbeba67777f4a098874a5b"><td class="memItemLeft" align="right" valign="top">int32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__usart__module.html#gac2f896bf40bbeba67777f4a098874a5b">getc_nonblk</a> (USART_TypeDef *USARTx)</td></tr>
+<tr class="memdesc:gac2f896bf40bbeba67777f4a098874a5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get one character from USART1 (None-Blocking).  <a href="group__usart__module.html#gac2f896bf40bbeba67777f4a098874a5b">More...</a><br/></td></tr>
+<tr class="separator:gac2f896bf40bbeba67777f4a098874a5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6f8cfdbe7ef1b8507a2755b103f4d004"><td class="memItemLeft" align="right" valign="top">int32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__usart__module.html#ga6f8cfdbe7ef1b8507a2755b103f4d004">putc</a> (int ch, USART_TypeDef *USARTx)</td></tr>
+<tr class="memdesc:ga6f8cfdbe7ef1b8507a2755b103f4d004"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put one character to the USART you want.  <a href="group__usart__module.html#ga6f8cfdbe7ef1b8507a2755b103f4d004">More...</a><br/></td></tr>
+<tr class="separator:ga6f8cfdbe7ef1b8507a2755b103f4d004"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gafe0047c36f89bb9782ed5f32690d13a8"><td class="memItemLeft" align="right" valign="top">int32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__usart__module.html#gafe0047c36f89bb9782ed5f32690d13a8">getc</a> (USART_TypeDef *USARTx)</td></tr>
+<tr class="memdesc:gafe0047c36f89bb9782ed5f32690d13a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get one character from the USART you want.  <a href="group__usart__module.html#gafe0047c36f89bb9782ed5f32690d13a8">More...</a><br/></td></tr>
+<tr class="separator:gafe0047c36f89bb9782ed5f32690d13a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga05be7f220bdf1cc7958872a523b05347"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__usart__module.html#ga05be7f220bdf1cc7958872a523b05347">change_std_usart</a> (USART_TypeDef *USARTx)</td></tr>
+<tr class="memdesc:ga05be7f220bdf1cc7958872a523b05347"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change Standard USART to another.  <a href="group__usart__module.html#ga05be7f220bdf1cc7958872a523b05347">More...</a><br/></td></tr>
+<tr class="separator:ga05be7f220bdf1cc7958872a523b05347"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Platform Utility Common Header File. </p>
@@ -230,7 +307,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Mar 13 2013 16:12:40 for WIZlib Library API by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Mar 20 2013 21:46:20 for WIZlib Library by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

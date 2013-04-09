@@ -344,7 +344,7 @@ int main(void)
 
 	int8 root;
 
-	if(platform_init() != RET_OK) 
+	if(platform_init(NULL) != RET_OK) 
 		goto FAIL_TRAP;
 
 	if(network_init(SOCK_DHCP, NULL, NULL) != RET_OK) {

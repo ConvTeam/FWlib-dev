@@ -37,7 +37,7 @@ static int8 set_dns(menu_ctrl mctrl, int8 *mbuf);
 
 int32 main(void)
 {
-	if(platform_init() != RET_OK) 
+	if(platform_init(NULL) != RET_OK) 
 		goto FAIL_TRAP;
 
 	if(network_init(DHCP_SOCK, NULL, NULL) != RET_OK) {
