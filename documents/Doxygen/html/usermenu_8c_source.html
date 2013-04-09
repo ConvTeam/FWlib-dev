@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.3.1"/>
-<title>WIZlib Library API: usermenu.c Source File</title>
+<title>WIZlib Library: usermenu.c Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -23,10 +23,10 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="wiznet_logo.jpg"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">WIZlib Library API
+   <div id="projectname">WIZlib Library
    &#160;<span id="projectnumber">ver 1.0</span>
    </div>
-   <div id="projectbrief">WIZlib Library API User Menual</div>
+   <div id="projectbrief">WIZlib Library User Menual</div>
   </td>
  </tr>
  </tbody>
@@ -176,7 +176,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    uint8 i, cnt, tmp8;</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keyword">static</span> uint8 depth = 1, buf_len = 0;</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    recv_char = (int8)<a class="code" href="group__usart__module.html#ga8780ee8ef61d2f12f92179a43720ec86" title="Get one character from USART1 (None-Blocking).">getchar_nonblk</a>();</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    recv_char = (int8)<a class="code" href="group__usart__module.html#gac2f896bf40bbeba67777f4a098874a5b" title="Get one character from USART1 (None-Blocking).">getc_nonblk</a>(USART1);</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    <span class="keywordflow">if</span>(recv_char == <a class="code" href="types_8h.html#a99e73667f3ffd6ea8c3a732a82dc3116" title="Error return value.">RET_NOK</a>) <span class="keywordflow">return</span>;    <span class="comment">//printf(&quot;RECV: 0x%x\r\n&quot;, recv_char);</span></div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;</div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keywordflow">if</span>(isgraph(recv_char) == 0) {   <span class="comment">//printf(&quot;ctrl\r\n&quot;);</span></div>
@@ -189,7 +189,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        <span class="keywordflow">case</span> 0x20:          <span class="comment">//printf(&quot;&lt;SP&gt;\r\n&quot;);</span></div>
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;            buf[buf_len] = 0;</div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;            printf(<span class="stringliteral">&quot;\r\n&quot;</span>);</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;            <span class="keywordflow">for</span>(i=0; i&lt;depth; i++) PUTCHAR(&#39;&gt;<span class="stringliteral">&#39;);</span></div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;            <span class="keywordflow">for</span>(i=0; i&lt;depth; i++) putc(&#39;&gt;<span class="stringliteral">&#39;, USART1);</span></div>
 <div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="stringliteral">            printf(&quot; %s&quot;, buf);</span></div>
 <div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;<span class="stringliteral">            break;</span></div>
 <div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;<span class="stringliteral">        case 0x08:          //printf(&quot;&lt;BS&gt;\r\n&quot;);</span></div>
@@ -216,7 +216,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;<span class="stringliteral"></span></div>
 <div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="stringliteral">    } else if(buf_len &lt; CMD_BUF_SIZE-1){</span></div>
 <div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;<span class="stringliteral">        buf[buf_len++] = (uint8_t)recv_char;    //buf[buf_len] = 0;</span></div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;<span class="stringliteral">        PUTCHAR(recv_char); //printf(&quot; buf(%c, %s)\r\n&quot;, recv_char, buf);</span></div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;<span class="stringliteral">        putc(recv_char, USART1);    //printf(&quot; buf(%c, %s)\r\n&quot;, recv_char, buf);</span></div>
 <div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;<span class="stringliteral">    } else {</span></div>
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;<span class="stringliteral">        printf(&quot;input buffer stuffed\r\n&quot;);</span></div>
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;<span class="stringliteral">    }</span></div>
@@ -305,8 +305,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;<span class="stringliteral">    memset(buf, 0, CMD_BUF_SIZE);</span></div>
 <div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;<span class="stringliteral">    buf_len = 0;</span></div>
 <div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;<span class="stringliteral">    printf(&quot;\r\n&quot;);</span></div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;<span class="stringliteral">    for(i=0; i&lt;depth; i++) PUTCHAR(&#39;</span>&gt;<span class="stringliteral">&#39;);</span></div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;<span class="stringliteral">    PUTCHAR(&#39;</span> <span class="stringliteral">&#39;);</span></div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;<span class="stringliteral">    for(i=0; i&lt;depth; i++) putc(&#39;</span>&gt;<span class="stringliteral">&#39;, USART1);</span></div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;<span class="stringliteral">    putc(&#39;</span> <span class="stringliteral">&#39;, USART1);</span></div>
 <div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;<span class="stringliteral"></span></div>
 <div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;<span class="stringliteral">}</span></div>
 <div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;<span class="stringliteral"></span></div>
@@ -314,7 +314,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Mar 13 2013 16:12:39 for WIZlib Library API by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Mar 20 2013 21:46:19 for WIZlib Library by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

@@ -115,6 +115,7 @@ void network_disp(wiz_NetInfo *netinfo)
  * When @ref sockwatch_run function detected a event, \n
  * this callback function will be called.
  * 
+ * @ingroup sockwatch_module
  * @param sock The socket number which is corresponding to 'cb' param
  * @param cb The callback function to be called when \n 
  * 		the socket has any completion or event.
@@ -137,6 +138,7 @@ int8 sockwatch_open(uint8 sock, watch_cbfunc cb)
 /**
  * Remove callback function from a socket and Stop to watch all event.
  *
+ * @ingroup sockwatch_module
  * @param sock The socket number to close
  * @return RET_OK: Success
  * @return RET_NOK: Error
@@ -161,6 +163,7 @@ int8 sockwatch_close(uint8 sock)
  * you have to register events for watching that using this function.
  * It is possible to set plural item of event at the same time.
  *
+ * @ingroup sockwatch_module
  * @param sock The socket number to watch
  * @param item The item of event to watch
  * @return RET_OK: Success
@@ -184,6 +187,7 @@ int8 sockwatch_set(uint8 sock, uint8 item)
  * @ref sockwatch_run stop to detect the item on the socket.
  * It is possible to set plural item of event at the same time.
  *
+ * @ingroup sockwatch_module
  * @param sock The socket number to clear
  * @param item The item of event to clear
  * @return RET_OK: Success
@@ -205,6 +209,7 @@ int8 sockwatch_clr(uint8 sock, uint8 item)
 /**
  * Check a item of event has been set on the socket.
  *
+ * @ingroup sockwatch_module
  * @param sock The socket number to clear
  * @param item The item of event to clear
  * @return RET_OK: There is the item queried on the socket.
@@ -221,6 +226,7 @@ int8 sockwatch_chk(uint8 sock, uint8 item)
 /**
  * Sockwatch Module Handler
  * If you use Sockwatch Module, this should run in the main loop
+ * @ingroup sockwatch_module
  */
 void sockwatch_run(void)
 {

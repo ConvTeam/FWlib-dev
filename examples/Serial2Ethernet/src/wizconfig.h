@@ -27,7 +27,7 @@
 #define DEFAULT_DNS_ADDR	"168.126.63.1"
 
 //------------------------------ Etc ------------------------------
-#define WIZ_LOG_LEVEL	3//0		// 0: No print,  1: Error,  2: Error+Log,  3: Error+Log+Debug
+#define WIZ_LOG_LEVEL	0		// 0: No print,  1: Error,  2: Error+Log,  3: Error+Log+Debug
 //#define PRINT_TIME_LOG
 
 #endif
