@@ -35,11 +35,11 @@ struct menu_info {
 	bool software_input;
 };
 
-#if   (MENU_DISP_MODE == 0)
+#if   defined(MENU_DISP_MODE) && (MENU_DISP_MODE == 0)
 static const int8 disp_mode = umdm_none;
-#elif (MENU_DISP_MODE == 1)
+#elif defined(MENU_DISP_MODE) && (MENU_DISP_MODE == 1)
 static const int8 disp_mode = umdm_min;
-#elif (MENU_DISP_MODE == 2) || !defined(MENU_DISP_MODE)
+#else
 static const int8 disp_mode = umdm_max;
 #endif
 struct menu_item mtree[MAX_MENU_COUNT];

@@ -162,7 +162,8 @@ int8 send_mail(uint8 s, uint8 *sender, uint8 *passwd,
 	}
 
 	TCPClose(s);
-	while(getSn_SR(s) != SOCK_CLOSED);
+	//while(getSn_SR(s) != SOCK_CLOSED);
+    while(GetTCPSocketStatus(s) != SOCKSTAT_CLOSED);
 
 	return(ret);
 }

@@ -12,7 +12,7 @@
           
           
           
-        <Column0>231</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+        <Column0>595</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
       </Workspace>
       <Build>
         
@@ -20,11 +20,11 @@
         
         
       <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>650</ColumnWidth1><ColumnWidth2>182</ColumnWidth2><ColumnWidth3>45</ColumnWidth3></Build>
-    </Static>
+    <Find-in-Files><ColumnWidth0>507</ColumnWidth0><ColumnWidth1>72</ColumnWidth1><ColumnWidth2>870</ColumnWidth2></Find-in-Files></Static>
     <Windows>
       
       
-    <Wnd0>
+    <Wnd2>
         <Tabs>
           <Tab>
             <Identity>TabID-3786-3409</Identity>
@@ -32,11 +32,11 @@
             <Factory>Workspace</Factory>
             <Session>
               
-            <NodeDict><ExpandedNode>SMTPwithDHCP</ExpandedNode><ExpandedNode>SMTPwithDHCP/Library</ExpandedNode><ExpandedNode>SMTPwithDHCP/User</ExpandedNode></NodeDict></Session>
+            <NodeDict><ExpandedNode>SMTPwithDHCP</ExpandedNode><ExpandedNode>SMTPwithDHCP/Library</ExpandedNode><ExpandedNode>SMTPwithDHCP/Library/appmod</ExpandedNode><ExpandedNode>SMTPwithDHCP/Library/protocol</ExpandedNode><ExpandedNode>SMTPwithDHCP/User</ExpandedNode></NodeDict></Session>
           </Tab>
         </Tabs>
         
-      <SelectedTab>0</SelectedTab></Wnd0><Wnd1>
+      <SelectedTab>0</SelectedTab></Wnd2><Wnd3>
         <Tabs>
           <Tab>
             <Identity>TabID-30490-6593</Identity>
@@ -44,22 +44,22 @@
             <Factory>Build</Factory>
             <Session/>
           </Tab>
-        </Tabs>
+        <Tab><Identity>TabID-24040-23491</Identity><TabName>Find in Files</TabName><Factory>Find-in-Files</Factory><Session/></Tab></Tabs>
         
-      <SelectedTab>0</SelectedTab></Wnd1></Windows>
+      <SelectedTab>0</SelectedTab></Wnd3></Windows>
     <Editor>
       
       
       
       
-    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\src\main.c</Filename><XPos>0</XPos><YPos>33</YPos><SelStart>1077</SelStart><SelEnd>1077</SelEnd></Tab><ActiveTab>0</ActiveTab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\src\main.c</Filename><XPos>0</XPos><YPos>33</YPos><SelStart>1180</SelStart><SelEnd>1180</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\library\appmod\usermenu\usermenu.c</Filename><XPos>0</XPos><YPos>48</YPos><SelStart>1026</SelStart><SelEnd>1026</SelEnd></Tab><ActiveTab>1</ActiveTab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
     <Positions>
       
       
       
       
       
-    <Top><Row0><Sizes><Toolbar-0138c8e0><key>iaridepm.enu1</key></Toolbar-0138c8e0></Sizes></Row0></Top><Left><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>552</Bottom><Right>305</Right><x>-2</x><y>-2</y><xscreen>186</xscreen><yscreen>109</yscreen><sizeHorzCX>211845</sizeHorzCX><sizeHorzCY>139744</sizeHorzCY><sizeVertCX>349658</sizeVertCX><sizeVertCY>710256</sizeVertCY></Rect></Wnd0></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>183</Bottom><Right>880</Right><x>-2</x><y>-2</y><xscreen>882</xscreen><yscreen>185</yscreen><sizeHorzCX>1004556</sizeHorzCX><sizeHorzCY>237179</sizeHorzCY><sizeVertCX>211845</sizeVertCX><sizeVertCY>139744</sizeVertCY></Rect></Wnd1></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+    <Top><Row0><Sizes><Toolbar-01290af8><key>iaridepm.enu1</key></Toolbar-01290af8></Sizes></Row0></Top><Left><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>700</Bottom><Right>669</Right><x>-2</x><y>-2</y><xscreen>407</xscreen><yscreen>141</yscreen><sizeHorzCX>276307</sizeHorzCX><sizeHorzCY>143585</sizeHorzCY><sizeVertCX>455533</sizeVertCX><sizeVertCY>714868</sizeVertCY></Rect></Wnd2></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>237</Bottom><Right>1475</Right><x>-2</x><y>-2</y><xscreen>1477</xscreen><yscreen>239</yscreen><sizeHorzCX>1002716</sizeHorzCX><sizeHorzCY>243381</sizeHorzCY><sizeVertCX>276307</sizeVertCX><sizeVertCY>143585</sizeVertCY></Rect></Wnd3></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
   </Desktop>
 </Workspace>
 

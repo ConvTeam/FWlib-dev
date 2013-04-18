@@ -14,8 +14,8 @@
 //#include "host/wizplatform.h"
 
 
-#define USART1_RX_INTERRUPT VAL_DISABLE//VAL_ENABLE
-#define USART2_RX_INTERRUPT VAL_DISABLE//VAL_ENABLE
+#define USART1_RX_INTERRUPT VAL_ENABLE
+#define USART2_RX_INTERRUPT VAL_ENABLE
 #define SYSTICK_HZ			1000
 #define GPIO_INIT_SIMP(mode_v, port_p, pin_p) do { \
 	GPIO_InitTypeDef GPIO_InitStructure; \
