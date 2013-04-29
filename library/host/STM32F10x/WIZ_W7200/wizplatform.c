@@ -14,8 +14,8 @@
 //#include "host/wizplatform.h"
 
 
-#define USART1_RX_INTERRUPT VAL_DISABLE//VAL_ENABLE
-#define USART2_RX_INTERRUPT VAL_DISABLE//VAL_ENABLE
+#define USART1_RX_INTERRUPT VAL_ENABLE
+#define USART2_RX_INTERRUPT VAL_ENABLE
 #define SYSTICK_HZ			1000
 #define GPIO_INIT_SIMP(mode_v, port_p, pin_p) do { \
 	GPIO_InitTypeDef GPIO_InitStructure; \
@@ -248,12 +248,22 @@ int8 wizpf_gpio_init(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin, gpio_mode mode)
 
 int8 wizpf_gpio_set(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin, int8 value)
 {
-	return RET_NOK;
+	if(value == VAL_HIGH) {
+		GPIO_SetBits(GPIOx, GPIO_Pin);
+	} else if(value == VAL_LOW) {
+		GPIO_ResetBits(GPIOx, GPIO_Pin);
+	} else if(value == VAL_TOG) {
+		GPIOx->ODR ^= GPIO_Pin;
+	} else return RET_NOK;
+
+	return RET_OK;
 }
 
-int8 wizpf_gpio_get(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin)
+int8 wizpf_gpio_get(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin, int8 isOutput)
 {
-	return RET_NOK;
+	if(isOutput == VAL_TRUE)
+		return GPIO_ReadOutputDataBit(GPIOx, GPIO_Pin)==Bit_SET? VAL_HIGH: VAL_LOW;
+	else return GPIO_ReadInputDataBit(GPIOx, GPIO_Pin)==Bit_SET? VAL_HIGH: VAL_LOW;
 }
 
 int8 wizpf_timer_init(void)

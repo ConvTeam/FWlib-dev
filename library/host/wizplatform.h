@@ -145,7 +145,7 @@ int8 platform_init(usart_param *up);
 int8 wizpf_usart_init(wizpf_usart usart, usart_param *param);
 int8 wizpf_gpio_init(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin, gpio_mode mode);
 int8 wizpf_gpio_set(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin, int8 value);
-int8 wizpf_gpio_get(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin);
+int8 wizpf_gpio_get(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin, int8 isOutput);
 int8 wizpf_timer_init(void);
 uint32 wizpf_get_systick(void);
 uint32 wizpf_tick_conv(bool istick2sec, uint32 tickorsec);

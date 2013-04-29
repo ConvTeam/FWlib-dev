@@ -51,7 +51,7 @@ int32 main(void)
 	LOG("-----------------------------------");
 	NL2;
 
-	Delay_tick(2000);	// prevent first send fail
+	Delay_tick(3000);	// prevent first send fail
 
 //###########################################################################
 #if (DHCP_MODE == DHCP_NONE)
