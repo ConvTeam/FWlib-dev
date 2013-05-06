@@ -15,6 +15,8 @@
 #include "protocol/DHCP/dhcp.h"
 #endif
 
+#define DHCP_FAIL_POLICY		0	// 0: Keep trying without break,  1: Set it as static for a moment then try again
+
 #define	DHCP_SERVER_PORT		67	// from server to client
 #define DHCP_CLIENT_PORT		68	// from client to server
 
@@ -630,12 +632,17 @@ static void dhcp_fail(void)
 	LOG("DHCP Fail - set temp addr");
 	di.action = DHCP_ACT_NONE;
 	SET_STATE(DHCP_STATE_FAILED);
+#if (DHCP_FAIL_POLICY == 1)
 	memcpy(&workinfo, &storage, sizeof(storage));
 	memset(workinfo.mac, 0, 6);
 	SetNetInfo(&workinfo);
 	network_disp(NULL);
 	if(dhcp_alarm) 
 		alarm_set(DHCP_START_RETRY_DELAY, dhcp_alarm_cb, 0);
+#else
+	if(dhcp_alarm) 
+		alarm_set(DHCP_RETRY_DELAY, dhcp_alarm_cb, 0);
+#endif
 	//send_checker_NB();
 }
 

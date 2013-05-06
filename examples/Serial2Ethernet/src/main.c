@@ -6,6 +6,11 @@
 
 #define ASSIST_SOCK		0
 
+void dhcp_trigger(int8 arg)
+{
+	dhcp_auto_start();
+}
+
 int32 main(void)
 {
 	if(platform_init(NULL) != RET_OK) 
@@ -22,9 +27,8 @@ int32 main(void)
 	LOG("-----------------------------------");
 	NL2;
 
-	Delay_tick(2000);	// prevent first send fail
-	dhcp_auto_start();
 	atc_init();
+	alarm_set(2000, dhcp_trigger, 0);	//dhcp_auto_start();
 
 	while(1) {
 		atc_run();

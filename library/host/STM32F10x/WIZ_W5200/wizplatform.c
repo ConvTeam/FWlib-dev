@@ -17,13 +17,6 @@
 #define USART1_RX_INTERRUPT VAL_ENABLE
 #define USART2_RX_INTERRUPT VAL_ENABLE
 #define SYSTICK_HZ			1000
-#define GPIO_INIT_SIMP(mode_v, port_p, pin_p) do { \
-	GPIO_InitTypeDef GPIO_InitStructure; \
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; \
-	GPIO_InitStructure.GPIO_Mode = mode_v; \
-	GPIO_InitStructure.GPIO_Pin =  pin_p; \
-	GPIO_Init(port_p, &GPIO_InitStructure); \
-} while(0)
 
 extern void EXTI_IMR_EMR_enable(void);
 
@@ -118,6 +111,149 @@ int8 platform_init(usart_param *up)
 	return RET_OK;
 }
 
+void GPIO_Configuration(void)
+{
+	{
+	GPIO_InitTypeDef GPIO_InitStructure;
+	GPIO_StructInit(&GPIO_InitStructure);	// Set all as default
+	GPIO_Init(PORTA, &GPIO_InitStructure);
+	GPIO_Init(PORTB, &GPIO_InitStructure);
+	GPIO_Init(PORTC, &GPIO_InitStructure);
+	}
+
+#ifdef LED1_PIN
+	wizpf_gpio_init(LED1_PORT, LED1_PIN, GMOD_OUT_PUSHPULL);
+	wizpf_led_set(WIZ_LED1, VAL_OFF);
+#endif
+#ifdef LED2_PIN
+	wizpf_gpio_init(LED2_PORT, LED2_PIN, GMOD_OUT_PUSHPULL);
+	wizpf_led_set(WIZ_LED2, VAL_OFF);
+#endif
+#ifdef WIZ_RESET_PIN
+	wizpf_gpio_init(WIZ_RESET_PORT, WIZ_RESET_PIN, GMOD_OUT_PUSHPULL);
+	GPIO_SetBits(WIZ_RESET_PORT, WIZ_RESET_PIN);
+#endif
+#ifdef WIZ_PWDN_PIN
+	wizpf_gpio_init(WIZ_PWDN_PORT, WIZ_PWDN_PIN, GMOD_OUT_PUSHPULL);
+	GPIO_ResetBits(WIZ_PWDN_PORT, WIZ_PWDN_PIN);
+#endif
+#ifdef WIZ_INT_PIN
+	wizpf_gpio_init(WIZ_INT_PORT, WIZ_INT_PIN, GMOD_IN_PULLUP);	// For IIN Chip EXTI
+#endif
+
+	// ToDo
+
+}
+
+void RCC_Configuration(void)
+{
+	ErrorStatus HSEStartUpStatus;
+
+	RCC_DeInit();				/* RCC system reset(for debug purpose) */
+	RCC_HSEConfig(RCC_HSE_ON);	/* Enable HSE */
+	HSEStartUpStatus = RCC_WaitForHSEStartUp();	/* Wait till HSE is ready */
+
+	if(HSEStartUpStatus == SUCCESS)
+	{
+		FLASH_PrefetchBufferCmd(FLASH_PrefetchBuffer_Enable);	/* Enable Prefetch Buffer */
+		FLASH_SetLatency(FLASH_Latency_2);	/* Flash 2 wait state */
+		RCC_HCLKConfig(RCC_SYSCLK_Div1);	/* HCLK = SYSCLK */
+		RCC_PCLK2Config(RCC_HCLK_Div1);		/* PCLK2 = HCLK */
+		RCC_PCLK1Config(RCC_HCLK_Div2);		/* PCLK1 = HCLK/2 */
+		RCC_PLLConfig(RCC_PLLSource_HSE_Div1, RCC_PLLMul_9);	/* PLLCLK = 8MHz * 9 = 72 MHz */
+		RCC_PLLCmd(ENABLE);	/* Enable PLL */
+
+		while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET) {}	/* Wait till PLL is ready */
+		RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);	/* Select PLL as system clock source */
+		while(RCC_GetSYSCLKSource() != 0x08) {}		/* Wait till PLL is used as system clock source */
+	}
+
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+	//RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);	// For IIN Chip EXTI
+}
+
+void NVIC_Configuration(void)
+{
+#ifdef VECT_TAB_RAM
+	/* Set the Vector Table base location at 0x20000000 */
+	NVIC_SetVectorTable(NVIC_VectTab_RAM, 0x0);
+#else /* VECT_TAB_FLASH */
+	/* Set the Vector Table base location at 0x08000000 */
+	NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x0);
+#endif
+
+	/* Configure one bit for preemption priority */
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
+
+
+	// ToDo
+
+}
+
+void device_HW_reset(void)
+{
+#ifdef WIZ_RESET_PIN
+	GPIO_ResetBits(WIZ_RESET_PORT, WIZ_RESET_PIN);
+	Delay_us(8);
+	GPIO_SetBits(WIZ_RESET_PORT, WIZ_RESET_PIN);
+	Delay_ms(50);
+#endif
+}
+
+void Delay_us(uint8 time_us)
+{
+	register uint8 i, j;
+
+	for(i=0; i<time_us; i++) {
+		for(j=0; j<5; j++) {	// 25CLK
+			asm("nop");	//1CLK         
+			asm("nop");	//1CLK         
+			asm("nop");	//1CLK         
+			asm("nop");	//1CLK         
+			asm("nop");	//1CLK                  
+		}      
+	}					// 25CLK*0.04us=1us
+}
+
+void Delay_ms(uint16 time_ms)
+{
+	register uint16 i;
+
+	for(i=0; i<time_ms; i++) {
+		Delay_us(250);
+		Delay_us(250);
+		Delay_us(250);
+		Delay_us(250);
+	}
+}
+
+void Delay_tick(uint32 tick)
+{
+	uint32_t curTicks = msTicks;
+
+	while(msTicks - curTicks < tick);
+}
+
+uint32 wizpf_get_systick(void)
+{
+	return msTicks;
+}
+
+uint32 wizpf_tick_conv(bool istick2sec, uint32 tickorsec)
+{
+	if(istick2sec) return tickorsec / SYSTICK_HZ;	// tick to seconds
+	else return tickorsec * SYSTICK_HZ;	// seconds to tick
+}
+
+int32 wizpf_tick_elapse(uint32 tick)	// + Elapsed time, - Remaining time
+{
+	uint32 cur = wizpf_get_systick();
+
+	return cur - tick;
+}
+
 int8 wizpf_usart_init(wizpf_usart usart, usart_param *param)
 {
 	USART_TypeDef *usartx;
@@ -127,16 +263,16 @@ int8 wizpf_usart_init(wizpf_usart usart, usart_param *param)
 	case WIZ_USART1:
 		RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
 #ifdef USART1_TX_PIN
-		GPIO_INIT_SIMP(GPIO_Mode_AF_PP, USART1_TX_PORT, USART1_TX_PIN);
+		wizpf_gpio_init(USART1_TX_PORT, USART1_TX_PIN, GMOD_AF_PUSHPULL);
 #endif
 #ifdef USART1_RX_PIN
-		GPIO_INIT_SIMP(GPIO_Mode_IN_FLOATING, USART1_RX_PORT, USART1_RX_PIN);
+		wizpf_gpio_init(USART1_RX_PORT, USART1_RX_PIN, GMOD_IN_FLOAT);
 #endif
 #ifdef USART1_RTS_PIN
-		GPIO_INIT_SIMP(GPIO_Mode_AF_PP, USART1_RTS_PORT, USART1_RTS_PIN);
+		wizpf_gpio_init(USART1_RTS_PORT, USART1_RTS_PIN, GMOD_AF_PUSHPULL);
 #endif
 #ifdef USART1_CTS_PIN
-		GPIO_INIT_SIMP(GPIO_Mode_IN_FLOATING, USART1_CTS_PORT, USART1_CTS_PIN);
+		wizpf_gpio_init(USART1_CTS_PORT, USART1_CTS_PIN, GMOD_IN_FLOAT);
 #endif
 #if (USART1_RX_INTERRUPT == VAL_ENABLE)
 {		NVIC_InitTypeDef NVIC_InitStructure;
@@ -151,16 +287,16 @@ int8 wizpf_usart_init(wizpf_usart usart, usart_param *param)
 	case WIZ_USART2:
 		RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
 #ifdef USART2_TX_PIN
-		GPIO_INIT_SIMP(GPIO_Mode_AF_PP, USART2_TX_PORT, USART2_TX_PIN);
+		wizpf_gpio_init(USART2_TX_PORT, USART2_TX_PIN, GMOD_AF_PUSHPULL);
 #endif
 #ifdef USART2_RX_PIN
-		GPIO_INIT_SIMP(GPIO_Mode_IN_FLOATING, USART2_RX_PORT, USART2_RX_PIN);
+		wizpf_gpio_init(USART2_RX_PORT, USART2_RX_PIN, GMOD_IN_FLOAT);
 #endif
 #ifdef USART2_RTS_PIN
-		GPIO_INIT_SIMP(GPIO_Mode_AF_PP, USART2_RTS_PORT, USART2_RTS_PIN);
+		wizpf_gpio_init(USART2_RTS_PORT, USART2_RTS_PIN, GMOD_AF_PUSHPULL);
 #endif
 #ifdef USART2_CTS_PIN
-		GPIO_INIT_SIMP(GPIO_Mode_IN_FLOATING, USART2_CTS_PORT, USART2_CTS_PIN);
+		wizpf_gpio_init(USART2_CTS_PORT, USART2_CTS_PIN, GMOD_IN_FLOAT);
 #endif
 #if (USART2_RX_INTERRUPT == VAL_ENABLE)
 {		NVIC_InitTypeDef NVIC_InitStructure;
@@ -177,6 +313,8 @@ int8 wizpf_usart_init(wizpf_usart usart, usart_param *param)
 	default:
 		return RET_NOK;
 	}
+
+	USART_Cmd(usartx, DISABLE);
 
 	USART_InitStructure.USART_BaudRate = param->baudrate;
 	switch(param->wordlen) {
@@ -212,79 +350,6 @@ int8 wizpf_usart_init(wizpf_usart usart, usart_param *param)
 	USART_Cmd(usartx, ENABLE);
 
 	return RET_OK;
-}
-
-int8 wizpf_gpio_init(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin, gpio_mode mode)
-{
-	GPIO_InitTypeDef GPIO_InitStructure;
-
-	switch(mode) {
-	case GMOD_IN_FLOAT:
-		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-		break;
-	case GMOD_IN_PULLUP:
-		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-		break;
-	case GMOD_IN_PULLDOWN:
-		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
-		break;
-	case GMOD_OUT_PUSHPULL:
-		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-		break;
-	case GMOD_OUT_OPENDRAIN:
-		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
-		break;
-	default:
-		ERRA("GPIO Mode(%d) is not allowed", mode);
-		return RET_NOK;
-	}
-
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin;
-	GPIO_Init(GPIOx, &GPIO_InitStructure);
-
-	return RET_OK;
-}
-
-int8 wizpf_gpio_set(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin, int8 value)
-{
-	return RET_NOK;
-}
-
-int8 wizpf_gpio_get(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin)
-{
-	return RET_NOK;
-}
-
-int8 wizpf_timer_init(void)
-{
-	ERR("Timer is not implemented yet");
-	return RET_NOK;
-	//RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);	/* TIM2 clock enable */
-	/* Enable the TIM2 global Interrupt */
-	//NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
-	//NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-	//NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-	//NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	//NVIC_Init(&NVIC_InitStructure);
-}
-
-uint32 wizpf_get_systick(void)
-{
-	return msTicks;
-}
-
-uint32 wizpf_tick_conv(bool istick2sec, uint32 tickorsec)
-{
-	if(istick2sec) return tickorsec / SYSTICK_HZ;	// tick to seconds
-	else return tickorsec * SYSTICK_HZ;	// seconds to tick
-}
-
-int32 wizpf_tick_elapse(uint32 tick)	// + Elapsed time, - Remaining time
-{
-	uint32 cur = wizpf_get_systick();
-
-	return cur - tick;
 }
 
 int8 wizpf_led_set(wizpf_led led, uint8 action)
@@ -388,131 +453,156 @@ void wizpf_led_trap(uint8 repeat)
 #endif
 }
 
-void device_HW_reset(void)
+int8 wizpf_gpio_init(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin, gpio_mode mode)
 {
-#ifdef WIZ_RESET_PIN
-	GPIO_ResetBits(WIZ_RESET_PORT, WIZ_RESET_PIN);
-	Delay_us(8);
-	GPIO_SetBits(WIZ_RESET_PORT, WIZ_RESET_PIN);
-	Delay_ms(50);
-#endif
-}
-
-void GPIO_Configuration(void)
-{
-	{
 	GPIO_InitTypeDef GPIO_InitStructure;
-	GPIO_StructInit(&GPIO_InitStructure);	// Set all as default
-	GPIO_Init(PORTA, &GPIO_InitStructure);
-	GPIO_Init(PORTB, &GPIO_InitStructure);
-	GPIO_Init(PORTC, &GPIO_InitStructure);
+
+	switch(mode) {
+	case GMOD_IN_FLOAT:
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+		break;
+	case GMOD_IN_PULLUP:
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+		break;
+	case GMOD_IN_PULLDOWN:
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
+		break;
+	case GMOD_OUT_PUSHPULL:
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+		break;
+	case GMOD_OUT_OPENDRAIN:
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
+		break;
+	case GMOD_AF_PUSHPULL:
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+		break;
+	case GMOD_AF_OPENDRAIN:
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_OD;
+		break;
+	default:
+		ERRA("GPIO Mode(%d) is not allowed", mode);
+		return RET_NOK;
 	}
 
-#ifdef LED1_PIN
-	GPIO_INIT_SIMP(GPIO_Mode_Out_PP, LED1_PORT, LED1_PIN);
-	wizpf_led_set(WIZ_LED1, VAL_OFF);
-#endif
-#ifdef LED2_PIN
-	GPIO_INIT_SIMP(GPIO_Mode_Out_PP, LED2_PORT, LED2_PIN);
-	wizpf_led_set(WIZ_LED2, VAL_OFF);
-#endif
-#ifdef WIZ_RESET_PIN
-	GPIO_INIT_SIMP(GPIO_Mode_Out_PP, WIZ_RESET_PORT, WIZ_RESET_PIN);
-	GPIO_SetBits(WIZ_RESET_PORT, WIZ_RESET_PIN);
-#endif
-#ifdef WIZ_PWDN_PIN
-	GPIO_INIT_SIMP(GPIO_Mode_Out_PP, WIZ_PWDN_PORT, WIZ_PWDN_PIN);
-	GPIO_ResetBits(WIZ_PWDN_PORT, WIZ_PWDN_PIN);
-#endif
-#ifdef WIZ_INT_PIN
-	GPIO_INIT_SIMP(GPIO_Mode_IPU, WIZ_INT_PORT, WIZ_INT_PIN);	// For IIN Chip EXTI
-#endif
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin;
+	GPIO_Init(GPIOx, &GPIO_InitStructure);
 
-	// ToDo
-
+	return RET_OK;
 }
 
-void RCC_Configuration(void)
+int8 wizpf_gpio_set(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin, int8 value)
 {
-	ErrorStatus HSEStartUpStatus;
+	if(value == VAL_HIGH) {
+		GPIO_SetBits(GPIOx, GPIO_Pin);
+	} else if(value == VAL_LOW) {
+		GPIO_ResetBits(GPIOx, GPIO_Pin);
+	} else if(value == VAL_TOG) {
+		GPIOx->ODR ^= GPIO_Pin;
+	} else return RET_NOK;
 
-	RCC_DeInit();				/* RCC system reset(for debug purpose) */
-	RCC_HSEConfig(RCC_HSE_ON);	/* Enable HSE */
-	HSEStartUpStatus = RCC_WaitForHSEStartUp();	/* Wait till HSE is ready */
+	return RET_OK;
+}
 
-	if(HSEStartUpStatus == SUCCESS)
-	{
-		FLASH_PrefetchBufferCmd(FLASH_PrefetchBuffer_Enable);	/* Enable Prefetch Buffer */
-		FLASH_SetLatency(FLASH_Latency_2);	/* Flash 2 wait state */
-		RCC_HCLKConfig(RCC_SYSCLK_Div1);	/* HCLK = SYSCLK */
-		RCC_PCLK2Config(RCC_HCLK_Div1);		/* PCLK2 = HCLK */
-		RCC_PCLK1Config(RCC_HCLK_Div2);		/* PCLK1 = HCLK/2 */
-		RCC_PLLConfig(RCC_PLLSource_HSE_Div1, RCC_PLLMul_9);	/* PLLCLK = 8MHz * 9 = 72 MHz */
-		RCC_PLLCmd(ENABLE);	/* Enable PLL */
+int8 wizpf_gpio_get(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin, int8 isOutput)
+{
+	if(isOutput == VAL_TRUE)
+		return GPIO_ReadOutputDataBit(GPIOx, GPIO_Pin)==Bit_SET? VAL_HIGH: VAL_LOW;
+	else return GPIO_ReadInputDataBit(GPIOx, GPIO_Pin)==Bit_SET? VAL_HIGH: VAL_LOW;
+}
 
-		while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET) {}	/* Wait till PLL is ready */
-		RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);	/* Select PLL as system clock source */
-		while(RCC_GetSYSCLKSource() != 0x08) {}		/* Wait till PLL is used as system clock source */
+int8 wizpf_timer_init(void)
+{
+	ERR("Timer is not implemented yet");
+	return RET_NOK;
+	//RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);	/* TIM2 clock enable */
+	/* Enable the TIM2 global Interrupt */
+	//NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
+	//NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+	//NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+	//NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	//NVIC_Init(&NVIC_InitStructure);
+}
+
+int8 wizpf_rtc_init(void)
+{
+	ERR("Timer is not implemented yet");
+	return RET_NOK;
+}
+
+int8 wizpf_rtc_set(void)
+{
+	ERR("Timer is not implemented yet");
+	return RET_NOK;
+}
+
+int8 wizpf_rtc_get(void)
+{
+	ERR("Timer is not implemented yet");
+	return RET_NOK;
+}
+
+int8 wizpf_flash_erase(uint32 addr)
+{
+	FLASH_Status ret;
+	DBG("Flash Erase");
+
+	FLASH_Unlock();
+	ret = FLASH_ErasePage(addr);
+	FLASH_Lock();
+	if(ret != FLASH_COMPLETE) return RET_NOK;
+		
+	return RET_OK;
+}
+
+uint8* wizpf_flash_read(uint32 addr, uint8 *data, uint16 len)
+{
+	DBGA("Flash Read - Addr(0x%x),Len(%d)", addr, len);
+
+	if(data != NULL) memcpy(data, (uint8*)addr, len);
+
+	return (uint8*)addr;
+}
+
+int8 wizpf_flash_write(uint32 addr, const uint8 *data, uint16 len)
+{
+	FLASH_Status ret;
+	uint16 word, left;
+	DBGA("Flash Write - Addr(0x%x),Len(%d)", addr, len);
+
+	if(addr&0x3 != 0 || len == 0) {
+		ERR("Address should be 4-byte aligned, Length should not be zero");
+		return RET_NOK;	// 4 byte alignment
 	}
 
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-	//RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);	// For IIN Chip EXTI
-}
+	word = len / 4;
+	left = len % 4;
 
-void NVIC_Configuration(void)
-{
-#ifdef VECT_TAB_RAM
-	/* Set the Vector Table base location at 0x20000000 */
-	NVIC_SetVectorTable(NVIC_VectTab_RAM, 0x0);
-#else /* VECT_TAB_FLASH */
-	/* Set the Vector Table base location at 0x08000000 */
-	NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x0);
-#endif
-
-	/* Configure one bit for preemption priority */
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
-
-
-	// ToDo
-
-}
-
-void Delay_us(uint8 time_us)
-{
-	register uint8 i, j;
-
-	for(i=0; i<time_us; i++) {
-		for(j=0; j<5; j++) {	// 25CLK
-			asm("nop");	//1CLK         
-			asm("nop");	//1CLK         
-			asm("nop");	//1CLK         
-			asm("nop");	//1CLK         
-			asm("nop");	//1CLK                  
-		}      
-	}					// 25CLK*0.04us=1us
-}
-
-void Delay_ms(uint16 time_ms)
-{
-	register uint16 i;
-
-	for(i=0; i<time_ms; i++) {
-		Delay_us(250);
-		Delay_us(250);
-		Delay_us(250);
-		Delay_us(250);
+	FLASH_Unlock();
+	while(word--) {
+		ret = FLASH_ProgramWord(addr, *(uint32*)data);
+		if(ret != FLASH_COMPLETE) {
+			ERRA("Flash write(chunk) failed - ret(%d)", ret);
+			FLASH_Lock();
+			return RET_NOK;
+		} //else DBG("Flash write(chunk) SUCC");
+		addr += 4;
+		data += 4;
 	}
+	if(left) {
+		uint32 tmp = 0;
+		memcpy(&tmp, data, left);
+		ret = FLASH_ProgramWord(addr, *(uint32*)data);
+		if(ret != FLASH_COMPLETE) {
+			ERRA("Flash write(residue) failed - ret(%d)", ret);
+			FLASH_Lock();
+			return RET_NOK;
+		} //else DBG("Flash write(residue) SUCC");
+	}
+	FLASH_Lock();
+
+	return RET_OK;
 }
-
-void Delay_tick(uint32 tick)
-{
-	uint32_t curTicks = msTicks;
-
-	while(msTicks - curTicks < tick);
-}
-
 
 int32 putc(int32 ch, wizpf_usart usart)
 {

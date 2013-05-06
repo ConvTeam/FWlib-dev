@@ -139,7 +139,7 @@ void act_wsec(void);
 void act_wwps(void);
 #endif
 void act_mset_q(int8 num);
-void act_mset_a(int8 echo, int8 mode, int8 poll, int8 country);
+void act_mset_a(int8 echo, int8 poll, int8 country);
 void act_mstat(void);
 void act_mevt_q(void);
 void act_mevt_a(int8 id);

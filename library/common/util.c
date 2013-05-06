@@ -254,11 +254,11 @@ int32 str_check(int (*method)(int), int8 *str)
  * @param delim Delimiter
  * @return Next pointer separated by delimiter
  */
-int8 *strsep(register int8 **stringp, register const int8 *delim)
+int8 *strsep(int8 **stringp, const int8 *delim)
 {
-    register int8 *s;
-    register const int8 *spanp;
-    register int32 c, sc;
+    int8 *s;
+    const int8 *spanp;
+    int32 c, sc;
     int8 *tok;
 
     if ((s = *stringp) == NULL)
@@ -292,6 +292,7 @@ void print_dump(void *buf, uint16 len)
 	uint16 line = len / 0x10;
 	uint16 left = len % 0x10;
 
+	(void) tp;	// Prevent warning message
 	LOG("===========================================================");
 	LOG("-ADDR----0--1--2--3--4--5--6--7----8--9--A--B--C--D--E--F--");  
 	for(i=0; i<line; i++) {

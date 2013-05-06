@@ -363,6 +363,19 @@ int8 TCPConnChk(uint8 s)
 	return SOCKERR_BUSY;
 }
 
+int8 TCPDisconnect(uint8 s)
+{
+	if(s > TOTAL_SOCK_NUM) {
+		ERRA("wrong socket number(%d)", s);
+		return SOCKERR_NOT_TCP;
+	} else DBG("start");
+
+	IINCHIP_WRITE(Sn_CR(s),Sn_CR_DISCON);
+	while(IINCHIP_READ(Sn_CR(s)));  // wait to process the command...
+
+	return RET_OK;
+}
+
 int8 TCPClose(uint8 s)
 {
 	int8 ret;

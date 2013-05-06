@@ -32,6 +32,7 @@ int8 wizspi_init(wizpf_spi spi)
 
 	switch(spi) {
 	case WIZ_SPI1:
+#if defined(SPI1_SCS_PIN) && defined(SPI1_SCLK_PIN) && defined(SPI1_MISO_PIN) && defined(SPI1_MOSI_PIN)
 		RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
 		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
@@ -47,7 +48,12 @@ int8 wizspi_init(wizpf_spi spi)
 		GPIO_SetBits(SPI1_SCS_PORT, SPI1_SCS_PIN);
 		SPIx = SPI1;
 		break;
+#else
+		LOG("Not implemented");
+		return RET_NOK; 
+#endif
 	case WIZ_SPI2:
+#if defined(SPI2_SCS_PIN) && defined(SPI2_SCLK_PIN) && defined(SPI2_MISO_PIN) && defined(SPI2_MOSI_PIN)
 		RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
 		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
@@ -63,6 +69,10 @@ int8 wizspi_init(wizpf_spi spi)
 		GPIO_SetBits(SPI2_SCS_PORT, SPI2_SCS_PIN);
 		SPIx = SPI2;
 		break;
+#else
+		LOG("Not implemented");
+		return RET_NOK;
+#endif
 	//case WIZ_SPI3:
 	//	break;
 	default:
@@ -97,13 +107,23 @@ void wizspi_cs(wizpf_spi spi, uint8 val)
 
 	switch(spi) {
 	case WIZ_SPI1:
+#if defined(SPI1_SCS_PIN) && defined(SPI1_SCLK_PIN) && defined(SPI1_MISO_PIN) && defined(SPI1_MOSI_PIN)
 		GPIOx = SPI1_SCS_PORT;
 		GPIO_Pin = SPI1_SCS_PIN;
 		break;
+#else
+		LOG("Not implemented");
+		return ; 
+#endif
 	case WIZ_SPI2:
+#if defined(SPI2_SCS_PIN) && defined(SPI2_SCLK_PIN) && defined(SPI2_MISO_PIN) && defined(SPI2_MOSI_PIN)
 		GPIOx = SPI2_SCS_PORT;
 		GPIO_Pin = SPI2_SCS_PIN;
 		break;
+#else
+		LOG("Not implemented");
+		return ; 
+#endif
 	//case WIZ_SPI3:
 	//	break;
 	default:
@@ -130,11 +150,21 @@ uint8 wizspi_byte(wizpf_spi spi, uint8 byte)
 
 	switch(spi) {
 	case WIZ_SPI1:
+#if defined(SPI1_SCS_PIN) && defined(SPI1_SCLK_PIN) && defined(SPI1_MISO_PIN) && defined(SPI1_MOSI_PIN)
 		SPIx = SPI1;
 		break;
+#else
+		LOG("Not implemented");
+		return 0; 
+#endif
 	case WIZ_SPI2:
+#if defined(SPI2_SCS_PIN) && defined(SPI2_SCLK_PIN) && defined(SPI2_MISO_PIN) && defined(SPI2_MOSI_PIN)
 		SPIx = SPI2;
 		break;
+#else
+		LOG("Not implemented");
+		return 0; 
+#endif
 	//case WIZ_SPI3:
 	//	break;
 	default:

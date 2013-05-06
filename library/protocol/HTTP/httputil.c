@@ -67,10 +67,7 @@ void WebServer(uint8 s)
 		HTTPProcessor(s, (char*)rx_buf);	// request is processed
 		memset(rx_buf,0x00,MAX_URI_SIZE);
 
-		IINCHIP_WRITE(Sn_CR(s),Sn_CR_DISCON);
-		while( IINCHIP_READ(Sn_CR(s)) ) ;
-
-		//TCPClose(s);
+		TCPDisconnect(s);
 
 	} else if(ret == SOCKERR_NOT_TCP){		// Not TCP Socket, It's UDP Socket
 		DBG("UDP Socket Close");

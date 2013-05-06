@@ -95,6 +95,7 @@ int8  TCPServerOpen(uint8 s, uint16 port);
 int8  TCPClientOpen(uint8 s, uint16 sport, uint8 *dip, uint16 dport);
 int8  TCPCltOpenNB(uint8 s, uint16 sport, uint8 *dip, uint16 dport);
 int8  TCPConnChk(uint8 s);
+int8  TCPDisconnect(uint8 s);
 int8  TCPClose(uint8 s);
 int8  TCPCloseNB(uint8 s);
 int8  TCPCloseCHK(uint8 s);

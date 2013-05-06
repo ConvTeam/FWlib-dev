@@ -9,8 +9,6 @@
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
 
-#include "common/common.h"
-
 
 #define HTTPD_INCLUDE
 #include "protocol/HTTP/httpd.h"

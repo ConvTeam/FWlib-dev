@@ -21,11 +21,9 @@
 #define SOCK_STAT_TCP_CLT	0x3
 #define SOCK_STAT_CONNECTED	0x4
 
-#define EVENT_RESP(id_v, evt_v)			printf("[V,%d,%d]\r\n", id_v, evt_v)
-#define EVENT_RESP_SIZE(id_v, evt_v, size_v) printf("[V,%d,%d,%d]\r\n", id_v, evt_v, size_v)
-#define CMD_RESP_RET(type_v, id_v)		do{DBG("#");cmd_resp(type_v, id_v); return;}while(0)
-#define MAKE_TCMD_DIGIT(arg_p, dgt_p)	sprintf((char*)arg_p, "%d", dgt_p)
-#define MAKE_TCMD_CHAR(arg_p, char_p)	sprintf((char*)arg_p, "%c", char_p)
+#define ARG_CLEAR(arg_p) arg_p[0] = 0;
+#define MAKE_TCMD_DIGIT(arg_p, dgt_v)	sprintf((char*)arg_p, "%d", dgt_v)
+#define MAKE_TCMD_CHAR(arg_p, char_v)	sprintf((char*)arg_p, "%c", char_v)
 #define MAKE_TCMD_ADDR(arg_p, a1_p, a2_p, a3_p, a4_p) \
 	sprintf((char*)arg_p, "%d.%d.%d.%d", a1_p, a2_p, a3_p, a4_p)
 #define MAKE_TCMD_STRING(arg_p, argsize_v, str_p) do { \
@@ -33,6 +31,29 @@
 	if(len > argsize_v-1) {memcpy((char*)arg_p, (char*)str_p, argsize_v-1); arg_p[argsize_v-1]=0;} \
 	else {memcpy((char*)arg_p, (char*)str_p, len); arg_p[len]=0;} \
 } while(0)
+#define EVENT_RESP(id_v, evt_v)			printf("[V,%d,%d]\r\n", id_v, evt_v)
+#define EVENT_RESP_SIZE(id_v, evt_v, size_v) printf("[V,%d,%d,%d]\r\n", id_v, evt_v, size_v)
+/* //[[ MikeJ 0130506_BEGIN -- reserved
+#define CMD_RESP_RET(type_v, id_v)		do{cmd_resp(type_v, id_v); return;}while(0)//do{DBG("#");cmd_resp(type_v, id_v); return;}while(0)
+#define CMD_RESP_RET_ARG_DGT(type_v, id_v, arg_p, dgt_p) do{ \
+	MAKE_TCMD_DIGIT(arg_p, dgt_p); \
+	cmd_resp(type_v, id_v); \
+	ARG_CLEAR(arg_p); \
+	return; \
+}while(0)
+#define CMD_RESP_RET_ARG_CHR(type_v, id_v, arg_p, char_v) do{ \
+	MAKE_TCMD_CHAR(arg_p, char_v); \
+	cmd_resp(type_v, id_v); \
+	ARG_CLEAR(arg_p); \
+	return; \
+}while(0)
+#define CMD_RESP_RET_ARG_STR(type_v, id_v, arg_p, argsize_v, str_p) do{ \
+	MAKE_TCMD_STRING(arg_p, argsize_v, str_p); \
+	cmd_resp(type_v, id_v); \
+	ARG_CLEAR(arg_p); \
+	return; \
+}while(0)
+*/ //]] MikeJ 0130506_END -- reserved
 
 enum {
 	SOCKEVENT_CONN		= 0,
@@ -55,11 +76,126 @@ static uint16 sockport[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO] = {0,};	// for src port c
 static uint8  udpip[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO][4] = {0,};	// to store UDP Destination address
 static uint16 udpport[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO]  = {0,};	// to store UDP Destination port
 static uint16 tcpleft[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO]  = {0,};	// remained data len to send for TCP Resend
-static int8   recvord[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO]  = {0,};	// for check order of data recv
-static int8   recvnum = 0;							// the number of sock which received data
-struct atc_eventq *eventqueue;
+static int8   recvflag[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO] = {0,};	// for recv check
+//static int8   recvord[ATC_SOCK_NUM_TOTAL+ATC_SOCK_AO]  = {0,};	// for check order of data recv
+//static int8   recvnum = 0;							// the number of sock which received data
+struct atc_eventq *eventqueue = {0, };
 uint8 eqp_cnt = 0;
 
+
+static int8 event_enqueue(int8 id, int8 event)
+{
+#define QFULL	-1
+	struct atc_eventq **eqdp;
+
+/* //[[ MikeJ 0130506_BEGIN -- For Debug
+struct atc_eventq *tmp1 = eventqueue;
+DBGFA("EVT1-cnt(%d)", eqp_cnt);
+while(tmp1) {
+	LOGFA(", (%d-%d)", tmp1->id, tmp1->event);
+	tmp1 = tmp1->next;
+} NL1; */ //]] MikeJ 0130506_END -- For Debug
+
+	eqdp = &eventqueue;
+	if(eqp_cnt >= EVENT_QUEUE_SIZE-1) {
+		while((*eqdp)->next) eqdp = &(*eqdp)->next;
+		if((*eqdp)->event != QFULL) {
+			eqdp = &(*eqdp)->next;
+			*eqdp = calloc(1, sizeof(struct atc_eventq));
+			if(*eqdp == NULL) {
+				ERRA("malloc fail - size(%d)", sizeof(struct atc_eventq));
+				return RET_NOK;
+			}
+			(*eqdp)->id = QFULL;
+			(*eqdp)->event = QFULL;
+			eqp_cnt++;
+		}
+		DBG("EVT FULL");
+		return RET_NOK;
+	}
+
+	while(*eqdp) eqdp = &(*eqdp)->next;
+
+	*eqdp = calloc(1, sizeof(struct atc_eventq));
+	if(*eqdp == NULL) {
+		ERRA("malloc fail - size(%d)", sizeof(struct atc_eventq));
+		return RET_NOK;
+	}
+
+	(*eqdp)->id = id;
+	(*eqdp)->event = event;
+	eqp_cnt++;
+
+/* //[[ MikeJ 0130506_BEGIN -- For Debug
+struct atc_eventq *tmp2 = eventqueue;
+DBGFA("EVT2-cnt(%d)", eqp_cnt);
+while(tmp2) {
+	LOGFA(", (%d-%d~0x%x)", tmp2->id, tmp2->event, (uint32)tmp2->next);
+	tmp2 = tmp2->next;
+} NL1; DBG("ENQ end");*/ //]] MikeJ 0130506_END -- For Debug
+
+	return RET_OK;
+}
+
+static int8 event_dequeue(int8 *id, int8 *event)
+{
+	struct atc_eventq *eqp, **eqdp;
+
+	if(id == NULL || event == NULL) return RET_NOK;
+
+/* //[[ MikeJ 0130506_BEGIN -- For Debug
+struct atc_eventq *tmp3 = eventqueue;
+DBGFA("EVT3-cnt(%d)", eqp_cnt);
+while(tmp3) {
+	LOGFA(", (%d-%d)", tmp3->id, tmp3->event);
+	tmp3 = tmp3->next;
+} NL1;*/ //]] MikeJ 0130506_END -- For Debug
+
+	if(*id < 0) {
+		if(eqp_cnt == 0) return RET_NOK;
+		eqp = eventqueue;
+		eventqueue = eventqueue->next;
+		eqp_cnt--;
+		*id = eqp->id;
+		*event = eqp->event;
+		free(eqp);
+		
+/* //[[ MikeJ 0130506_BEGIN -- For Debug
+struct atc_eventq *tmp44 = eventqueue;
+DBGFA("EVT4-cnt(%d)", eqp_cnt);
+while(tmp44) {
+	LOGFA(", (%d-%d)", tmp44->id, tmp44->event);
+	tmp44 = tmp44->next;
+} NL1;*/ //]] MikeJ 0130506_END -- For Debug
+
+		return RET_OK;
+	} else {
+		eqdp = &eventqueue;
+		while(*eqdp) {
+			if((*eqdp)->id == *id) {
+				*event = (*eqdp)->event;
+				eqp = *eqdp;
+				*eqdp = (*eqdp)->next;
+				free(eqp);
+				eqp_cnt--;
+				
+/* //[[ MikeJ 0130506_BEGIN -- For Debug
+struct atc_eventq *tmp5 = eventqueue;
+DBGFA("EVT5-cnt(%d)", eqp_cnt);
+while(tmp5) {
+	LOGFA(", (%d-%d)", tmp5->id, tmp5->event);
+	tmp5 = tmp5->next;
+} NL1;
+*/ //]] MikeJ 0130506_END -- For Debug
+
+				return RET_OK;
+			} else {
+				eqdp = &(*eqdp)->next;
+			}
+		}
+		return RET_NOK;
+	}
+}
 
 static int8 sock_get(int8 initval, uint16 srcport)
 {
@@ -80,6 +216,8 @@ static int8 sock_get(int8 initval, uint16 srcport)
 
 static int8 sock_put(uint8 sock)
 {
+	int8 tmp;
+
 	DBGCRTCA(sock<ATC_SOCK_NUM_START||sock>ATC_SOCK_NUM_END, "wrong sock(%d)", sock);
 
 	if(sockstat[sock] & SOCK_STAT_UDP) {
@@ -88,132 +226,10 @@ static int8 sock_put(uint8 sock)
 	}
 	sockstat[sock] = SOCK_STAT_IDLE;
 	sockport[sock] = 0;
+	while(event_dequeue((int8*)&sock, &tmp) == RET_OK);
 	sockwatch_clr(sock, WATCH_SOCK_ALL_MASK);
+
 	return RET_OK;
-}
-
-static int8 event_enqueue(int8 id, int8 event)
-{
-#define QFULL	-1
-	struct atc_eventq **eqdp;
-
-
-
-struct atc_eventq *tmp1 = eventqueue;
-DBGFA("EVT1-cnt(%d)", eqp_cnt);
-while(tmp1) {
-	LOGFA(", (%d-%d)", tmp1->id, tmp1->event);
-	tmp1 = tmp1->next;
-}
-NL1;
-
-
-
-
-
-
-	eqdp = &eventqueue;
-	if(eqp_cnt >= EVENT_QUEUE_SIZE-1) {
-		while((*eqdp)->next) eqdp = &(*eqdp)->next;
-		if((*eqdp)->event != QFULL) {
-			eqdp = &(*eqdp)->next;
-			*eqdp = malloc(sizeof(struct atc_eventq));
-			if(*eqdp == NULL) {
-				ERRA("malloc fail - size(%d)", sizeof(struct atc_eventq));
-				return RET_NOK;
-			}
-			(*eqdp)->id = QFULL;
-			(*eqdp)->event = QFULL;
-			eqp_cnt++;
-		}
-		DBG("EVT FULL");
-		return RET_NOK;
-	}
-
-	while(*eqdp) eqdp = &(*eqdp)->next;
-
-	*eqdp = malloc(sizeof(struct atc_eventq));
-	if(*eqdp == NULL) {
-		ERRA("malloc fail - size(%d)", sizeof(struct atc_eventq));
-		return RET_NOK;
-	}
-
-	(*eqdp)->id = id;
-	(*eqdp)->event = event;
-	eqp_cnt++;
-
-
-struct atc_eventq *tmp2 = eventqueue;
-DBGFA("EVT2-cnt(%d)", eqp_cnt);
-while(tmp2) {
-	LOGFA(", (%d-%d)", tmp2->id, tmp2->event);
-	tmp2 = tmp2->next;
-}
-NL1;
-
-	
-	return RET_OK;
-}
-
-static int8 event_dequeue(int8 *id, int8 *event)
-{
-	struct atc_eventq *eqp, **eqdp;
-
-	if(id == NULL || event == NULL) return RET_NOK;
-
-
-struct atc_eventq *tmp3 = eventqueue;
-DBGFA("EVT3-cnt(%d)", eqp_cnt);
-while(tmp3) {
-	LOGFA(", (%d-%d)", tmp3->id, tmp3->event);
-	tmp3 = tmp3->next;
-}
-NL1;
-
-
-
-	if(*id < 0) {
-		if(eqp_cnt == 0) return RET_NOK;
-		eqp = eventqueue;
-		eventqueue = eventqueue->next;
-		eqp_cnt--;
-		*id = eqp->id;
-		*event = eqp->event;
-		free(eqp);
-		
-struct atc_eventq *tmp44 = eventqueue;
-DBGFA("EVT4-cnt(%d)", eqp_cnt);
-while(tmp44) {
-	LOGFA(", (%d-%d)", tmp44->id, tmp44->event);
-	tmp44 = tmp44->next;
-}
-NL1;
-
-		return RET_OK;
-	} else {
-		eqdp = &eventqueue;
-		while(*eqdp) {
-			if((*eqdp)->id == *id) {
-				*event = (*eqdp)->event;
-				eqp = *eqdp;
-				*eqdp = (*eqdp)->next;
-				free(eqp);
-				eqp_cnt--;
-
-				
-struct atc_eventq *tmp5 = eventqueue;
-DBGFA("EVT5-cnt(%d)", eqp_cnt);
-while(tmp5) {
-	LOGFA(", (%d-%d)", tmp5->id, tmp5->event);
-	tmp5 = tmp5->next;
-}
-NL1;
-
-				return RET_OK;
-			}
-		}
-		return RET_NOK;
-	}
 }
 
 static void atc_resend_alarm(int8 arg)
@@ -350,8 +366,30 @@ void atc_async_cb(uint8 sock, uint8 item, int32 ret)
 		break;
 	case WATCH_SOCK_RECV:	DBG("WATCH_SOCK_RECV");
 		{
-			int8 i;
+			if(atci.poll != POLL_MODE_NONE) {
+				if(atci.poll == POLL_MODE_SEMI) {	// Response Event immediately
+					if(recvflag[sock] == VAL_CLEAR) {
+						EVENT_RESP_SIZE(sock, SOCKEVENT_RECV, GetSocketRxRecvBufferSize(sock));
+						recvflag[sock] = VAL_SET;
+					}
+				} else {
+					//struct atc_eventq *evq_chk = eventqueue;
+					//while(evq_chk) {	// Check if the recv event of the sock is already registered.
+					//	if(evq_chk->id == sock && evq_chk->event == SOCKEVENT_RECV) break;
+					//	evq_chk = evq_chk->next;
+					//}
+					//if(evq_chk == NULL) {
+					if(recvflag[sock] == VAL_CLEAR) {
+						event_enqueue(sock, SOCKEVENT_RECV); // If not registered, register to Q
+						recvflag[sock] = VAL_SET;
+					}
+				}
+			} else {
+				act_nrecv(sock, WORK_BUF_SIZE);
+			}
 
+
+#if 0 //[[ MikeJ 0130503_BEGIN -- Remove RECV ORDER method
 			DBGA("WATCH1-sock(%d),recvnum(%d),recvord(%d,%d,%d,%d,%d,%d,%d,%d)", sock, recvnum, recvord[0], 
 				recvord[1], recvord[2], recvord[3], recvord[4], recvord[5], recvord[6], recvord[7]);
 			
@@ -374,6 +412,7 @@ void atc_async_cb(uint8 sock, uint8 item, int32 ret)
 			
 			DBGA("WATCH2-sock(%d),recvnum(%d),recvord(%d,%d,%d,%d,%d,%d,%d,%d)", sock, recvnum, recvord[0], 
 				recvord[1], recvord[2], recvord[3], recvord[4], recvord[5], recvord[6], recvord[7]);
+#endif //]] MikeJ 0130503_END -- Remove RECV ORDER method
 		}
 		break;
 	default: CRITICAL_ERRA("wrong item(0x%x)", item);
@@ -389,7 +428,9 @@ void act_nset_q(int8 num)
 		if(ni.dhcp == NETINFO_DHCP) 
 			MAKE_TCMD_CHAR(atci.tcmd.arg1, 'D');
 		else MAKE_TCMD_CHAR(atci.tcmd.arg1, 'S');
-		CMD_RESP_RET(RET_OK, VAL_NONE);
+		cmd_resp(RET_OK, VAL_NONE);
+		ARG_CLEAR(atci.tcmd.arg1);
+		return;
 	} else if(num > 1) {
 		dhcp_get_storage(&ni);
 		switch(num) {
@@ -397,9 +438,11 @@ void act_nset_q(int8 num)
 		case 3: MAKE_TCMD_ADDR(atci.tcmd.arg1, ni.sn[0], ni.sn[1], ni.sn[2], ni.sn[3]); break;
 		case 4: MAKE_TCMD_ADDR(atci.tcmd.arg1, ni.gw[0], ni.gw[1], ni.gw[2], ni.gw[3]); break;
 		case 5: MAKE_TCMD_ADDR(atci.tcmd.arg1, ni.dns[0], ni.dns[1], ni.dns[2], ni.dns[3]); break;
-		case 6: CMD_RESP_RET(RET_NOT_ALLOWED, VAL_NONE);
+		case 6: cmd_resp(RET_NOT_ALLOWED, VAL_NONE); return;
 		}
-		CMD_RESP_RET(RET_OK, VAL_NONE);
+		cmd_resp(RET_OK, VAL_NONE);
+		ARG_CLEAR(atci.tcmd.arg1);
+		return;
 	} else {
 		GetNetInfo(&ni);
 		if(ni.dhcp == NETINFO_DHCP) 
@@ -410,7 +453,13 @@ void act_nset_q(int8 num)
 		MAKE_TCMD_ADDR(atci.tcmd.arg3, ni.sn[0], ni.sn[1], ni.sn[2], ni.sn[3]);
 		MAKE_TCMD_ADDR(atci.tcmd.arg4, ni.gw[0], ni.gw[1], ni.gw[2], ni.gw[3]);
 		MAKE_TCMD_ADDR(atci.tcmd.arg5, ni.dns[0], ni.dns[1], ni.dns[2], ni.dns[3]);
-		CMD_RESP_RET(RET_OK, VAL_NONE);
+		cmd_resp(RET_OK, VAL_NONE);
+		ARG_CLEAR(atci.tcmd.arg1);
+		ARG_CLEAR(atci.tcmd.arg2);
+		ARG_CLEAR(atci.tcmd.arg3);
+		ARG_CLEAR(atci.tcmd.arg4);
+		ARG_CLEAR(atci.tcmd.arg5);
+		return;
 	}
 }
 
@@ -425,7 +474,9 @@ void act_nset_a(int8 mode, uint8 *ip, uint8 *sn,
 	if(dns1) memcpy(ni.dns, dns1, 4);
 	if(dns2) {
 		MAKE_TCMD_DIGIT(atci.tcmd.arg1, 6);
-		CMD_RESP_RET(RET_NOT_ALLOWED, VAL_NONE);
+		cmd_resp(RET_NOT_ALLOWED, VAL_NONE);
+		ARG_CLEAR(atci.tcmd.arg1);
+		return;
 	}
 
 	if(mode == 'S') {
@@ -440,7 +491,8 @@ void act_nset_a(int8 mode, uint8 *ip, uint8 *sn,
 		GetNetInfo(&ni);
 		if(ni.dhcp == NETINFO_STATIC) SetNetInfo(&ni);
 	}
-	CMD_RESP_RET(RET_OK, VAL_NONE);
+	cmd_resp(RET_OK, VAL_NONE);
+	return;
 }
 
 void act_nstat(int8 num)
@@ -452,16 +504,20 @@ void act_nstat(int8 num)
 		if(ni.dhcp == NETINFO_DHCP) 
 			MAKE_TCMD_CHAR(atci.tcmd.arg1, 'D');
 		else MAKE_TCMD_CHAR(atci.tcmd.arg1, 'S');
-		CMD_RESP_RET(RET_OK, VAL_NONE);
+		cmd_resp(RET_OK, VAL_NONE);
+		ARG_CLEAR(atci.tcmd.arg1);
+		return;
 	} else if(num > 1) {
 		switch(num) {
 		case 2: MAKE_TCMD_ADDR(atci.tcmd.arg1, ni.ip[0], ni.ip[1], ni.ip[2], ni.ip[3]); break;
 		case 3: MAKE_TCMD_ADDR(atci.tcmd.arg1, ni.sn[0], ni.sn[1], ni.sn[2], ni.sn[3]); break;
 		case 4: MAKE_TCMD_ADDR(atci.tcmd.arg1, ni.gw[0], ni.gw[1], ni.gw[2], ni.gw[3]); break;
 		case 5: MAKE_TCMD_ADDR(atci.tcmd.arg1, ni.dns[0], ni.dns[1], ni.dns[2], ni.dns[3]); break;
-		case 6: CMD_RESP_RET(RET_NOT_ALLOWED, VAL_NONE);
+		case 6: cmd_resp(RET_NOT_ALLOWED, VAL_NONE); return;
 		}
-		CMD_RESP_RET(RET_OK, VAL_NONE);
+		cmd_resp(RET_OK, VAL_NONE);
+		ARG_CLEAR(atci.tcmd.arg1);
+		return;
 	} else {
 		if(ni.dhcp == NETINFO_DHCP) 
 			MAKE_TCMD_CHAR(atci.tcmd.arg1, 'D');
@@ -470,7 +526,13 @@ void act_nstat(int8 num)
 		MAKE_TCMD_ADDR(atci.tcmd.arg3, ni.sn[0], ni.sn[1], ni.sn[2], ni.sn[3]);
 		MAKE_TCMD_ADDR(atci.tcmd.arg4, ni.gw[0], ni.gw[1], ni.gw[2], ni.gw[3]);
 		MAKE_TCMD_ADDR(atci.tcmd.arg5, ni.dns[0], ni.dns[1], ni.dns[2], ni.dns[3]);
-		CMD_RESP_RET(RET_OK, VAL_NONE);
+		cmd_resp(RET_OK, VAL_NONE);
+		ARG_CLEAR(atci.tcmd.arg1);
+		ARG_CLEAR(atci.tcmd.arg2);
+		ARG_CLEAR(atci.tcmd.arg3);
+		ARG_CLEAR(atci.tcmd.arg4);
+		ARG_CLEAR(atci.tcmd.arg5);
+		return;
 	}
 }
 
@@ -481,7 +543,7 @@ void act_nmac_q(void)
 	GetNetInfo(&ni);
 	sprintf((char*)atci.tcmd.arg1, "%d:%d:%d:%d:%d:%d", 
 		ni.mac[0], ni.mac[1], ni.mac[2], ni.mac[3], ni.mac[4], ni.mac[5]);
-	CMD_RESP_RET(RET_OK, VAL_NONE);
+	cmd_resp(RET_OK, VAL_NONE);
 }
 
 void act_nmac_a(uint8 *mac)
@@ -491,9 +553,9 @@ void act_nmac_a(uint8 *mac)
 
 	memcpy(ni.mac, mac, 6);
 	SetNetInfo(&ni);
-	CMD_RESP_RET(RET_OK, VAL_NONE);
+	cmd_resp(RET_OK, VAL_NONE);
 #else
-	CMD_RESP_RET(RET_NOT_ALLOWED, VAL_NONE);
+	cmd_resp(RET_NOT_ALLOWED, VAL_NONE);
 #endif
 }
 
@@ -510,32 +572,51 @@ void act_nopen_a(int8 type, uint16 sport, uint8 *dip, uint16 dport)
 		if(sockstat[i] != SOCK_STAT_IDLE && sockport[i] == sport) {
 			DBGA("src port(%d) is using now by sock(%d)", sport, i);
 			MAKE_TCMD_DIGIT(atci.tcmd.arg1, 2);
-			CMD_RESP_RET(RET_USING_PORT, VAL_NONE);
+			cmd_resp(RET_USING_PORT, VAL_NONE);
+			ARG_CLEAR(atci.tcmd.arg1);
+			return;
 		}
 	}
 
 	if(type == 'S') {
 		sock = sock_get(SOCK_STAT_TCP_SRV, sport);
-		if(sock == RET_NOK) CMD_RESP_RET(RET_NO_SOCK, VAL_NONE);
+		if(sock == RET_NOK) {
+			cmd_resp(RET_NO_SOCK, VAL_NONE);
+			return;
+		}
 		ret = TCPServerOpen(sock, sport);
-		if(ret != RET_OK) CMD_RESP_RET(RET_UNSPECIFIED, VAL_NONE);
+		if(ret != RET_OK) {
+			cmd_resp(RET_UNSPECIFIED, VAL_NONE);
+			return;
+		}
 		sockwatch_set(sock, WATCH_SOCK_CONN_EVT);
 		MAKE_TCMD_DIGIT(atci.tcmd.arg1, sock);
-		CMD_RESP_RET(RET_OK, VAL_NONE);
+		cmd_resp(RET_OK, VAL_NONE);
+		ARG_CLEAR(atci.tcmd.arg1);
+		return;
+		
 	} else if(type == 'C') {
 		sock = sock_get(SOCK_STAT_TCP_CLT, sport);
-		if(sock == RET_NOK) CMD_RESP_RET(RET_NO_SOCK, VAL_NONE);
+		if(sock == RET_NOK) {
+			cmd_resp(RET_NO_SOCK, VAL_NONE);
+			return;
+		}
 		ret = TCPCltOpenNB(sock, sport, dip, dport);
 		if(ret != RET_OK) {
 			DBGA("TCPCltOpenNB fail - ret(%d)", ret);
-			CMD_RESP_RET(RET_WRONG_ADDR, VAL_NONE);
+			cmd_resp(RET_WRONG_ADDR, VAL_NONE);
+			return;
 		}
 		sockwatch_set(sock, WATCH_SOCK_CONN_TRY);
 		sockbusy[sock] = VAL_TRUE;
-		CMD_RESP_RET(RET_ASYNC, sock);
+		cmd_resp(RET_ASYNC, sock);
+		return;
 	} else {
 		sock = sock_get(SOCK_STAT_UDP, sport);
-		if(sock == RET_NOK) CMD_RESP_RET(RET_NO_SOCK, VAL_NONE);
+		if(sock == RET_NOK) {
+			cmd_resp(RET_NO_SOCK, VAL_NONE);
+			return;
+		}
 		if(dip != NULL) {
 			memcpy(udpip[sock], dip, 4);
 			udpport[sock] = dport;
@@ -543,7 +624,9 @@ void act_nopen_a(int8 type, uint16 sport, uint8 *dip, uint16 dport)
 		UDPOpen(sock, sport);
 		sockwatch_set(sock, WATCH_SOCK_RECV);
 		MAKE_TCMD_DIGIT(atci.tcmd.arg1, sock);
-		CMD_RESP_RET(RET_OK, VAL_NONE);
+		cmd_resp(RET_OK, VAL_NONE);
+		ARG_CLEAR(atci.tcmd.arg1);
+		return;
 	}
 }
 
@@ -551,19 +634,24 @@ void act_ncls(uint8 sock)
 {
 	int8 ret;
 
-	if(sockbusy[sock] == VAL_TRUE) CMD_RESP_RET(RET_BUSY, VAL_NONE);
-	if(sockstat[sock] == SOCK_STAT_IDLE) CMD_RESP_RET(RET_SOCK_CLS, VAL_NONE);
-	if(sockstat[sock] & SOCK_STAT_TCP_MASK) {
+	if(sockbusy[sock] == VAL_TRUE) {
+		cmd_resp(RET_BUSY, VAL_NONE);
+	} else if(sockstat[sock] == SOCK_STAT_IDLE) {
+		cmd_resp(RET_SOCK_CLS, VAL_NONE);
+	} else if(sockstat[sock] & SOCK_STAT_TCP_MASK) {
 		ret = TCPCloseNB(sock);
-		if(ret != RET_OK) CMD_RESP_RET(RET_SOCK_CLS, VAL_NONE);
+		if(ret != RET_OK) {
+			cmd_resp(RET_SOCK_CLS, VAL_NONE);
+			return;
+		}
 		sockwatch_clr(sock, WATCH_SOCK_CLS_EVT);
 		sockwatch_set(sock, WATCH_SOCK_CLS_TRY);
 		sockbusy[sock] = VAL_TRUE;
-		CMD_RESP_RET(RET_ASYNC, sock);
+		cmd_resp(RET_ASYNC, sock);
 	} else {
 		UDPClose(sock);
 		sock_put(sock);
-		CMD_RESP_RET(RET_OK, VAL_NONE);
+		cmd_resp(RET_OK, VAL_NONE);
 	}
 }
 
@@ -586,9 +674,10 @@ int8 act_nsend_chk(uint8 sock, uint16 *len, uint8 *dip, uint16 *dport)
 			return RET_NOK;
 		}
 		if(dip || dport) {
-			cmd_resp(RET_WRONG_ARG, VAL_NONE);
 			if(dip) MAKE_TCMD_DIGIT(atci.tcmd.arg1, 3);
 			else MAKE_TCMD_DIGIT(atci.tcmd.arg1, 4);
+			cmd_resp(RET_WRONG_ARG, VAL_NONE);
+			ARG_CLEAR(atci.tcmd.arg1);
 			return RET_NOK;
 		}
 	} else {									// UDP
@@ -598,6 +687,7 @@ int8 act_nsend_chk(uint8 sock, uint16 *len, uint8 *dip, uint16 *dport)
 				DBG("No Predefined Dst IP");
 				MAKE_TCMD_DIGIT(atci.tcmd.arg1, 3);
 				cmd_resp(RET_WRONG_ARG, VAL_NONE);
+				ARG_CLEAR(atci.tcmd.arg1);
 				return RET_NOK;
 			} else memcpy(atci.sendip, udpip[sock], 4);
 		}
@@ -606,6 +696,7 @@ int8 act_nsend_chk(uint8 sock, uint16 *len, uint8 *dip, uint16 *dport)
 				DBG("No Predefined Dst Port");
 				MAKE_TCMD_DIGIT(atci.tcmd.arg1, 4);
 				cmd_resp(RET_WRONG_ARG, VAL_NONE);
+				ARG_CLEAR(atci.tcmd.arg1);
 				return RET_NOK;
 			} else atci.sendport = udpport[sock];
 		}
@@ -616,6 +707,7 @@ int8 act_nsend_chk(uint8 sock, uint16 *len, uint8 *dip, uint16 *dport)
 		DBGA("tx buf busy - req(%d), avail(%d)", *len, availlen);
 		MAKE_TCMD_DIGIT(atci.tcmd.arg1, availlen);
 		cmd_resp(RET_BUSY, VAL_NONE);
+		ARG_CLEAR(atci.tcmd.arg1);
 		return RET_NOK;
 	}
 
@@ -631,7 +723,10 @@ void act_nsend(uint8 sock, int8 *buf, uint16 len, uint8 *dip, uint16 *dport)
 		if(ret == SOCKERR_BUSY)
 			CRITICAL_ERRA("Impossible TCP send busy - len(%d), avail(%d)", 
 			len, GetSocketTxFreeBufferSize(sock));
-		if(ret != RET_OK) CMD_RESP_RET(RET_NOT_CONN, VAL_NONE);
+		if(ret != RET_OK) {
+			cmd_resp(RET_NOT_CONN, VAL_NONE);
+			return;
+		}
 		tcpleft[sock] = len;
 		sockwatch_set(sock, WATCH_SOCK_TCP_SEND);
 		sockbusy[sock] = VAL_TRUE;
@@ -642,7 +737,8 @@ void act_nsend(uint8 sock, int8 *buf, uint16 len, uint8 *dip, uint16 *dport)
 			len, GetSocketTxFreeBufferSize(sock));
 		if(ret < RET_OK) {
 			DBGA("UDPSendNB fail - ret(%d)", ret);
-			CMD_RESP_RET(RET_WRONG_ADDR, VAL_NONE);
+			cmd_resp(RET_WRONG_ADDR, VAL_NONE);
+			return;
 		} else {
 			DBGA("UDPSendNB SUCC - len(%d),sent(%d)", len, ret);
 		}
@@ -658,35 +754,27 @@ void act_nrecv(int8 sock, uint16 maxlen)
 	uint16 dstport;
 	int32 len=0, offset=0;
 
-	DBGA("DBG1-sock(%d),recvnum(%d),recvord(%d,%d,%d,%d,%d,%d,%d,%d)", sock, recvnum, recvord[0], 
-		recvord[1], recvord[2], recvord[3], recvord[4], recvord[5], recvord[6], recvord[7]);
-	
-	if(sock == VAL_NONE) {
-		if(recvnum == 0) {
-			DBGA("no data - sock(%d)", sock);
-			ret = RET_NO_DATA; 
-			goto FAIL_RET;
-		}
+	if(sock == VAL_NONE) {	DBG("sock==NONE");
 		for(i=ATC_SOCK_NUM_START; i<=ATC_SOCK_NUM_END; i++) {
-			if(recvord[i] == recvnum) {
+			if(recvflag[i] == VAL_SET) {
+				DBGA("Found(%d)", i);
 				sock = i;
 				break;
 			}
 		}
-		DBGCRTCA(sock < 0, "wrong recv order - sock(%d),recvnum(%d),"
-			"recvord(%d,%d,%d,%d,%d,%d,%d,%d)", sock, recvnum, recvord[0], recvord[1], 
-			recvord[2], recvord[3], recvord[4], recvord[5], recvord[6], recvord[7]);
+		if(i > ATC_SOCK_NUM_END) {
+			DBG("no recv data");
+			ret = RET_NO_DATA; 
+			goto FAIL_RET;
+		}
 	}
-	
-	DBGA("DBG2-sock(%d),recvnum(%d),recvord(%d,%d,%d,%d,%d,%d,%d,%d)", sock, recvnum, recvord[0], 
-		recvord[1], recvord[2], recvord[3], recvord[4], recvord[5], recvord[6], recvord[7]);
 
 	if(sockstat[sock] == SOCK_STAT_IDLE) {
 		ret = RET_SOCK_CLS; 
 		goto FAIL_RET;
 	}
-	if(sockstat[sock] & SOCK_STAT_TCP_MASK) {	// TCP
-DBGA("TCPdbg---rx(%d)",GetSocketRxRecvBufferSize(sock));
+
+	if(sockstat[sock] & SOCK_STAT_TCP_MASK) {	// TCP		DBGA("TCPdbg---rx(%d)",GetSocketRxRecvBufferSize(sock));
 		if(!(sockstat[sock] & SOCK_STAT_CONNECTED)) {
 			DBGA("not connected - sock(%d)", sock);
 			ret = RET_NOT_CONN; 
@@ -697,123 +785,83 @@ DBGA("TCPdbg---rx(%d)",GetSocketRxRecvBufferSize(sock));
 			ret = RET_NO_DATA; 
 			goto FAIL_RET;
 		}
-		len = TCPRecv(sock, atci.recvbuf, maxlen);				DBGA("TCPdbg---m(%d)l(%d)f(%d)", maxlen, len, GetSocketRxRecvBufferSize(sock));
+		len = TCPRecv(sock, atci.recvbuf, maxlen);			//DBGA("TCPdbg---m(%d)l(%d)f(%d)", maxlen, len, GetSocketRxRecvBufferSize(sock));
 	} else {									// UDP
-		uint16 bufleft = maxlen;
-		if(GetSocketRxRecvBufferSize(sock) == 0) {
+		uint16 recvsize, bufleft = maxlen;
+
+		recvsize = GetSocketRxRecvBufferSize(sock);
+		if(recvsize == 0) {
 			DBGA("no data - sock(%d)", sock);
 			ret = RET_NO_DATA; 
 			goto FAIL_RET;
 		}
-		
-		do {
-			DBGCRTC(len + bufleft > WORK_BUF_SIZE, "buf not enough");
-			offset = UDPRecv(sock, &atci.recvbuf[len], bufleft, dstip, &dstport);
-			if(offset <= 0 || offset > (int32)bufleft) {	// Abnormal case - I don't think this could happen but just in case.
-				if(offset > (int32)bufleft) {
-					ERRA("buf overflw - off(%d), maxlen(%d)", offset, bufleft);
-					if(len == 0) {
+
+		if(bufleft < recvsize) {
+			DBGA("buffer not enough - sock(%d),buf(%d),recv(%d)", sock, bufleft, recvsize);
+			ret = RET_NO_FREEMEM; 
+			goto FAIL_RET;
+		}
+
+		offset = UDPRecv(sock, &atci.recvbuf[len], bufleft, dstip, &dstport);
+		if(offset <= 0 || offset > (int32)bufleft) {	// Abnormal case - I don't think this could happen but just in case.
+			if(offset > (int32)bufleft) {
+				ERRA("buf overflw - off(%d), maxlen(%d)", offset, bufleft);
+				if(len == 0) {
+					ret = RET_UNSPECIFIED;
+					goto FAIL_RET;
+				}
+				bufleft = 0;
+			} else {
+				ERRA("wrong reaction - ret(%d)", offset);
+				if(len == 0) {
+					if(offset == SOCKERR_CLOSED) {
+						ret = RET_SOCK_CLS;
+						goto FAIL_RET;
+					} else if(offset < 0) {
 						ret = RET_UNSPECIFIED;
 						goto FAIL_RET;
-					}
-					bufleft = 0;
-				} else {
-					ERRA("wrong reaction - ret(%d)", offset);
-					if(len == 0) {
-						if(offset == SOCKERR_CLOSED) {
-							ret = RET_SOCK_CLS;
-							goto FAIL_RET;
-						} else if(offset < 0) {
-							ret = RET_UNSPECIFIED;
-							goto FAIL_RET;
-						} else {
-							ret = RET_NO_DATA; 
-							goto FAIL_RET;
-						}
+					} else {
+						ret = RET_NO_DATA; 
+						goto FAIL_RET;
 					}
 				}
-			} else {			// Normal case
-				DBGA("UDP Recv - off(%d), len(%d), maxlen(%d)", offset, len, bufleft);
-				len += offset;
-				bufleft -= offset;
 			}
-		} 
-		while(GetSocketRxRecvBufferSize(sock) && bufleft > 0);
-		
+		} else {			// Normal case
+			DBGA("UDP Recv - off(%d), len(%d), maxlen(%d)", offset, len, bufleft);
+			len += offset;
+			bufleft -= offset;
+		}
 	}
+										//DBGA("RECV prt-len(%d), max(%d)", len, maxlen);
 	atci.recvbuf[len] = 0;
-	DBGA("RECV prt-len(%d), max(%d)", len, maxlen);
+	recvflag[sock] = VAL_CLEAR;
+
+	if((sockstat[sock] & SOCK_STAT_PROTMASK) == SOCK_STAT_IDLE) {	// 디버그용임. 안정되면 간단하게 수정할 것
+		CRITICAL_ERRA("Impossible status - recv from closed sock(%d)", sock);
+	} else if(sockstat[sock] & SOCK_STAT_TCP_MASK) {	// TCP
+		if(sockstat[sock] & SOCK_STAT_CONNECTED) 
+			sockwatch_set(sock, WATCH_SOCK_RECV);
+	} else if(sockstat[sock] & SOCK_STAT_UDP) {	
+		sockwatch_set(sock, WATCH_SOCK_RECV);
+	} else CRITICAL_ERRA("Impossible status - wrong sock state(0x%x)", sockstat[sock]);
 
 	MAKE_TCMD_DIGIT(atci.tcmd.arg1, len);
 	if((sockstat[sock] & SOCK_STAT_PROTMASK) == SOCK_STAT_UDP) {
 		MAKE_TCMD_ADDR(atci.tcmd.arg2, dstip[0], dstip[1], dstip[2], dstip[3]);
 		MAKE_TCMD_DIGIT(atci.tcmd.arg3, dstport);
 	}
-	
-	if(GetSocketRxRecvBufferSize(sock) == 0) {	// If there is no data left.
-		if(recvord[sock] < recvnum) {
-			for(i=ATC_SOCK_NUM_START; i<=ATC_SOCK_NUM_END; i++)
-				if(recvord[i] > recvord[sock]) recvord[i]--;
-		}
-		recvord[sock] = 0;
-		recvnum--;
+	cmd_resp(RET_RECV, sock);
+	ARG_CLEAR(atci.tcmd.arg1);
+	ARG_CLEAR(atci.tcmd.arg2);
+	ARG_CLEAR(atci.tcmd.arg3);
 
-		if((sockstat[sock] & SOCK_STAT_PROTMASK) == SOCK_STAT_IDLE) {	// 디버그용임. 안정되면 간단하게 수정할 것
-			CRITICAL_ERRA("Impossible status - recv from closed sock(%d)", sock);
-		} else if(sockstat[sock] & SOCK_STAT_TCP_MASK) {	// TCP
-			if(sockstat[sock] & SOCK_STAT_CONNECTED) 
-				sockwatch_set(sock, WATCH_SOCK_RECV);
-		} else if(sockstat[sock] & SOCK_STAT_UDP) {	
-			sockwatch_set(sock, WATCH_SOCK_RECV);
-		} else CRITICAL_ERRA("Impossible status - wrong sock state(0x%x)", sockstat[sock]);
-
-		cmd_resp(RET_RECV, sock);
-		printf("%s\r\n", atci.recvbuf);
-	} else {
-		cmd_resp(RET_RECV, sock);
-		printf("%s\r\n", atci.recvbuf);
-		EVENT_RESP_SIZE(sock, SOCKEVENT_RECV, GetSocketRxRecvBufferSize(sock));
-		// ????
-		//if(atci.poll != POLL_MODE_FULL) 
-		//	EVENT_RESP_SIZE(sock, SOCKEVENT_RECV, GetSocketRxRecvBufferSize(sock));
-		//else event_enqueue(sock, SOCKEVENT_RECV);
-	}
-
-DBGA("DBG3^1-sock(%d),recvnum(%d),recvord(%d,%d,%d,%d,%d,%d,%d,%d)", sock, recvnum, recvord[0], 
-		recvord[1], recvord[2], recvord[3], recvord[4], recvord[5], recvord[6], recvord[7]);
-
-/*
-if(atci.poll != POLL_MODE_NONE) {
-	if(recvord[sock] == 0) {
-		recvnum++;
-		recvord[sock] = 1;
-		for(i=ATC_SOCK_NUM_START; i<=ATC_SOCK_NUM_END; i++)
-			if(recvord[i] != 0) recvord[i]++;
-	} else {
-		ERR("wrong recv order");
-	}
-	
-	if(atci.poll != POLL_MODE_FULL) 
-		EVENT_RESP_SIZE(sock, SOCKEVENT_RECV, GetSocketRxRecvBufferSize(sock));
-	else event_enqueue(sock, SOCKEVENT_RECV);
-} else {
-	act_nrecv(sock, WORK_BUF_SIZE);
-}
-*/
-
-
-
-
-	
+	printf("%s\r\n", atci.recvbuf);
 
 	return;
 
-FAIL_RET:
+FAIL_RET:			//DBG("FAIL RET");
 
-	DBGA("DBG3^2-sock(%d),recvnum(%d),recvord(%d,%d,%d,%d,%d,%d,%d,%d)", sock, recvnum, recvord[0], 
-		recvord[1], recvord[2], recvord[3], recvord[4], recvord[5], recvord[6], recvord[7]);
-
-	CMD_RESP_RET(ret, VAL_NONE);
+	cmd_resp(ret, VAL_NONE);
 }
 
 void act_nsock(int8 sock)
@@ -824,6 +872,7 @@ void act_nsock(int8 sock)
 	if(sock < ATC_SOCK_NUM_START)
 	{
 		int8 *dump, i, type, cnt_con=0, cnt_notcon=0;
+		uint16 dump_idx = 0;
 
 		//DBG("NSOCK-start");
 		for(i=ATC_SOCK_NUM_START; i<=ATC_SOCK_NUM_END; i++) {
@@ -842,35 +891,41 @@ void act_nsock(int8 sock)
 			cmd_resp_dump(VAL_NONE, NULL);
 			return;
  		}
-		dump = malloc((34*cnt_con)+(12*cnt_notcon)+1);
-		if(dump == NULL) CMD_RESP_RET(RET_NO_FREEMEM, VAL_NONE);
-		cnt_con = 0;
-		for(i=ATC_SOCK_NUM_START; i<=ATC_SOCK_NUM_END; i++) {
-			if(sockstat[i] == SOCK_STAT_IDLE) continue;
-			if(cnt_con != 0) {
-				dump[cnt_con++] = '\r';
-				dump[cnt_con++] = '\n';
+		dump = malloc((36*cnt_con)+(16*cnt_notcon)+1);			//DBGA("DUMP BUF(%d),C(%d),N(%d)", (36*cnt_con)+(14*cnt_notcon)+1, cnt_con, cnt_notcon);
+		if(dump == NULL) {
+			cmd_resp(RET_NO_FREEMEM, VAL_NONE);
+			return;
+		}
+
+		for(i=ATC_SOCK_NUM_START; i<=ATC_SOCK_NUM_END; i++) {	//DBGA("Checking Sock(%d)", i);
+			if(sockstat[i] == SOCK_STAT_IDLE) continue;			//DBGA("Sock(%d) is NOT Idle", i);
+			if(dump_idx != 0) {
+				dump[dump_idx++] = '\r';
+				dump[dump_idx++] = '\n';
 			}
 
 			if((sockstat[i]&SOCK_STAT_PROTMASK)==SOCK_STAT_UDP) {
-				if(udpport[i]) {
-					sprintf((char*)&dump[cnt_con], "%d,%c,%d,%d.%d.%d.%d,%d", i, 'U', sockport[i], 
-						udpip[i][0], udpip[i][1], udpip[i][2], udpip[i][3], udpport[i]);
-				} else {
-					sprintf((char*)&dump[cnt_con], "%d,%c,%d", i, 'U', sockport[i]);
+				if(udpport[i]) {	//DBGA("U1s-cnt(%d)-0x%02x-0x%02x-0x%02x-0x%02x", dump_idx, dump[dump_idx], dump[dump_idx+1], dump[dump_idx+2], dump[dump_idx+3]);
+					sprintf((char*)&dump[dump_idx], "%d,%c,%d,%d.%d.%d.%d,%d%s", i, 'U', 
+						sockport[i], udpip[i][0], udpip[i][1], udpip[i][2], udpip[i][3], 
+						udpport[i], recvflag[i]==VAL_SET? ",R": "");		//DBGA("U1e-cnt(%d)-0x%02x-0x%02x-0x%02x-0x%02x", dump_idx, dump[dump_idx], dump[dump_idx+1], dump[dump_idx+2], dump[dump_idx+3]);
+				} else {			//DBGA("U2s-cnt(%d)-0x%02x-0x%02x-0x%02x-0x%02x", dump_idx, dump[dump_idx], dump[dump_idx+1], dump[dump_idx+2], dump[dump_idx+3]);
+					sprintf((char*)&dump[dump_idx], "%d,%c,%d%s", i, 'U', sockport[i], 
+						recvflag[i]==VAL_SET? ",,,R": "");					//DBGA("U2e-cnt(%d)-0x%02x-0x%02x-0x%02x-0x%02x", dump_idx, dump[dump_idx], dump[dump_idx+1], dump[dump_idx+2], dump[dump_idx+3]);
 				}
 			} else {
 				if((sockstat[i]&SOCK_STAT_PROTMASK)==SOCK_STAT_TCP_SRV) type = 'S';
 				else type='C';
-				if(sockstat[i] & SOCK_STAT_CONNECTED) {
+				if(sockstat[i] & SOCK_STAT_CONNECTED) {		//DBGA("T1s-cnt(%d)-0x%02x-0x%02x-0x%02x-0x%02x", dump_idx, dump[dump_idx], dump[dump_idx+1], dump[dump_idx+2], dump[dump_idx+3]);
 					GetDstInfo((uint8)i, tip, &tport);
-					sprintf((char*)&dump[cnt_con], "%d,%c,%d,%d.%d.%d.%d,%d", i, type, 
-						sockport[i], tip[0], tip[1], tip[2], tip[3], tport);
-				} else {
-					sprintf((char*)&dump[cnt_con], "%d,%c,%d", i, type, sockport[i]);
+					sprintf((char*)&dump[dump_idx], "%d,%c,%d,%d.%d.%d.%d,%d%s", i, 
+						type, sockport[i], tip[0], tip[1], tip[2], tip[3], tport, 
+						recvflag[i]==VAL_SET? ",R": "");	//DBGA("T1e-cnt(%d)-0x%02x-0x%02x-0x%02x-0x%02x", dump_idx, dump[dump_idx], dump[dump_idx+1], dump[dump_idx+2], dump[dump_idx+3]);
+				} else {									//DBGA("T2s-cnt(%d)-0x%02x-0x%02x-0x%02x-0x%02x", dump_idx, dump[dump_idx], dump[dump_idx+1], dump[dump_idx+2], dump[dump_idx+3]);
+					sprintf((char*)&dump[dump_idx], "%d,%c,%d", i, type, sockport[i]);	//DBGA("T2e-cnt(%d)-0x%02x-0x%02x-0x%02x-0x%02x", dump_idx, dump[dump_idx], dump[dump_idx+1], dump[dump_idx+2], dump[dump_idx+3]);
 				}
 			}
-			cnt_con += strlen((char*)&dump[cnt_con]);
+			dump_idx += strlen((char*)&dump[dump_idx]);		//DBGA("cnt(%d),DUMP(%s)", dump_idx, dump);
 		}
 		cmd_resp_dump(VAL_NONE, dump);
 	} 
@@ -902,9 +957,9 @@ void act_nsock(int8 sock)
 				}
 			}
 		}
-		CMD_RESP_RET(RET_OK, VAL_NONE);
+		cmd_resp(RET_OK, VAL_NONE);
 	}
-	else CMD_RESP_RET(RET_WRONG_ARG, VAL_NONE);
+	else cmd_resp(RET_WRONG_ARG, VAL_NONE);
 }
 
 //void act_nopt(void)
@@ -954,32 +1009,55 @@ void act_mset_q(int8 num)
 	else MAKE_TCMD_CHAR(atci.tcmd.arg1, 'D');
 
 	if(atci.poll == POLL_MODE_FULL) 
-		MAKE_TCMD_CHAR(atci.tcmd.arg3, 'F');
+		MAKE_TCMD_CHAR(atci.tcmd.arg2, 'F');
 	else if(atci.poll == POLL_MODE_SEMI) 
-		MAKE_TCMD_CHAR(atci.tcmd.arg3, 'S');
-	else MAKE_TCMD_CHAR(atci.tcmd.arg3, 'D');
+		MAKE_TCMD_CHAR(atci.tcmd.arg2, 'S');
+	else MAKE_TCMD_CHAR(atci.tcmd.arg2, 'D');
 
 	cmd_resp(RET_OK, VAL_NONE);
+	ARG_CLEAR(atci.tcmd.arg1);
+	ARG_CLEAR(atci.tcmd.arg2);
 }
 
-void act_mset_a(int8 echo, int8 mode, int8 poll, int8 country)
+void act_mset_a(int8 echo, int8 poll, int8 country)
 {
-	DBGA("Set: echo(%c), poll(%c)", echo, poll);
+	int8 prev_poll = atci.poll;
+														//DBGA("Set: echo(%c), poll(%c)", echo, poll);
 	if(echo == 'E') atci.echo = VAL_ENABLE;
 	else if(echo == 'D') atci.echo = VAL_DISABLE;
 
 	if(poll == 'F') atci.poll = POLL_MODE_FULL;
 	else if(poll == 'S') atci.poll = POLL_MODE_SEMI;
-	else if(poll == 'D') atci.poll = POLL_MODE_NONE;
- DBGA("echo(%d), poll(%d)", atci.echo, atci.poll);
+	else if(poll == 'D') atci.poll = POLL_MODE_NONE;	//DBGA("echo(%d), poll(%d)", atci.echo, atci.poll);
+
 	cmd_resp(RET_OK, VAL_NONE);
+
+	if(prev_poll > atci.poll) {	// Polling mode decreased
+		int8 event, i, id = -1;
+
+		if(atci.poll == POLL_MODE_NONE) {
+			for(i=ATC_SOCK_NUM_START; i<=ATC_SOCK_NUM_END; i++) {	// Handle RECV data
+				if(recvflag[i]) sockwatch_set(i, WATCH_SOCK_RECV);
+			}
+		}
+
+		if(prev_poll == POLL_MODE_FULL) {
+			while(event_dequeue(&id, &event) == RET_OK) {			// Handle Events
+				if(id <= ATC_SOCK_NUM_END && event == SOCKEVENT_RECV) {
+					if(atci.poll == POLL_MODE_SEMI)
+						EVENT_RESP_SIZE(id, event, GetSocketRxRecvBufferSize(id));
+				} else EVENT_RESP(id, event);
+				id = -1;
+			}
+		}
+	}
 }
 
 void act_mstat(void)
 {
 	MAKE_TCMD_STRING(atci.tcmd.arg1, ARG_3_SIZE, ATC_VERSION);
-
 	cmd_resp(RET_OK, VAL_NONE);
+	ARG_CLEAR(atci.tcmd.arg1);
 }
 
 void act_mevt_q(void)
@@ -995,7 +1073,9 @@ void act_mevt_q(void)
 	tbuf = malloc(cnt+1);
 	if(tbuf == NULL) {
 		MAKE_TCMD_DIGIT(atci.tcmd.arg1, cnt+1);
-		CMD_RESP_RET(RET_NO_FREEMEM, VAL_NONE);
+		cmd_resp(RET_NO_FREEMEM, VAL_NONE);
+		ARG_CLEAR(atci.tcmd.arg1);
+		return;
 	}
 	for(i=ATC_SOCK_NUM_START; i<=ATC_SOCK_NUM_END; i++) {
 		if(sockstat[i] != SOCK_STAT_IDLE) 
@@ -1003,6 +1083,7 @@ void act_mevt_q(void)
 	}
 	MAKE_TCMD_DIGIT(atci.tcmd.arg1, cnt);
 	cmd_resp_dump(VAL_NONE, tbuf);
+	ARG_CLEAR(atci.tcmd.arg1);
 }
 
 void act_mevt_a(int8 id)
@@ -1010,7 +1091,8 @@ void act_mevt_a(int8 id)
 	int8 event;
 
 	if(event_dequeue(&id, &event) != RET_OK) {
-		CMD_RESP_RET(RET_NO_DATA, VAL_NONE);
+		cmd_resp(RET_NO_DATA, VAL_NONE);
+		return;
 	}
 
 	if(id <= ATC_SOCK_NUM_END && event == SOCKEVENT_RECV) 

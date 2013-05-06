@@ -833,7 +833,7 @@ static void hdl_mset(void)
 	{
 		if(atci.tcmd.arg1[0] != 0) {
 			if(str_check(isdigit, atci.tcmd.arg1) != RET_OK) RESP_CDR(RET_WRONG_ARG, 1);
-			if(CHK_DGT_RANGE(atci.tcmd.arg1, num, 1, 4)) RESP_CDR(RET_RANGE_OUT, 1);
+			if(CHK_DGT_RANGE(atci.tcmd.arg1, num, 1, 3)) RESP_CDR(RET_RANGE_OUT, 1);
 		}
 		CMD_CLEAR();
 		act_mset_q(num);
@@ -842,19 +842,17 @@ static void hdl_mset(void)
 	{
 		if(atci.tcmd.arg1[0] != 0) {
 			if(str_check(isdigit, atci.tcmd.arg1) != RET_OK) RESP_CDR(RET_WRONG_ARG, 1);
-			if(CHK_DGT_RANGE(atci.tcmd.arg1, num, 1, 4)) RESP_CDR(RET_RANGE_OUT, 1);
+			if(CHK_DGT_RANGE(atci.tcmd.arg1, num, 1, 3)) RESP_CDR(RET_RANGE_OUT, 1);
 			if(num == 1) {
 				if(CMP_CHAR_2(atci.tcmd.arg2, 'E', 'D')) RESP_CDR(RET_WRONG_ARG, 2);
 				echo = atci.tcmd.arg2[0];
 				CMD_CLEAR();
-				act_mset_a(echo, 0, 0, 0);
+				act_mset_a(echo, 0, 0);
 			} else if(num == 2) {
-				RESP_CDR(RET_NOT_ALLOWED, 2);	// 아직 정해진 것 없음
-			} else if(num == 3) {
 				if(CMP_CHAR_3(atci.tcmd.arg2, 'F', 'S', 'D')) RESP_CDR(RET_WRONG_ARG, 2);
 				poll = atci.tcmd.arg2[0];
 				CMD_CLEAR();
-				act_mset_a(0, 0, poll, 0);
+				act_mset_a(0, poll, 0);
 			} else RESP_CDR(RET_NOT_ALLOWED, 2);	// 국가 설정 아직 구현안함
 		} else RESP_CDR(RET_WRONG_ARG, 1);
 	}
@@ -865,16 +863,16 @@ static void hdl_mset(void)
 			num++;
 			if(CMP_CHAR_2(atci.tcmd.arg1, 'E', 'D')) RESP_CDR(RET_WRONG_ARG, 1);
 		}
-		if(atci.tcmd.arg3[0] != 0) {
+		if(atci.tcmd.arg2[0] != 0) {
 			num++;
-			if(CMP_CHAR_3(atci.tcmd.arg3, 'F', 'S', 'D')) RESP_CDR(RET_WRONG_ARG, 3);
+			if(CMP_CHAR_3(atci.tcmd.arg2, 'F', 'S', 'D')) RESP_CDR(RET_WRONG_ARG, 2);
 		}
-		// arg 2, 4 는 일단 무시
+		// arg 3 은 일단 무시
 		if(num == 0) RESP_CR(RET_NOT_ALLOWED);
 		echo = atci.tcmd.arg1[0];
-		poll = atci.tcmd.arg3[0];
+		poll = atci.tcmd.arg2[0];
 		CMD_CLEAR();
-		act_mset_a(echo, 0, poll, 0);
+		act_mset_a(echo, poll, 0);
 	} 
 	else CRITICAL_ERRA("wrong sign(%d)", atci.tcmd.sign);	
 }
