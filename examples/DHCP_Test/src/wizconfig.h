@@ -33,7 +33,7 @@
 
 //###########################################################################
 #if (DHCP_MODE != DHCP_NONE)
-#define USE_DHCP	VAL_ENABLE
+#define USE_DHCP
 #endif
 
 #if (DHCP_MODE == DHCP_AUTO_ASYNC) || (DHCP_MODE == DHCP_AUTO_SYNC)

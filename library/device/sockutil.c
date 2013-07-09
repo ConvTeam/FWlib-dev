@@ -66,7 +66,7 @@ do { \
 	} else DBGA("Default MAC Addr(%02x:%02x:%02x:%02x:%02x:%02x)", netinfo.mac[0], 
 		netinfo.mac[1], netinfo.mac[2], netinfo.mac[3], netinfo.mac[4], netinfo.mac[5]);
 
-#if (USE_DHCP == VAL_ENABLE)
+#ifdef USE_DHCP
 	NETINIT_ADDR_SET("Default");	// Set the addresses which will be used when DHCP failed
 	if(dhcp_init(dhcp_sock, ip_update, ip_conflict, &netinfo) != RET_OK)
 		return RET_NOK;

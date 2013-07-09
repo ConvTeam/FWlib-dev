@@ -16,6 +16,7 @@
 
 
 #include "wizconfig.h"
+#include "common/types.h"
 
 
 //-------------------------------------- Compiler Definition --------------------------------------
@@ -52,7 +53,7 @@
 
 	#define HOST_STM32F10X
 	#define DEVICE_W5200
-	#include "host/STM32F10x/WIZ_W5200/w5200_evb.h"
+	#include "w5200_evb.h"
 
 #endif
 
@@ -66,7 +67,7 @@
 
 	#define HOST_STM32F10X
 	#define DEVICE_W5200
-	#include "host/STM32F10x/WIZ_W7200/w7200_evb.h"
+	#include "w7200_evb.h"
 
 #endif
 
@@ -80,7 +81,7 @@
 
 	#define HOST_STM32F10X
 	#define DEVICE_W5500
-	#include "host/STM32F10x/WIZ_W5500/w5500_evb.h"
+	#include "w5500_evb.h"
 
 #endif
 
@@ -93,7 +94,6 @@
 #endif
 
 	//Todo
-	#include "common/types.h"
 
 #endif
 
@@ -106,7 +106,6 @@
 #endif
 
 	#include "stm32f10x.h"
-	#include "common/types.h"
 
 #endif
 
@@ -179,10 +178,6 @@
 #error DEVICE Not defined
 #endif
 
-#ifndef USE_DHCP
-#define USE_DHCP	VAL_DISABLE
-#endif
-
 #if (defined(SYSTEM_LITTLE_ENDIAN) && defined(SYSTEM_BIG_ENDIAN)) || \
 	(!defined(SYSTEM_LITTLE_ENDIAN) && !defined(SYSTEM_BIG_ENDIAN))
 #error Endian define error
@@ -199,7 +194,7 @@
 #include "device/socket.h"
 #include "device/sockutil.h"
 #include "host/wizplatform.h"
-#if (USE_DHCP == VAL_ENABLE)
+#ifdef USE_DHCP
 #include "protocol/DHCP/dhcp.h"
 #else
 #define dhcp_init(sock, ip_update_hook, ip_conflict_hook, def) RET_NOK

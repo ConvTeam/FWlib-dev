@@ -11,7 +11,7 @@
 
 //#define FILE_LOG_SILENCE
 #include "common/common.h"
-#if (USE_DHCP == VAL_DISABLE)
+#ifndef USE_DHCP
 #include "protocol/DHCP/dhcp.h"
 #endif
 
@@ -399,7 +399,7 @@ void dhcp_static_mode(wiz_NetInfo *net)
  * DHCP Auto mode (alarm mode) start function.
  * - Used for DHCP start action at Auto mode \n
  *	Auto mode can be selected at @ref wizconfig.h file. \n
- *	(set USE_DHCP to VAL_ENABLE, and uncomment DHCP_AUTO define) \n
+ *	(define USE_DHCP, DHCP_AUTO in the wizconfig.h) \n
  *	and in the main loop, @ref alarm_run should be called continuously.
  * - At Static mode, it can be changed to DHCP mode through this function
  */

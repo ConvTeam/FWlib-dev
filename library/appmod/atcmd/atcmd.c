@@ -103,7 +103,7 @@ void atc_init(void)
 	atci.echo = VAL_ENABLE;
 	atci.poll = POLL_MODE_SEMI;
 
-	sockwatch_open(1, atc_async_cb);	// 1~7 번 소켓을 atc에 할당
+	sockwatch_open(1, atc_async_cb);	// Assign socket 1~7 to ATC module
 	sockwatch_open(2, atc_async_cb);
 	sockwatch_open(3, atc_async_cb);
 	sockwatch_open(4, atc_async_cb);
