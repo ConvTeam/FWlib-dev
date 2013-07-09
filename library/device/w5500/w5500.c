@@ -99,19 +99,19 @@ void IINCHIP_CSoff(void)
 {
   //WIZ_CS(LOW);
   //WIZ_CS2(LOW);
-  wizspi_cs(WIZ_SPI2, VAL_LOW);
+  wizpf_spi_cs(WIZ_SPI2, VAL_LOW);
 }
 void IINCHIP_CSon(void)
 {
   //WIZ_CS(HIGH);
   //WIZ_CS2(HIGH);
-  wizspi_cs(WIZ_SPI2, VAL_HIGH);
+  wizpf_spi_cs(WIZ_SPI2, VAL_HIGH);
 }
 uint8  IINCHIP_SpiSendData(uint8 dat)
 {
   //return(SPI1_SendByte(dat));
   //return(SPI2_SendByte(dat));
-  return(wizspi_byte(WIZ_SPI2, dat));
+  return(wizpf_spi_byte(WIZ_SPI2, dat));
 }
 
 

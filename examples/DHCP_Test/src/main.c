@@ -13,7 +13,7 @@
 //#  - DHCP_MANUAL mode does not need loop structure, but if there is no 
 //#    loop structure, you should handle renew & rebind with your own way, 
 //#    or just ignore renew & rebind action
-//#  - If you want to test not to use DHCP at all, you should exclude dhcp folder from project
+//#  - If you want to test without DHCP module, you should exclude dhcp folder from project
 //#  
 //###########################################################################
 
@@ -31,7 +31,7 @@ static int8 set_dns(menu_ctrl mctrl, int8 *mbuf);
 #if (DHCP_MODE == DHCP_MANUAL)
 	uint32 dhcp_renew, dhcp_rebind, dhcp_time;
 	uint32 dhcp_tick;
-	bool dhcp_active = FALSE;
+	bool dhcp_active = false;
 #endif
 //###########################################################################
 
@@ -79,11 +79,11 @@ int32 main(void)
 	do {
 		ret = dhcp_manual(DHCP_ACT_START, &dhcp_renew, &dhcp_rebind);
 	} while(ret != RET_OK);
-	dhcp_renew = wizpf_tick_conv(FALSE, dhcp_renew);
-	dhcp_rebind = wizpf_tick_conv(FALSE, dhcp_rebind);
+	dhcp_renew = wizpf_tick_conv(false, dhcp_renew);
+	dhcp_rebind = wizpf_tick_conv(false, dhcp_rebind);
 	dhcp_time = dhcp_renew;
 	dhcp_tick = wizpf_get_systick();
-	dhcp_active = TRUE;
+	dhcp_active = true;
   #endif
 }
 #endif
@@ -106,7 +106,7 @@ int32 main(void)
 #elif (DHCP_MODE == DHCP_AUTO_SYNC)
 		alarm_run();
 #elif (DHCP_MODE == DHCP_MANUAL)
-		if(dhcp_active == TRUE && wizpf_tick_elapse(dhcp_tick) > dhcp_time) {
+		if(dhcp_active == true && wizpf_tick_elapse(dhcp_tick) > dhcp_time) {
 			int8 ret;
 			if(dhcp_time==dhcp_renew) DBG("start renew"); 
 			else DBG("start rebind");
@@ -114,8 +114,8 @@ int32 main(void)
 				DHCP_ACT_RENEW: DHCP_ACT_REBIND, &dhcp_renew, &dhcp_rebind);
 			dhcp_tick = wizpf_get_systick();
 			if(ret == RET_OK) {	// renew success
-				dhcp_renew = wizpf_tick_conv(FALSE, dhcp_renew);
-				dhcp_rebind = wizpf_tick_conv(FALSE, dhcp_rebind);
+				dhcp_renew = wizpf_tick_conv(false, dhcp_renew);
+				dhcp_rebind = wizpf_tick_conv(false, dhcp_rebind);
 				dhcp_time = dhcp_renew;
 			} else {
 				if(dhcp_time == dhcp_renew) dhcp_time = dhcp_rebind; // renew fail, try rebind
@@ -175,11 +175,11 @@ static int8 set_dhcp_mode(menu_ctrl mctrl, int8 *mbuf)
 				do {
 					ret = dhcp_manual(DHCP_ACT_START, &dhcp_renew, &dhcp_rebind);
 				} while(ret != RET_OK);
-				dhcp_renew = wizpf_tick_conv(FALSE, dhcp_renew);
-				dhcp_rebind = wizpf_tick_conv(FALSE, dhcp_rebind);
+				dhcp_renew = wizpf_tick_conv(false, dhcp_renew);
+				dhcp_rebind = wizpf_tick_conv(false, dhcp_rebind);
 				dhcp_time = dhcp_renew;
 				dhcp_tick = wizpf_get_systick();
-				dhcp_active = TRUE;
+				dhcp_active = true;
 			#endif
 				printf("New DHCP mode is (DHCP)\r\n");
 			}
@@ -199,11 +199,11 @@ static int8 set_dhcp_mode(menu_ctrl mctrl, int8 *mbuf)
 static int8 set_ip(menu_ctrl mctrl, int8 *mbuf)
 {
 	uint8 addr[4];
-	bool dhcp = FALSE;
+	bool dhcp = false;
 	static wiz_NetInfo netinfo;
 
 	GetNetInfo(&netinfo);
-	if(netinfo.dhcp == NETINFO_DHCP) dhcp = TRUE;
+	if(netinfo.dhcp == NETINFO_DHCP) dhcp = true;
 
 	if(mctrl == MC_START) {
 		printf("Enter new IP Addr [xxx.xxx.xxx.xxx]\r\n");
@@ -213,7 +213,7 @@ static int8 set_ip(menu_ctrl mctrl, int8 *mbuf)
 		if(ip_check(mbuf, addr) == RET_OK) {
 			memset(&netinfo, 0, sizeof(netinfo));
 			memcpy(netinfo.ip, addr, 4);
-			if(dhcp == FALSE) {
+			if(dhcp == false) {
 				SetNetInfo(&netinfo);
 				printf("Set new IP Addr (%d.%d.%d.%d)\r\n", 
 					netinfo.ip[0], netinfo.ip[1], netinfo.ip[2], netinfo.ip[3]);
@@ -233,11 +233,11 @@ static int8 set_ip(menu_ctrl mctrl, int8 *mbuf)
 static int8 set_sn(menu_ctrl mctrl, int8 *mbuf)
 {
 	uint8 addr[4];
-	bool dhcp = FALSE;
+	bool dhcp = false;
 	static wiz_NetInfo netinfo;
 
 	GetNetInfo(&netinfo);
-	if(netinfo.dhcp == NETINFO_DHCP) dhcp = TRUE;
+	if(netinfo.dhcp == NETINFO_DHCP) dhcp = true;
 
 	if(mctrl == MC_START) {
 		printf("Enter new Subnet mask [xxx.xxx.xxx.xxx]\r\n");
@@ -247,7 +247,7 @@ static int8 set_sn(menu_ctrl mctrl, int8 *mbuf)
 		if(ip_check(mbuf, addr) == RET_OK) {
 			memset(&netinfo, 0, sizeof(netinfo));
 			memcpy(netinfo.sn, addr, 4);
-			if(dhcp == FALSE) {
+			if(dhcp == false) {
 				SetNetInfo(&netinfo);
 				printf("Set new SN Mask (%d.%d.%d.%d)\r\n", 
 					netinfo.sn[0], netinfo.sn[1], netinfo.sn[2], netinfo.sn[3]);
@@ -267,11 +267,11 @@ static int8 set_sn(menu_ctrl mctrl, int8 *mbuf)
 static int8 set_gw(menu_ctrl mctrl, int8 *mbuf)
 {
 	uint8 addr[4];
-	bool dhcp = FALSE;
+	bool dhcp = false;
 	static wiz_NetInfo netinfo;
 
 	GetNetInfo(&netinfo);
-	if(netinfo.dhcp == NETINFO_DHCP) dhcp = TRUE;
+	if(netinfo.dhcp == NETINFO_DHCP) dhcp = true;
 
 	if(mctrl == MC_START) {
 		printf("Enter new Gateway Addr [xxx.xxx.xxx.xxx]\r\n");
@@ -281,7 +281,7 @@ static int8 set_gw(menu_ctrl mctrl, int8 *mbuf)
 		if(ip_check(mbuf, addr) == RET_OK) {
 			memset(&netinfo, 0, sizeof(netinfo));
 			memcpy(netinfo.gw, addr, 4);
-			if(dhcp == FALSE) {
+			if(dhcp == false) {
 				SetNetInfo(&netinfo);
 				printf("Set new GW Addr (%d.%d.%d.%d)\r\n", 
 					netinfo.gw[0], netinfo.gw[1], netinfo.gw[2], netinfo.gw[3]);
@@ -301,11 +301,11 @@ static int8 set_gw(menu_ctrl mctrl, int8 *mbuf)
 static int8 set_dns(menu_ctrl mctrl, int8 *mbuf)
 {
 	uint8 addr[4];
-	bool dhcp = FALSE;
+	bool dhcp = false;
 	static wiz_NetInfo netinfo;
 
 	GetNetInfo(&netinfo);
-	if(netinfo.dhcp == NETINFO_DHCP) dhcp = TRUE;
+	if(netinfo.dhcp == NETINFO_DHCP) dhcp = true;
 
 	if(mctrl == MC_START) {
 		printf("Enter new DNS Addr [xxx.xxx.xxx.xxx]\r\n");
@@ -315,7 +315,7 @@ static int8 set_dns(menu_ctrl mctrl, int8 *mbuf)
 		if(ip_check(mbuf, addr) == RET_OK) {
 			memset(&netinfo, 0, sizeof(netinfo));
 			memcpy(netinfo.dns, addr, 4);
-			if(dhcp == FALSE) {
+			if(dhcp == false) {
 				SetNetInfo(&netinfo);
 				printf("Set new DNS Addr (%d.%d.%d.%d)\r\n", 
 					netinfo.dns[0], netinfo.dns[1], netinfo.dns[2], netinfo.dns[3]);

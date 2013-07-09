@@ -2,8 +2,6 @@
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
 
-#include "common/types.h"
-
 
 //### DHCP Compare Define #####################################################
 #define DHCP_NONE			0	// Disable DHCP, If you test this mode, you should exclude dhcp folder from project

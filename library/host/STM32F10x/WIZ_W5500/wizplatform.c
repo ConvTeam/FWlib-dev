@@ -96,10 +96,10 @@ int8 platform_init(usart_param *up)
 	ret8 = wizpf_usart_init(WIZ_USART1, up);
 	if(ret8 != RET_OK) return RET_NOK;
 
-	//ret8 = wizspi_init(WIZ_SPI1);
-	ret8 = wizspi_init(WIZ_SPI2); // For W5500 FPGA board
+	//ret8 = wizpf_spi_init(WIZ_SPI1);
+	ret8 = wizpf_spi_init(WIZ_SPI2); // For W5500 FPGA board
 	if(ret8 != RET_OK) {
-		ERR("wizspi_init fail");
+		ERR("wizpf_spi_init fail");
 		return RET_NOK;
 	}
 
@@ -352,6 +352,173 @@ int8 wizpf_usart_init(wizpf_usart usart, usart_param *param)
 
 	return RET_OK;
 }
+
+/**
+ * @addtogroup spi_module
+ * @{
+ */
+
+/**
+ * Initialize SPI Peripheral Device.
+ * @param spi SPI index number (@ref wizpf_spi)
+ * @return RET_OK: Success
+ * @return RET_NOK: Error
+ */
+int8 wizpf_spi_init(wizpf_spi spi)
+{
+	SPI_TypeDef *SPIx;
+	SPI_InitTypeDef SPI_InitStructure;
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	switch(spi) {
+	case WIZ_SPI1:
+#if defined(SPI1_SCS_PIN) && defined(SPI1_SCLK_PIN) && defined(SPI1_MISO_PIN) && defined(SPI1_MOSI_PIN)
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
+		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+		GPIO_InitStructure.GPIO_Pin = SPI1_SCS_PIN;
+		GPIO_Init(SPI1_SCS_PORT, &GPIO_InitStructure);
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+		GPIO_InitStructure.GPIO_Pin = SPI1_SCLK_PIN;
+		GPIO_Init(SPI1_SCLK_PORT, &GPIO_InitStructure);
+		GPIO_InitStructure.GPIO_Pin = SPI1_MISO_PIN;
+		GPIO_Init(SPI1_MISO_PORT, &GPIO_InitStructure);
+		GPIO_InitStructure.GPIO_Pin = SPI1_MOSI_PIN;
+		GPIO_Init(SPI1_MOSI_PORT, &GPIO_InitStructure);
+		GPIO_SetBits(SPI1_SCS_PORT, SPI1_SCS_PIN);
+		SPIx = SPI1;
+		break;
+#else
+		LOG("Not implemented");
+		return RET_NOK; 
+#endif
+	case WIZ_SPI2:
+#if defined(SPI2_SCS_PIN) && defined(SPI2_SCLK_PIN) && defined(SPI2_MISO_PIN) && defined(SPI2_MOSI_PIN)
+		RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
+		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+		GPIO_InitStructure.GPIO_Pin = SPI2_SCS_PIN;
+		GPIO_Init(SPI2_SCS_PORT, &GPIO_InitStructure);
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+		GPIO_InitStructure.GPIO_Pin = SPI2_SCLK_PIN;
+		GPIO_Init(SPI2_SCLK_PORT, &GPIO_InitStructure);
+		GPIO_InitStructure.GPIO_Pin = SPI2_MISO_PIN;
+		GPIO_Init(SPI2_MISO_PORT, &GPIO_InitStructure);
+		GPIO_InitStructure.GPIO_Pin = SPI2_MOSI_PIN;
+		GPIO_Init(SPI2_MOSI_PORT, &GPIO_InitStructure);
+		GPIO_SetBits(SPI2_SCS_PORT, SPI2_SCS_PIN);
+		SPIx = SPI2;
+		break;
+#else
+		LOG("Not implemented");
+		return RET_NOK;
+#endif
+	//case WIZ_SPI3:
+	//	break;
+	default:
+		ERRA("SPI(%d) is not allowed", spi);
+		return RET_NOK;
+	}
+
+	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
+	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
+	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
+	SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
+	SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
+	SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
+	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4;
+	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
+	SPI_InitStructure.SPI_CRCPolynomial = 7;
+	SPI_Init(SPIx, &SPI_InitStructure);
+	SPI_Cmd(SPIx, ENABLE);
+
+	return RET_OK;
+}
+
+/**
+ * Set/Clear SPI CS Pin
+ * @param spi SPI index number (@ref wizpf_spi)
+ * @param val VAL_LOW: Active(set low) \n VAL_HIGH: Inactive(set high)
+ */
+void wizpf_spi_cs(wizpf_spi spi, uint8 val)
+{
+	GPIO_TypeDef* GPIOx;
+	uint16 GPIO_Pin;
+
+	switch(spi) {
+	case WIZ_SPI1:
+#if defined(SPI1_SCS_PIN) && defined(SPI1_SCLK_PIN) && defined(SPI1_MISO_PIN) && defined(SPI1_MOSI_PIN)
+		GPIOx = SPI1_SCS_PORT;
+		GPIO_Pin = SPI1_SCS_PIN;
+		break;
+#else
+		LOG("Not implemented");
+		return ; 
+#endif
+	case WIZ_SPI2:
+#if defined(SPI2_SCS_PIN) && defined(SPI2_SCLK_PIN) && defined(SPI2_MISO_PIN) && defined(SPI2_MOSI_PIN)
+		GPIOx = SPI2_SCS_PORT;
+		GPIO_Pin = SPI2_SCS_PIN;
+		break;
+#else
+		LOG("Not implemented");
+		return ; 
+#endif
+	//case WIZ_SPI3:
+	//	break;
+	default:
+		ERRA("SPI(%d) is not allowed", spi);
+		return;
+	}
+
+	if (val == VAL_LOW) {
+   		GPIO_ResetBits(GPIOx, GPIO_Pin);
+	}else if (val == VAL_HIGH){
+   		GPIO_SetBits(GPIOx, GPIO_Pin); 
+	}
+}
+
+/**
+ * Send/Receive 1 Byte through SPI
+ * @param spi SPI index number (@ref wizpf_spi)
+ * @param byte 1 Byte to send
+ * @return Received 1 Byte
+ */
+uint8 wizpf_spi_byte(wizpf_spi spi, uint8 byte)
+{
+	SPI_TypeDef *SPIx;
+
+	switch(spi) {
+	case WIZ_SPI1:
+#if defined(SPI1_SCS_PIN) && defined(SPI1_SCLK_PIN) && defined(SPI1_MISO_PIN) && defined(SPI1_MOSI_PIN)
+		SPIx = SPI1;
+		break;
+#else
+		LOG("Not implemented");
+		return 0; 
+#endif
+	case WIZ_SPI2:
+#if defined(SPI2_SCS_PIN) && defined(SPI2_SCLK_PIN) && defined(SPI2_MISO_PIN) && defined(SPI2_MOSI_PIN)
+		SPIx = SPI2;
+		break;
+#else
+		LOG("Not implemented");
+		return 0; 
+#endif
+	//case WIZ_SPI3:
+	//	break;
+	default:
+		ERRA("SPI(%d) is not allowed", spi);
+		return 0;
+	}
+
+	while (SPI_I2S_GetFlagStatus(SPIx, SPI_I2S_FLAG_TXE) == RESET);         
+	SPI_I2S_SendData(SPIx, byte);          
+	while (SPI_I2S_GetFlagStatus(SPIx, SPI_I2S_FLAG_RXNE) == RESET);          
+	return (uint8)SPI_I2S_ReceiveData(SPIx);
+}
+
+/* @} */
 
 int8 wizpf_gpio_init(GPIO_TypeDef* GPIOx, uint16 GPIO_Pin, gpio_mode mode)
 {

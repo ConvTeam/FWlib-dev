@@ -93,6 +93,7 @@
 #endif
 
 	//Todo
+	#include "common/types.h"
 
 #endif
 
@@ -105,7 +106,7 @@
 #endif
 
 	#include "stm32f10x.h"
-	#include "host/wizspi.h"
+	#include "common/types.h"
 
 #endif
 
@@ -194,6 +195,7 @@
 #include <ctype.h>
 
 #include "common/util.h"
+#include "device/netctrl.h"
 #include "device/socket.h"
 #include "device/sockutil.h"
 #include "host/wizplatform.h"

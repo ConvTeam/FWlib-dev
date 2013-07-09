@@ -12,7 +12,7 @@
           
           
           
-        <Column0>280</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+        <Column0>305</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
       </Workspace>
       <Build>
         
@@ -24,7 +24,7 @@
     <Windows>
       
       
-    <Wnd0>
+    <Wnd2>
         <Tabs>
           <Tab>
             <Identity>TabID-4556-1847</Identity>
@@ -36,7 +36,7 @@
           </Tab>
         </Tabs>
         
-      <SelectedTab>0</SelectedTab></Wnd0><Wnd1>
+      <SelectedTab>0</SelectedTab></Wnd2><Wnd3>
         <Tabs>
           <Tab>
             <Identity>TabID-16205-9407</Identity>
@@ -46,20 +46,20 @@
           </Tab>
         <Tab><Identity>TabID-3185-26754</Identity><TabName>Find in Files</TabName><Factory>Find-in-Files</Factory><Session/></Tab></Tabs>
         
-      <SelectedTab>0</SelectedTab></Wnd1></Windows>
+      <SelectedTab>0</SelectedTab></Wnd3></Windows>
     <Editor>
       
       
       
       
-    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\src\main.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd></Tab><ActiveTab>0</ActiveTab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\src\main.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>5</SelStart><SelEnd>5</SelEnd></Tab><ActiveTab>0</ActiveTab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
     <Positions>
       
       
       
       
       
-    <Top><Row0><Sizes><Toolbar-012ecab8><key>iaridepm.enu1</key></Toolbar-012ecab8></Sizes></Row0></Top><Left><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>668</Bottom><Right>354</Right><x>-2</x><y>-2</y><xscreen>221</xscreen><yscreen>166</yscreen><sizeHorzCX>150034</sizeHorzCX><sizeHorzCY>169043</sizeHorzCY><sizeVertCX>241684</sizeVertCX><sizeVertCY>682281</sizeVertCY></Rect></Wnd0></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>269</Bottom><Right>1475</Right><x>-2</x><y>-2</y><xscreen>1477</xscreen><yscreen>271</yscreen><sizeHorzCX>1002716</sizeHorzCX><sizeHorzCY>275967</sizeHorzCY><sizeVertCX>150034</sizeVertCX><sizeVertCY>169043</sizeVertCY></Rect></Wnd1></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+    <Top><Row0><Sizes><Toolbar-0159ca78><key>iaridepm.enu1</key></Toolbar-0159ca78></Sizes></Row0></Top><Left><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>567</Bottom><Right>379</Right><x>-2</x><y>-2</y><xscreen>171</xscreen><yscreen>142</yscreen><sizeHorzCX>149737</sizeHorzCX><sizeHorzCY>168646</sizeHorzCY><sizeVertCX>333625</sizeVertCX><sizeVertCY>675772</sizeVertCY></Rect></Wnd2></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>230</Bottom><Right>1144</Right><x>-2</x><y>-2</y><xscreen>1146</xscreen><yscreen>232</yscreen><sizeHorzCX>1003503</sizeHorzCX><sizeHorzCY>275534</sizeHorzCY><sizeVertCX>149737</sizeVertCX><sizeVertCY>168646</sizeVertCY></Rect></Wnd3></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
   </Desktop>
 </Workspace>
 

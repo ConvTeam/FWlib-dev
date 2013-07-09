@@ -2,10 +2,11 @@
  * @file		types.h
  * @brief		Common Type Definition Header File.
  * This file influence on all library area through @ref common.h
- * @version	1.0
+ * @version	1.1
  * @date		2013/02/22
  * @par Revision
  *			2013/02/22 - 1.0 Release
+ *			2013/07/09 - 1.1 Added 'bool' type
  * @author	Mike Jeong
  * \n\n @par Copyright (C) 2013 WIZnet. All rights reserved.
  */
@@ -14,44 +15,22 @@
 #define _TYPE_H
 
 
-#ifndef int8
 typedef signed char int8;
-#endif
-#ifndef uint8
 typedef unsigned char uint8;
-#endif
-#ifndef vint8
 typedef volatile signed char vint8;
-#endif
-#ifndef vuint8
 typedef volatile unsigned char vuint8;
-#endif
 
-#ifndef int16
 typedef signed short int16;
-#endif
-#ifndef uint16
 typedef unsigned short uint16;
-#endif
-#ifndef vint16
 typedef volatile signed short vint16;
-#endif
-#ifndef vuint16
 typedef volatile unsigned short vuint16;
-#endif
 
-#ifndef int32
 typedef signed long int32;
-#endif
-#ifndef uint32
 typedef unsigned long uint32;
-#endif
-#ifndef vint32
 typedef volatile signed long vint32;
-#endif
-#ifndef vuint32
 typedef volatile unsigned long vuint32;
-#endif
+
+typedef enum {false = 0, true = !false} bool;
 
 /**
  * @def RET_FAIL

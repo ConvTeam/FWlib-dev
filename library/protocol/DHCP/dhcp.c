@@ -168,8 +168,8 @@ static int8 send_request(void);
 static wiz_NetInfo workinfo, storage;
 static struct dhcp_info di;
 static struct dhcp_msg dm;
-static bool dhcp_alarm = FALSE;
-static bool dhcp_async = FALSE;
+static bool dhcp_alarm = false;
+static bool dhcp_async = false;
 static uint8  dhcp_run_cnt = 0;
 static uint32 dhcp_run_tick = 0;
 
@@ -198,10 +198,10 @@ int8 dhcp_init(uint8 sock, void_func ip_update_hook, void_func ip_conflict_hook,
 	}
 
 #ifdef DHCP_AUTO
-	dhcp_alarm = TRUE;
+	dhcp_alarm = true;
 #endif
 #ifdef DHCP_ASYNC
-	dhcp_async = TRUE;
+	dhcp_async = true;
 #endif
 
 	memset(&di, 0, sizeof(di));
@@ -237,7 +237,7 @@ int8 dhcp_manual(dhcp_action action, uint32 *renew, uint32 *rebind)	// blocking 
 {
 	dhcp_state curstt = di.state;
 
-	if(dhcp_alarm == TRUE) return RET_NOK;
+	if(dhcp_alarm == true) return RET_NOK;
 
 	while(curstt != DHCP_STATE_INIT && curstt != DHCP_STATE_BOUND) {
 		dhcp_run();
@@ -422,11 +422,11 @@ void dhcp_auto_start(void)
 
 static void dhcp_alarm_cb(int8 arg)	// for DHCP auto mode
 {
-	if(dhcp_alarm == FALSE) return;
+	if(dhcp_alarm == false) return;
 	if(arg == 0) {
 		if(di.state == DHCP_STATE_BOUND) {
-			alarm_set(wizpf_tick_conv(FALSE, di.renew_time), dhcp_alarm_cb, 1);
-			alarm_set(wizpf_tick_conv(FALSE, di.rebind_time), dhcp_alarm_cb, 2);
+			alarm_set(wizpf_tick_conv(false, di.renew_time), dhcp_alarm_cb, 1);
+			alarm_set(wizpf_tick_conv(false, di.rebind_time), dhcp_alarm_cb, 2);
 		}
 		if(di.state == DHCP_STATE_FAILED) {
 			di.state = DHCP_STATE_INIT;
@@ -456,7 +456,7 @@ static void dhcp_async_cb(uint8 sock, uint8 item, int32 ret)	// for async mode
 			DBG("DHCP Discovery Sent Async");
 			if(di.state == DHCP_STATE_INIT) SET_STATE(DHCP_STATE_SEARCHING);
 			else if(di.state == DHCP_STATE_SELECTING) SET_STATE(DHCP_STATE_REQUESTING);
-			else DBGCRTCA(TRUE, "wrong state(%d)", di.state);
+			else DBGCRTCA(true, "wrong state(%d)", di.state);
 		} else {
 			DBGA("WATCH_SOCK_UDP_SEND fail - ret(%d)", ret);
 		}
@@ -467,21 +467,21 @@ static void dhcp_async_cb(uint8 sock, uint8 item, int32 ret)	// for async mode
 	case WATCH_SOCK_CONN_EVT:
 	case WATCH_SOCK_CLS_EVT:
 	case WATCH_SOCK_RECV:
-		DBGCRTC(TRUE, "DHCP does not use TCP");
-	default: DBGCRTCA(TRUE, "wrong item(0x%x)", item);
+		DBGCRTC(true, "DHCP does not use TCP");
+	default: DBGCRTCA(true, "wrong item(0x%x)", item);
 	}
 
 }
 
 static void dhcp_run(void)
 {
-	static bool udp_open_fail = FALSE;
+	static bool udp_open_fail = false;
 
 	if(di.state == DHCP_STATE_INIT && di.action != DHCP_ACT_START) {
 		DBG("wrong attempt");
 		return;
 	} else if(GetUDPSocketStatus(di.sock) == SOCKSTAT_CLOSED) {
-		if(udp_open_fail == TRUE && !IS_TIME_PASSED(dhcp_run_tick, DHCP_RETRY_DELAY)) 
+		if(udp_open_fail == true && !IS_TIME_PASSED(dhcp_run_tick, DHCP_RETRY_DELAY)) 
 			goto RET_ALARM;
 		ClsNetInfo(NI_IP_ADDR);
 		ClsNetInfo(NI_SN_MASK);
@@ -489,12 +489,12 @@ static void dhcp_run(void)
 		ClsNetInfo(NI_DNS_ADDR);
 		if(UDPOpen(di.sock, DHCP_CLIENT_PORT) == RET_OK) {
 			if(dhcp_async) sockwatch_open(di.sock, dhcp_async_cb);
-			udp_open_fail = FALSE;
+			udp_open_fail = false;
 			dhcp_run_tick = wizpf_get_systick();
 			dhcp_run_cnt = 0;
 		} else {
 			ERR("UDPOpen fail");
-			udp_open_fail = TRUE;
+			udp_open_fail = true;
 			dhcp_run_tick = wizpf_get_systick();
 			goto RET_ALARM;
 		}
@@ -537,7 +537,7 @@ static void dhcp_run(void)
 				SET_STATE(DHCP_STATE_SELECTING);
 				dhcp_run_tick = wizpf_get_systick();
 				dhcp_run_cnt = 0;
-			} else if(ret != RET_NOK) DBGCRTCA(TRUE, "recv wrong packet(%d)", ret);
+			} else if(ret != RET_NOK) DBGCRTCA(true, "recv wrong packet(%d)", ret);
 		} else {
 			ERRA("DHCP Offer RECV fail - for (%d)msec", DHCP_RETRY_DELAY);
 			SET_STATE(DHCP_STATE_INIT);
@@ -586,7 +586,7 @@ static void dhcp_run(void)
 					SET_STATE(DHCP_STATE_BOUND);
 				}
 				dhcp_run_cnt = 0;
-			} else if(ret != RET_NOK) DBGCRTCA(TRUE, "recv wrong packet(%d)", ret);
+			} else if(ret != RET_NOK) DBGCRTCA(true, "recv wrong packet(%d)", ret);
 		} else {
 			ERRA("DHCP ACK RECV fail - for (%d)msec", DHCP_RETRY_DELAY);
 			if(di.action == DHCP_ACT_START) {

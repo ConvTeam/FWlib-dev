@@ -68,15 +68,15 @@ uint16 getIINCHIP_TxBASE(uint8 s)
 }
 void IINCHIP_CSoff(void)
 {
-	wizspi_cs(WIZ_SPI1, VAL_LOW);
+	wizpf_spi_cs(WIZ_SPI1, VAL_LOW);
 }
 void IINCHIP_CSon(void)
 {
-	wizspi_cs(WIZ_SPI1, VAL_HIGH);
+	wizpf_spi_cs(WIZ_SPI1, VAL_HIGH);
 }
 uint8  IINCHIP_SpiSendData(uint8 dat)
 {
-	return(wizspi_byte(WIZ_SPI1, dat));
+	return(wizpf_spi_byte(WIZ_SPI1, dat));
 }
 
 

@@ -57,7 +57,7 @@ void menu_init(void)
 	mi.cur = 0;
 	mi.depth = 1;
 	mi.buf_len = 0;
-	if(disp_mode == umdm_max) mi.software_input = TRUE;
+	if(disp_mode == umdm_max) mi.software_input = true;
 }
 
 /**
@@ -171,8 +171,8 @@ void menu_run(void)
 	int8 ret = RET_NOK;
 	int8 recv_char;
 
-	if(mi.software_input == TRUE) {
-		mi.software_input = FALSE;
+	if(mi.software_input == true) {
+		mi.software_input = false;
 		recv_char = 0x0d;
 	} else {
 		recv_char = (int8)getc_nonblk(WIZ_USART1);
@@ -188,7 +188,7 @@ void menu_run(void)
 			if(disp_mode != umdm_none) printf("\r\n");
 			break;
 		case 0x20:			//printf("<SP>\r\n");
-			CMDLINE_RESET(FALSE);
+			CMDLINE_RESET(false);
 			break;
 		case 0x08:			//printf("<BS>\r\n");
 			if(mi.buf_len != 0) {
@@ -198,8 +198,8 @@ void menu_run(void)
 			break;
 		case 0x7f:			//printf("<DEL>\r\n");
 			mi.buf_len = 0;					//printf("DEL: cur(%d), mfunc(%c), depth(%d)\r\n", mi.cur, mtree[mi.cur-1].mfunc==NULL?'N':'Y', mi.depth);
-			SET_UPPER_MENU(TRUE, disp_mode == umdm_max);
-			CMDLINE_RESET(TRUE);
+			SET_UPPER_MENU(true, disp_mode == umdm_max);
+			CMDLINE_RESET(true);
 			break;
 		case 0x1b:			//printf("<ESC>\r\n");
 			break;
@@ -221,7 +221,7 @@ void menu_run(void)
 				uint8 tmp8 = atoi((char*)mi.buf);
 
 				if(mi.cur != 0 && tmp8 == 0) { // If 0 entered, return to upper menu
-					SET_UPPER_MENU(TRUE, disp_mode != umdm_none);
+					SET_UPPER_MENU(true, disp_mode != umdm_none);
 				} else if(tmp8 != 0) {	// If not 0, search that menu
 					uint8 i;
 
@@ -237,7 +237,7 @@ void menu_run(void)
 						mi.depth++;
 						if(mtree[mi.cur-1].mfunc) {
 							ret = mtree[mi.cur-1].mfunc(MC_START, mi.buf);
-							if(ret == RET_OK) SET_UPPER_MENU(TRUE, disp_mode == umdm_max);
+							if(ret == RET_OK) SET_UPPER_MENU(true, disp_mode == umdm_max);
 							else if(ret == RET_ROOT) SET_ROOT_MENU();
 						} else {
 							if(disp_mode != umdm_none) menu_disp();
@@ -255,11 +255,11 @@ void menu_run(void)
 		if(mi.buf_len == 0) {
 			ret = mtree[mi.cur-1].mfunc(MC_END, mi.buf);
 			if(ret == RET_ROOT) SET_ROOT_MENU();
-			else SET_UPPER_MENU(FALSE, disp_mode == umdm_max);
+			else SET_UPPER_MENU(false, disp_mode == umdm_max);
 		} else {
 			ret = mtree[mi.cur-1].mfunc(MC_DATA, mi.buf);
 			if(ret == RET_OK) {				//printf("process done\r\n");
-				SET_UPPER_MENU(TRUE, disp_mode == umdm_max);
+				SET_UPPER_MENU(true, disp_mode == umdm_max);
 			} else if(ret == RET_ROOT) {	//printf("process done & return to root\r\n");
 				mtree[mi.cur-1].mfunc(MC_END, mi.buf);
 				SET_ROOT_MENU();
@@ -267,7 +267,7 @@ void menu_run(void)
 		}
 	}
 
-	CMDLINE_RESET(TRUE);
+	CMDLINE_RESET(true);
 
 }
 

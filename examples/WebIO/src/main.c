@@ -11,7 +11,7 @@
 #define SOCK_HTTP		2	// TCP
 
 
-bool lb_tcp = FALSE, lb_udp = FALSE;
+bool lb_tcp = false, lb_udp = false;
 
 static int8 mn_show_network(menu_ctrl mctrl, int8 *mbuf)
 {
@@ -100,7 +100,7 @@ static int8 mn_loopback(menu_ctrl mctrl, int8 *mbuf)
 	if(mctrl == MC_START) {
 		if(lb_tcp || lb_udp) {
 			printf("Turning off (%s) Loopback\r\n", lb_tcp?"TCP":"UDP");
-			lb_tcp = lb_udp = FALSE;
+			lb_tcp = lb_udp = false;
 			return RET_OK;
 		} else printf("Enter the number [1: TCP, 2: UDP]\r\n");
 	} else if(mctrl == MC_END) {
@@ -108,8 +108,8 @@ static int8 mn_loopback(menu_ctrl mctrl, int8 *mbuf)
 	} else if(mctrl == MC_DATA) {
 		if(str_check(isdigit, (int8*)mbuf) == RET_OK) {
 			uint8 input = atoi((char*)mbuf);
-			if(input == 1) lb_tcp = TRUE;
-			else if(input == 2) lb_udp = TRUE;
+			if(input == 1) lb_tcp = true;
+			else if(input == 2) lb_udp = true;
 			else printf("Enter the number [1: TCP, 2: UDP]\r\n");
 
 			if(lb_tcp || lb_udp) {

@@ -84,6 +84,16 @@ typedef struct usart_param_t {
 /* @} */
 
 /**
+ * @ingroup spi_module
+ * Indicate the SPI index number
+ */
+typedef enum {
+	WIZ_SPI1 = 0,	///< Indicate the 1st SPI
+	WIZ_SPI2 = 1, 	///< Indicate the 2nd SPI
+	WIZ_SPI3 = 2	///< Indicate the 3rd SPI
+} wizpf_spi;
+
+/**
  * @ingroup platform_util_module
  * Indicate the LED index number
  */
@@ -156,6 +166,9 @@ uint32 wizpf_get_systick(void);
 uint32 wizpf_tick_conv(bool istick2sec, uint32 tickorsec);
 int32 wizpf_tick_elapse(uint32 tick);
 int8 wizpf_usart_init(wizpf_usart usart, usart_param *param);
+int8 wizpf_spi_init(wizpf_spi spi);
+void wizpf_spi_cs(wizpf_spi spi, uint8 val);
+uint8 wizpf_spi_byte(wizpf_spi spi, uint8 byte);
 int8 wizpf_led_set(wizpf_led led, uint8 action);
 int8 wizpf_led_get(wizpf_led led);
 void wizpf_led_trap(uint8 repeat);

@@ -128,7 +128,7 @@ void atc_run(void)
 	int8 i, ret, recv_char;
 	static int8 curidx = -1, curcnt = 0;
 	static uint8 buflen = 0;
-	//static bool prompt = TRUE;
+	//static bool prompt = true;
 
 	recv_char = (int8)getc_nonblk(WIZ_USART1);
 	if(recv_char == RET_NOK) return; // 입력 값 없는 경우		printf("RECV: 0x%x\r\n", recv_char);
@@ -150,8 +150,8 @@ void atc_run(void)
 		}
 		return;
 	}
-	//if(prompt == FALSE) {
-	//	prompt = TRUE;
+	//if(prompt == false) {
+	//	prompt = true;
 	//	putc('>', WIZ_USART1);
 	//}
 
@@ -165,7 +165,7 @@ void atc_run(void)
 			termbuf[buflen] = 0;
 			curidx = -1;
 			curcnt = 0;
-			//prompt = FALSE;
+			//prompt = false;
 			break;
 		case 0x08:	// BS			printf("<BS>\r\n");
 			if(buflen != 0) {
