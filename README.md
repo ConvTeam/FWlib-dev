@@ -25,7 +25,7 @@ please contact <support@wiznet.co.kr>
 <br> email : jeonggw@wiznet.co.kr
 
 [RaphaelKwon](http://github.com/RaphaelKwon)
-<br> email : 
+<br> email : ywkwon@wiznet.co.kr
 
 ## License
 
